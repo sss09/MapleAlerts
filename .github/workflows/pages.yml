@@ -6,34 +6,33 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
+  contents: write
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          ref: gh-pages
+          flutter-version: '3.32.1'
+          channel: 'stable'
+          cache: true
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: flutter pub get
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Build web
+        run: flutter build web --base-href /MapleAlerts/ --no-tree-shake-icons --release
+
+      - name: Add .nojekyll
+        run: touch build/web/.nojekyll
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          force_orphan: true
