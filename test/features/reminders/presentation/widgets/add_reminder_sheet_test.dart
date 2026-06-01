@@ -8,12 +8,6 @@ import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/widgets/add_reminder_sheet.dart';
 
 void main() {
-  /// Wrap the sheet content in a themed app + ProviderScope with a stub
-  /// alertsProvider so the widget can be pumped in isolation.
-  Widget _buildSheet({required WidgetRef captureRef}) {
-    throw UnimplementedError(); // replaced below with a Consumer approach
-  }
-
   /// Helper that builds a full widget tree with ProviderScope so we can
   /// capture the WidgetRef and pass it to [AddReminderSheetContent].
   Widget _wrap({
