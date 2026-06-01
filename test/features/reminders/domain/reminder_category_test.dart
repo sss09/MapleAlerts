@@ -2,42 +2,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 
 void main() {
-  group('ReminderCategory registry', () {
-    test('contains the 8 MVP categories plus custom', () {
-      for (final id in ['rrsp', 'tfsa', 'tax', 'boc', 'ccb', 'gic', 'mortgage', 'osap', 'custom']) {
+  group('ReminderCategory registry (life-domains)', () {
+    const ids = ['government','bills','vehicle','health','finance','home','family','seasonal','custom'];
+
+    test('contains the 8 life-domains plus custom', () {
+      for (final id in ids) {
         expect(kReminderCategories.containsKey(id), isTrue, reason: 'missing $id');
       }
     });
 
-    test('free categories are not premium by default', () {
-      for (final id in ['rrsp', 'tfsa', 'tax', 'boc', 'ccb', 'custom']) {
-        expect(kReminderCategories[id]!.premiumByDefault, isFalse, reason: '$id should be free');
+    test('every map key equals its category id', () {
+      for (final e in kReminderCategories.entries) {
+        expect(e.value.id, e.key, reason: 'id mismatch for ${e.key}');
       }
-    });
-
-    test('tracker categories are premium by default', () {
-      for (final id in ['gic', 'mortgage', 'osap']) {
-        expect(kReminderCategories[id]!.premiumByDefault, isTrue, reason: '$id should be premium');
-      }
-    });
-
-    test('categoryFor returns the category for a known id', () {
-      expect(categoryFor('rrsp').id, 'rrsp');
     });
 
     test('categoryFor falls back to custom for unknown id', () {
-      expect(categoryFor('does-not-exist').id, 'custom');
+      expect(categoryFor('nope').id, 'custom');
     });
 
-    test('every map key equals its category id', () {
-      for (final entry in kReminderCategories.entries) {
-        expect(entry.value.id, entry.key,
-            reason: 'id mismatch for key ${entry.key}');
-      }
-    });
-
-    test('custom category exists (categoryFor fallback invariant)', () {
-      expect(kReminderCategories.containsKey('custom'), isTrue);
+    test('finance has a label and a non-zero tint', () {
+      final fin = kReminderCategories['finance']!;
+      expect(fin.label, 'Finance');
+      expect(fin.color.toARGB32(), isNot(0));
     });
   });
 }
