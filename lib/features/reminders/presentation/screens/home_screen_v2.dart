@@ -43,7 +43,14 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
     return CustomScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 60, 20, 130),
+          // Bottom padding clears the floating dock + its fade (which are
+          // lifted by the system-nav inset) so the footer isn't cropped.
+          padding: EdgeInsets.fromLTRB(
+            20,
+            60,
+            20,
+            150 + MediaQuery.of(context).viewPadding.bottom,
+          ),
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               [
