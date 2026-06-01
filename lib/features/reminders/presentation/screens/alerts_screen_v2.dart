@@ -7,6 +7,7 @@ import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
 import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 import 'package:maple_alerts/features/reminders/presentation/alert_presentation.dart';
+import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 
 /// Aurora Alerts screen — calm notification experience.
@@ -22,6 +23,7 @@ class AlertsScreenV2 extends ConsumerWidget {
     final colors = Theme.of(context).extension<MapleColors>()!;
     final sem = Theme.of(context).extension<MapleSemantics>()!;
     final alertsAsync = ref.watch(alertsProvider);
+    final hidden = ref.watch(hiddenRemindersProvider);
 
     return alertsAsync.when(
       loading: () => Center(
@@ -34,13 +36,15 @@ class AlertsScreenV2 extends ConsumerWidget {
         final now = DateTime.now();
         final todayDate = DateTime(now.year, now.month, now.day);
 
-        // Map upcoming reminders (today+future), sort by progress desc, take 6
+        // Map upcoming reminders (today+future), exclude hidden/done/snoozed,
+        // sort by progress desc, take 6
         final items = alerts
             .where((a) {
               final d = DateTime(a.deadline.year, a.deadline.month, a.deadline.day);
               return !d.isBefore(todayDate);
             })
             .map((a) => AlertPresentation.map(a, now))
+            .where((v) => !(hidden[v.id]?.isAfter(now) ?? false))
             .toList()
           ..sort((a, b) => b.progress.compareTo(a.progress));
 

@@ -12,6 +12,7 @@ import 'package:maple_alerts/features/reminders/presentation/widgets/reminder_ca
 import 'package:maple_alerts/features/reminders/presentation/widgets/seasonal_rail.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
+import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 
 /// The scrollable Home screen content.
 ///
@@ -33,6 +34,7 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
     final alertsAsync = ref.watch(alertsProvider);
     final tweaks = ref.watch(tweaksProvider);
 
+    final hidden = ref.watch(hiddenRemindersProvider);
     final now = DateTime.now();
     final greeting = _greeting(now.hour);
     final dateLabel = DateFormat('EEEE, MMM d').format(now);
@@ -107,6 +109,7 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                                 a.deadline.month, a.deadline.day)
                             .isBefore(today))
                         .map((a) => AlertPresentation.map(a, now))
+                        .where((v) => !(hidden[v.id]?.isAfter(now) ?? false))
                         .toList();
 
                     final filtered = _activeCategory == 'All'
@@ -149,6 +152,9 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         ..._buildSections(
                           filtered,
                           colors: colors,
+                          notifier: ref.read(
+                            hiddenRemindersProvider.notifier,
+                          ),
                         ),
 
                         // Seasonal rail
@@ -192,6 +198,7 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
   List<Widget> _buildSections(
     List<ReminderView> views, {
     required MapleColors colors,
+    required HiddenRemindersNotifier notifier,
   }) {
     const sections = ['Today', 'This Week', 'Upcoming'];
     final widgets = <Widget>[];
@@ -212,8 +219,8 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
         widgets.add(
           ReminderCard(
             item: item,
-            onDone: () {},
-            onSnooze: () {},
+            onDone: () => notifier.markDone(item.id),
+            onSnooze: () => notifier.snooze(item.id),
           ),
         );
         widgets.add(const SizedBox(height: 10));

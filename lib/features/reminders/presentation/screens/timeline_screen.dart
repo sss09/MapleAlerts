@@ -6,6 +6,7 @@ import 'package:maple_alerts/core/design/tokens/maple_semantics.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 import 'package:maple_alerts/features/reminders/presentation/alert_presentation.dart';
+import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 
 /// Aurora Timeline screen — vertical time rail showing upcoming reminders
@@ -18,6 +19,7 @@ class TimelineScreen extends ConsumerWidget {
     final colors = Theme.of(context).extension<MapleColors>()!;
     final sem = Theme.of(context).extension<MapleSemantics>()!;
     final alertsAsync = ref.watch(alertsProvider);
+    final hidden = ref.watch(hiddenRemindersProvider);
 
     return alertsAsync.when(
       loading: () => Center(
@@ -30,13 +32,14 @@ class TimelineScreen extends ConsumerWidget {
         final now = DateTime.now();
         final todayDate = DateTime(now.year, now.month, now.day);
 
-        // Keep today + future only, map → ReminderView, sort by progress desc
+        // Keep today + future only, exclude hidden/done/snoozed, map → ReminderView, sort by progress desc
         final items = alerts
             .where((a) {
               final d = DateTime(a.deadline.year, a.deadline.month, a.deadline.day);
               return !d.isBefore(todayDate);
             })
             .map((a) => AlertPresentation.map(a, now))
+            .where((v) => !(hidden[v.id]?.isAfter(now) ?? false))
             .toList()
           ..sort((a, b) => b.progress.compareTo(a.progress));
 
