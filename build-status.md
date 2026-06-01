@@ -99,6 +99,11 @@ lib/
 - [x] User reviewed + agreed with recommendations
 - [x] Docs + spec + build-status + settings hook committed (`72afd85`)
 - [x] Flutter 3.44.0 on persistent user PATH; `flutter doctor` run — **web dev ready now**
+- [x] Wrote implementation Plan 1 — Reminders Domain Core (8 TDD tasks) → `docs/superpowers/plans/`
+- [x] Executed Plan 1 Tasks 1–5 via subagent-driven dev (ReminderSource, Recurrence, ReminderSchedule, NotificationConfig, ReminderCategory) — all tests green; each passed spec + code-quality review
+- [x] Fixed web boot crash: `NotificationService` guarded with `kIsWeb` (dart:io Platform crashed web build → blank screen, incl. GitHub Pages)
+- [x] **Merged everything to `main` and pushed to GitHub** (fast-forward; live web build now boots)
+- [x] App runs on web (Chrome, localhost:8088) — routes to onboarding screen
 
 ### Environment notes
 - Web (Chrome/Edge): ✅ ready — primary dev/run target for now
@@ -107,9 +112,10 @@ lib/
 - Flutter SDK location: `C:\src\flutter`
 
 ### Next up
-- [ ] Implementation plan (writing-plans skill) from the architecture build sequence
-- [ ] Re-architecture implementation (feature-first + repository + unified Reminder)
-- [ ] Run app on web to baseline current UX before refactor
+- [ ] Finish Plan 1 — Tasks 6–8 (Reminder entity, ReminderRepository interface + fake, barrel export) — Task 6 was interrupted
+- [ ] Plan 2 — data layer (DTO, AppDatabase, v1→v2 migration, LocalReminderRepository) + web SQLite (sqflite_common_ffi_web)
+- [ ] Plan 3 — wire new architecture into presentation (providers/screens) so the unified Reminder model is actually used by the UI
+- [ ] Consider guarding other dart:io/native usages for web (sqflite alerts load currently errors on web but degrades gracefully)
 
 ---
 
@@ -130,4 +136,10 @@ lib/
 - Established this build-status doc + hook-backed session memory rule (SessionStart hook in `.claude/settings.json`).
 - Received full product thesis (monetization, onboarding, notifications, MVP, moat, marketing, full alert taxonomy). Categorized into a 7-file product doc suite + architecture spec.
 - Made + documented key recommendations: add Tax-filing alert to MVP (→8); reshape free/paid to gate personalization not public info; **no ads at launch**; content-as-data for the moat.
+
+### 2026-06-01 — Session 2
+- Wrote Plan 1 (Reminders Domain Core) and executed Tasks 1–5 via subagent-driven development (fresh implementer + spec review + code-quality review per task). Reviewers caught real issues each round (graceful enum fallback, interval>1 guard via assert, fromJson default-leadTimes, registry key==id invariant) — all fixed.
+- Per user request: merged the whole feature branch into `main` (fast-forward, 23 commits) and pushed to GitHub.
+- Per user request: ran the app on web. Hit a blank screen — root-caused to `dart:io` `Platform.isAndroid` in NotificationService crashing the web build (also broke the GitHub Pages site). Guarded with `kIsWeb`; app now boots and routes to onboarding. Pushed fix to main.
+- **Next session:** finish Plan 1 Tasks 6–8, then Plan 2 (data layer + migration), then Plan 3 (wire into UI).
 - **Next session:** Flutter PATH + `flutter doctor`; user review of docs; then writing-plans → implementation.
