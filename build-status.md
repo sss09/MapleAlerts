@@ -134,10 +134,17 @@ lib/
 - [x] **Notifications** scheduled on add (`addCustom`) + built-ins at launch (Android; web-guarded). Full device verification = Day 5.
 - [x] **Aurora paywall** — restyled (last red screen gone) + wired to `subscriptionProvider` (purchase/restore, graceful when RevenueCat key is placeholder)
 
-### Next up (shipment Days 5–7)
-- [ ] Day 5: test on physical Android phone (notifications fire, add/done/snooze persist, nav); perf/contrast pass; notifications toggle in Settings
-- [ ] Day 6: app icon (dark maple), screenshots, store listing copy, Android release signing, signed AAB; web build
+### Day 5 — DONE (on-device tested on Galaxy S25 FE, pushed to main)
+- [x] Ran on real device (fixed Android build: core library desugaring for flutter_local_notifications)
+- [x] Verified on-device: add → categorize → **date picker** → persist (SQLite) → display; Done/Snooze
+- [x] On-device fixes: bottom dock lifted above system-nav inset (+ bottom fade); legend off by default; add-sheet keyboard overflow fixed; **date picker** (was hardcoded +30d); **collapse recurring CCB/BoC to next-only** (was flooding the list); removed dead Voice/Scan/Email buttons; hero pluralization (0/1/many)
+- [x] Notifications toggle in You → Appearance
+- Known/minor (test-data only, removable via swipe-Done): duplicate custom reminder + legacy items showing "In 30 days" (added before the date picker). Edit-reminder = post-launch.
+
+### Next up (shipment Days 6–7)
+- [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
+- [ ] Optional polish: swipe-to-delete + edit for reminders (currently swipe = Done/hide)
 - [ ] Day 4: wire add/edit/delete + notifications (Android); premium gating + paywall; empty/loading/error states
 - [ ] Day 5: physical Android device testing + bug fixes + perf/contrast pass
 - [ ] Day 6: app icon, screenshots, store listing, Android release signing, signed AAB; web build
