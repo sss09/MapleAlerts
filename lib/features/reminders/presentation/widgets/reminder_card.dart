@@ -4,7 +4,9 @@ import 'package:maple_alerts/core/design/tokens/maple_semantics.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/progress_ring.dart';
 import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
+import 'package:maple_alerts/features/reminders/presentation/affiliate_links.dart';
 import 'package:maple_alerts/features/reminders/presentation/reminder_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// A tap-to-expand, swipe-to-act card for a single [ReminderView].
 ///
@@ -212,7 +214,7 @@ class _ReminderCardState extends State<ReminderCard> {
 
 // ── Expanded detail section ───────────────────────────────────────────────────
 
-class _ExpandedDetail extends StatelessWidget {
+class _ExpandedDetail extends StatefulWidget {
   const _ExpandedDetail({
     required this.item,
     required this.status,
@@ -228,7 +230,20 @@ class _ExpandedDetail extends StatelessWidget {
   final VoidCallback? onSnooze;
 
   @override
+  State<_ExpandedDetail> createState() => _ExpandedDetailState();
+}
+
+class _ExpandedDetailState extends State<_ExpandedDetail> {
+  Future<void> _launchAffiliate(String url) async {
+    try {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (_) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final affiliateLink = affiliateForCategory(widget.item.categoryId);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,17 +253,17 @@ class _ExpandedDetail extends StatelessWidget {
         Divider(
           height: 1,
           thickness: 1,
-          color: colors.line,
+          color: widget.colors.line,
         ),
         const SizedBox(height: 12),
         // Status badge pill
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: status.soft,
+            color: widget.status.soft,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: status.color.withValues(alpha: 0.20),
+              color: widget.status.color.withValues(alpha: 0.20),
             ),
           ),
           child: Row(
@@ -258,17 +273,17 @@ class _ExpandedDetail extends StatelessWidget {
                 width: 6,
                 height: 6,
                 decoration: BoxDecoration(
-                  color: status.color,
+                  color: widget.status.color,
                   shape: BoxShape.circle,
                 ),
               ),
               const SizedBox(width: 6),
               Text(
-                status.label,
+                widget.status.label,
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w600,
-                  color: status.color,
+                  color: widget.status.color,
                 ),
               ),
             ],
@@ -277,11 +292,11 @@ class _ExpandedDetail extends StatelessWidget {
         const SizedBox(height: 10),
         // Description
         Text(
-          item.description,
+          widget.item.description,
           style: TextStyle(
             fontSize: 13.5,
             height: 1.5,
-            color: colors.text.withValues(alpha: 0.78),
+            color: widget.colors.text.withValues(alpha: 0.78),
           ),
         ),
         const SizedBox(height: 14),
@@ -291,20 +306,69 @@ class _ExpandedDetail extends StatelessWidget {
             // Mark done — solid status color background
             _ActionPill(
               label: 'Mark done',
-              background: status.color,
+              background: widget.status.color,
               textColor: const Color(0xFF0A1520),
-              onTap: onDone,
+              onTap: widget.onDone,
             ),
             const SizedBox(width: 8),
             // Snooze — subtle background
             _ActionPill(
               label: 'Snooze',
-              background: colors.surface2.withValues(alpha: 0.70),
-              textColor: colors.text,
-              onTap: onSnooze,
+              background: widget.colors.surface2.withValues(alpha: 0.70),
+              textColor: widget.colors.text,
+              onTap: widget.onSnooze,
             ),
           ],
         ),
+        // ── Affiliate CTA (only for categories with a partner) ───────────
+        if (affiliateLink != null) ...[
+          const SizedBox(height: 10),
+          // "Sponsored" transparency tag
+          Text(
+            'PARTNER',
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.8,
+              color: widget.colors.faint,
+            ),
+          ),
+          const SizedBox(height: 5),
+          // Full-width subtle CTA button
+          GestureDetector(
+            onTap: () => _launchAffiliate(affiliateLink.url),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              decoration: BoxDecoration(
+                color: widget.colors.surface2.withValues(alpha: 0.50),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: widget.colors.accent.withValues(alpha: 0.30),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      affiliateLink.label,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: widget.colors.accent,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: widget.colors.accent.withValues(alpha: 0.70),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
