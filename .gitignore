@@ -1,3 +1,6 @@
+# Claude Code — personal/local settings (keep project settings.json tracked)
+.claude/settings.local.json
+
 # Miscellaneous
 *.class
 *.log

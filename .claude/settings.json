@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat build-status.md 2>/dev/null; echo; echo \"[REMINDER: Update build-status.md before this session ends — refresh Build Progress and append a new Session History entry dated today.]\"",
+            "statusMessage": "Loading build-status.md"
+          }
+        ]
+      }
+    ]
+  }
+}
