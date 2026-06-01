@@ -23,5 +23,23 @@ void main() {
       expect(back.leadTimes, const [Duration(days: 30), Duration(days: 1)]);
       expect(back.timeOfDay, const TimeOfDay(hour: 8, minute: 30));
     });
+
+    test('copyWith overrides only specified fields', () {
+      const c = NotificationConfig();
+      final c2 = c.copyWith(enabled: false);
+      expect(c2.enabled, isFalse);
+      expect(c2.leadTimes, c.leadTimes);
+      expect(c2.timeOfDay, c.timeOfDay);
+    });
+
+    test('fromJson with absent leadTimeMinutes falls back to default', () {
+      final back = NotificationConfig.fromJson({'enabled': true});
+      expect(back.leadTimes, const [Duration(days: 7), Duration(days: 1)]);
+    });
+
+    test('fromJson respects an explicitly empty leadTimeMinutes list', () {
+      final back = NotificationConfig.fromJson({'leadTimeMinutes': []});
+      expect(back.leadTimes, isEmpty);
+    });
   });
 }

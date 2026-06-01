@@ -34,9 +34,11 @@ class NotificationConfig {
   factory NotificationConfig.fromJson(Map<String, dynamic> json) =>
       NotificationConfig(
         enabled: json['enabled'] as bool? ?? true,
-        leadTimes: ((json['leadTimeMinutes'] as List?) ?? const [])
-            .map((m) => Duration(minutes: m as int))
-            .toList(),
+        // Absent key → constructor default; present (even empty) → respected.
+        leadTimes: (json['leadTimeMinutes'] as List?)
+                ?.map((m) => Duration(minutes: m as int))
+                .toList() ??
+            const [Duration(days: 7), Duration(days: 1)],
         timeOfDay: TimeOfDay(
           hour: json['hour'] as int? ?? 9,
           minute: json['minute'] as int? ?? 0,
