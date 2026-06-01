@@ -129,8 +129,15 @@ lib/
 - [x] **Onboarding** restyled in Aurora (4 pages, aurora bg, accent CTAs, $4.99 copy) + fixed post-onboarding nav `/home`→`/` (was a latent blank-screen bug from the Day-1 route move)
 - [x] **Affiliate CTA** in reminder detail — category-aware (finance→EQ Bank, home→Ratehub) with a transparent "Partner" tag; opens via url_launcher
 
-### Next up (shipment Days 4–7)
-- [ ] Day 4: functionality wiring — add/edit/delete on Android, notification scheduling, premium gating + paywall hookup, empty/loading/error states
+### Day 4 — DONE (pushed to main, 102/102 tests)
+- [x] **Done / Snooze** actions — persisted hide map (`hiddenRemindersProvider`, shared_prefs); filtered across Home/Timeline/Alerts; Done cancels its notification
+- [x] **Notifications** scheduled on add (`addCustom`) + built-ins at launch (Android; web-guarded). Full device verification = Day 5.
+- [x] **Aurora paywall** — restyled (last red screen gone) + wired to `subscriptionProvider` (purchase/restore, graceful when RevenueCat key is placeholder)
+
+### Next up (shipment Days 5–7)
+- [ ] Day 5: test on physical Android phone (notifications fire, add/done/snooze persist, nav); perf/contrast pass; notifications toggle in Settings
+- [ ] Day 6: app icon (dark maple), screenshots, store listing copy, Android release signing, signed AAB; web build
+- [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
 - [ ] Day 4: wire add/edit/delete + notifications (Android); premium gating + paywall; empty/loading/error states
 - [ ] Day 5: physical Android device testing + bug fixes + perf/contrast pass
 - [ ] Day 6: app icon, screenshots, store listing, Android release signing, signed AAB; web build
@@ -170,4 +177,5 @@ lib/
 - **Next session (Day 3):** restyle **onboarding** (still old red — first impression for new users); reminder detail screen w/ affiliate CTA; then Day 4 functionality wiring, Day 5 device test, Day 6 release prep, Day 7 submit.
 - Note: headless Playwright browser is flaky at painting the Flutter web canvas (GPU/DWDS) — verify visually in the `flutter run -d chrome` window; functional coverage is via the widget/unit tests.
 - **Day 3 done:** restyled onboarding in Aurora + fixed the `/home`→`/` nav bug; added category-aware affiliate CTA (finance/home) to the reminder detail. 98/98 tests; pushed to main. All user-facing screens are now Aurora.
-- **Next session (Day 4):** wire functionality — add/edit/delete + notifications (Android), premium gating/paywall, empty/loading/error states; then Day 5 device test, Day 6 release prep, Day 7 Play submit + web live.
+- **Day 4 done:** wired Done/Snooze (persisted hide map) + notification scheduling (add + launch, Android) + restyled the paywall in Aurora and wired purchase/restore. The last red screen is gone — entire app is Aurora. 102/102 tests; pushed to main.
+- **Next session (Day 5):** verify on the physical Android phone (notifications fire, actions persist), add a notifications toggle in Settings, perf/contrast pass; then Day 6 release prep, Day 7 Play submit + web live.
