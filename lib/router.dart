@@ -2,19 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'providers/settings_provider.dart';
 import 'screens/onboarding/onboarding_screen.dart';
-import 'screens/main_screen.dart';
-import 'screens/home/home_screen.dart';
-import 'screens/alerts/alerts_screen.dart';
 import 'screens/alerts/add_gic_screen.dart';
 import 'screens/alerts/add_mortgage_screen.dart';
-import 'screens/tracker/tracker_screen.dart';
-import 'screens/settings/settings_screen.dart';
 import 'screens/paywall/paywall_screen.dart';
+import 'features/reminders/presentation/screens/maple_home_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final settings = ref.watch(settingsProvider);
   return GoRouter(
-    initialLocation: settings.onboardingDone ? '/home' : '/onboarding',
+    initialLocation: settings.onboardingDone ? '/' : '/onboarding',
     routes: [
       GoRoute(
         path: '/onboarding',
@@ -24,36 +20,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/paywall',
         builder: (context, state) => const PaywallScreen(),
       ),
-      ShellRoute(
-        builder: (context, state, child) => MainScreen(child: child),
-        routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => const HomeScreen(),
-          ),
-          GoRoute(
-            path: '/alerts',
-            builder: (context, state) => const AlertsScreen(),
-            routes: [
-              GoRoute(
-                path: 'add-gic',
-                builder: (context, state) => const AddGicScreen(),
-              ),
-              GoRoute(
-                path: 'add-mortgage',
-                builder: (context, state) => const AddMortgageScreen(),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/tracker',
-            builder: (context, state) => const TrackerScreen(),
-          ),
-          GoRoute(
-            path: '/settings',
-            builder: (context, state) => const SettingsScreen(),
-          ),
-        ],
+      // Aurora shell — owns its own tab state; sub-routes below are kept
+      // for deep-linking from other parts of the app (add alert, etc.).
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const MapleHomeShell(),
+      ),
+      GoRoute(
+        path: '/alerts/add-gic',
+        builder: (context, state) => const AddGicScreen(),
+      ),
+      GoRoute(
+        path: '/alerts/add-mortgage',
+        builder: (context, state) => const AddMortgageScreen(),
       ),
     ],
   );
