@@ -8,6 +8,7 @@ import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 import 'package:maple_alerts/features/reminders/presentation/alert_presentation.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
+import 'package:maple_alerts/features/reminders/presentation/reminder_collation.dart';
 
 /// Aurora Timeline screen — vertical time rail showing upcoming reminders
 /// sorted nearest-first, ported from TimelineScreen in sheets.jsx.
@@ -32,8 +33,10 @@ class TimelineScreen extends ConsumerWidget {
         final now = DateTime.now();
         final todayDate = DateTime(now.year, now.month, now.day);
 
+        final collapsed = collapseRecurringSeries(alerts, now);
+
         // Keep today + future only, exclude hidden/done/snoozed, map → ReminderView, sort by progress desc
-        final items = alerts
+        final items = collapsed
             .where((a) {
               final d = DateTime(a.deadline.year, a.deadline.month, a.deadline.day);
               return !d.isBefore(todayDate);

@@ -13,6 +13,7 @@ import 'package:maple_alerts/features/reminders/presentation/widgets/seasonal_ra
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
+import 'package:maple_alerts/features/reminders/presentation/reminder_collation.dart';
 
 /// The scrollable Home screen content.
 ///
@@ -104,7 +105,8 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                     // Only show reminders due today or in the future — built-in
                     // Canadian dates from earlier this year are in the past.
                     final today = DateTime(now.year, now.month, now.day);
-                    final views = alerts
+                    final collapsed = collapseRecurringSeries(alerts, now);
+                    final views = collapsed
                         .where((a) => !DateTime(a.deadline.year,
                                 a.deadline.month, a.deadline.day)
                             .isBefore(today))

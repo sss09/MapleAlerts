@@ -9,6 +9,7 @@ import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 import 'package:maple_alerts/features/reminders/presentation/alert_presentation.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
+import 'package:maple_alerts/features/reminders/presentation/reminder_collation.dart';
 
 /// Aurora Alerts screen — calm notification experience.
 ///
@@ -36,9 +37,11 @@ class AlertsScreenV2 extends ConsumerWidget {
         final now = DateTime.now();
         final todayDate = DateTime(now.year, now.month, now.day);
 
+        final collapsed = collapseRecurringSeries(alerts, now);
+
         // Map upcoming reminders (today+future), exclude hidden/done/snoozed,
         // sort by progress desc, take 6
-        final items = alerts
+        final items = collapsed
             .where((a) {
               final d = DateTime(a.deadline.year, a.deadline.month, a.deadline.day);
               return !d.isBefore(todayDate);
