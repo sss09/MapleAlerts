@@ -43,7 +43,7 @@ class RecurringSchedule extends ReminderSchedule {
   final DateTime anchor;
   final DateTime? until;
 
-  const RecurringSchedule({
+  RecurringSchedule({
     required this.rule,
     required this.anchor,
     this.until,
