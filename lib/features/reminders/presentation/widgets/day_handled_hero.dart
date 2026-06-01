@@ -95,7 +95,8 @@ class DayHandledHero extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5),
-                // Body copy — "$needs things" is bold
+                // Body copy — the count phrase is bold, with correct grammar
+                // for 0 / 1 / many.
                 Text.rich(
                   TextSpan(
                     style: TextStyle(
@@ -106,13 +107,24 @@ class DayHandledHero extends StatelessWidget {
                     ),
                     children: [
                       TextSpan(
-                        text: '$needs things',
+                        text: needs == 0
+                            ? 'Nothing'
+                            : needs == 1
+                                ? '1 thing'
+                                : '$needs things',
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
-                      const TextSpan(text: ' need you this week. '),
                       TextSpan(
-                        text:
-                            'The other $handled are quietly taken care of.',
+                        text: needs <= 1
+                            ? ' needs you this week.'
+                            : ' need you this week.',
+                      ),
+                      TextSpan(
+                        text: handled <= 0
+                            ? ''
+                            : handled == 1
+                                ? ' The other 1 is quietly taken care of.'
+                                : ' The other $handled are quietly taken care of.',
                       ),
                     ],
                   ),
