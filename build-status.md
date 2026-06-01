@@ -96,14 +96,20 @@ lib/
 - [x] Product doc suite created (vision, MVP, catalog, monetization, onboarding, notifications, roadmap)
 - [x] Architecture design spec written (sections 1–4)
 
-### In progress
-- [ ] User review of docs + architecture spec
-- [ ] Flutter PATH setup + `flutter doctor` verification
+- [x] User reviewed + agreed with recommendations
+- [x] Docs + spec + build-status + settings hook committed (`72afd85`)
+- [x] Flutter 3.44.0 on persistent user PATH; `flutter doctor` run — **web dev ready now**
+
+### Environment notes
+- Web (Chrome/Edge): ✅ ready — primary dev/run target for now
+- Windows desktop: needs VS "Desktop development with C++" workload (not installed)
+- Android: needs Android Studio + SDK (not installed)
+- Flutter SDK location: `C:\src\flutter`
 
 ### Next up
-- [ ] Commit docs + build-status + settings hook
 - [ ] Implementation plan (writing-plans skill) from the architecture build sequence
 - [ ] Re-architecture implementation (feature-first + repository + unified Reminder)
+- [ ] Run app on web to baseline current UX before refactor
 
 ---
 
