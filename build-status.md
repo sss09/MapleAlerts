@@ -10,7 +10,8 @@
 
 **North-star goal:** best-in-class UX and a seamless experience.
 
-**Vision:** a **deadline & reminder hub** — broaden across reminder categories (taxes, benefits, bills, subscriptions, renewals). May grow into a wider finance ecosystem later, but reminders are the core.
+**⚑ Vision (REFRAMED 2026-06-01):** MapleAlerts is a **Canadian money co-pilot** and the **foundation of a chain** of Canadian apps — not just a reminder app. Differentiators (all free/deterministic, no AI): **penalty guardrails** (prevent TFSA/RRSP over-contribution penalties), **"best move right now"** (cross-account rule-based recommendations), **found money** (TFSA/RRSP room, CCB, carbon rebate). Reminders are one pillar. AI is premium-only. Powered by a reusable **Canadian Data Engine** (on-device rules+math + one hosted JSON data pack + free BoC Valet API). Full strategy: `docs/superpowers/specs/2026-06-01-money-copilot-strategy-design.md`.
+*(Prior framing — still the base: a deadline & reminder hub across categories.)*
 
 ---
 
@@ -186,3 +187,6 @@ lib/
 - **Day 3 done:** restyled onboarding in Aurora + fixed the `/home`→`/` nav bug; added category-aware affiliate CTA (finance/home) to the reminder detail. 98/98 tests; pushed to main. All user-facing screens are now Aurora.
 - **Day 4 done:** wired Done/Snooze (persisted hide map) + notification scheduling (add + launch, Android) + restyled the paywall in Aurora and wired purchase/restore. The last red screen is gone — entire app is Aurora. 102/102 tests; pushed to main.
 - **Next session (Day 5):** verify on the physical Android phone (notifications fire, actions persist), add a notifications toggle in Settings, perf/contrast pass; then Day 6 release prep, Day 7 Play submit + web live.
+- **Day 5 done:** on-device tested on Galaxy S25 FE (fixed Android build = core library desugaring). Fixed from real-device QA: dock above system-nav inset + bottom fade, legend off by default, add-sheet keyboard overflow, **date picker** (was hardcoded +30d), **collapsed recurring CCB/BoC**, removed dead Voice/Scan/Email buttons, hero pluralization, **date-aware seasonal rail** (no past events), footer not cropped, notifications toggle. ~110 tests; pushed to main (`6305a4f`).
+- **Strategic reframe (2026-06-01):** user pushed back that a plain reminder app is too generic. Reframed to a **Canadian money co-pilot** (foundation of an app chain). Locked: hero = **found money**; differentiators = **penalty guardrails** + **"best move right now"** (NOT calculators — math is invisible); free = all deterministic, AI = premium-only; data = on-device rules+math + hosted JSON pack + free BoC Valet API. Wrote `docs/superpowers/specs/2026-06-01-money-copilot-strategy-design.md`; updated vision/README/monetization. **Standing rule:** keep project docs in sync with decisions.
+- **Next:** plan + build the **Canadian Data Engine** + first **found-money + TFSA over-contribution guardrail** cards (writing-plans). Also pending: "be smart with notifications" (schedule only next occurrence per series, not every CCB/BoC) + finish the 1-week ship (Day 6 release prep, Day 7 submit).

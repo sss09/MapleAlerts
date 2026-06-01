@@ -1,9 +1,12 @@
 # 00 — Vision & Strategy
 
-## The one-line pitch
-> *The only app that tells Canadians about every financial deadline, benefit, and rate change — before it costs them money.*
+> **⚑ 2026-06-01 REFRAME — read first.** MapleAlerts is repositioned from "alert app" to a **Canadian money co-pilot** and the **foundation of a chain** of Canadian apps. Reminders are now *one pillar*. The differentiators are **penalty guardrails**, **"best move right now"** recommendations, and **found money** — all deterministic/free (no AI; AI is premium-only). See the full strategy: [`2026-06-01-money-copilot-strategy-design.md`](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md). The sections below remain the deadline-hub base this builds on.
 
-This is **not** a budgeting app, a bank app, or an investment app. It is an **alert app**: a financial calendar + smart notification system for Canadians. No AI required, no complex backend, no bank integrations. Just smart, timely, action-oriented notifications.
+## The one-line pitch
+> *Your Canadian money, handled — deadlines, the money you're owed, and what to actually do, in plain language.*
+> (original: *the only app that tells Canadians about every financial deadline, benefit, and rate change before it costs them money.*)
+
+This is **not** a budgeting/bank/investment app. It's a **money co-pilot**: it knows the Canadian rules and does the work for you — surfacing deadlines, found money, penalty guardrails, and plain-English guidance. Free value is fully deterministic (no AI/backend cost); AI is reserved for premium.
 
 ## The problem
 There is no single app that alerts Canadians about the financial dates and windows that quietly cost them money when missed:

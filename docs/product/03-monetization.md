@@ -1,5 +1,7 @@
 # 03 — Monetization
 
+> **⚑ 2026-06-01 reframe — free/premium line.** Per the [money co-pilot strategy](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md): **Free = everything deterministic** (deadlines, found money, penalty guardrails, "best move", live rates, explainers, province personalization) — generous by design to drive trust + word-of-mouth + SEO, at ~$0 marginal cost. **Premium ($4.99/mo) = AI-justified only** (scan/explain CRA letters, personalized "RRSP vs TFSA for me", draft letters, family/multi-account, export, no ads). **Never gate protective features** (guardrails, deadlines). Affiliate remains a strong day-1 stream.
+
 The app can earn through several streams simultaneously. **Recommended sequencing matters** — lead with the streams that protect trust and compound the moat.
 
 ## Recommended priority order

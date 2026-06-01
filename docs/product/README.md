@@ -1,8 +1,9 @@
 # MapleAlerts — Product Documentation
 
-> **One-line pitch:** *The only app that tells Canadians about every financial deadline, benefit, and rate change — before it costs them money.*
+> **One-line pitch:** *Your Canadian money, handled — deadlines, the money you're owed, and what to actually do, in plain language.*
 >
-> Not a budgeting app. Not a bank app. Not an investment app. **An alert app.** Simple. Focused. Useful.
+> A **Canadian money co-pilot** and the **foundation of a chain** of Canadian apps. Differentiators: **penalty guardrails**, **"best move right now"**, **found money** — all free/deterministic; AI is premium-only.
+> **⚑ Current strategy:** [`docs/superpowers/specs/2026-06-01-money-copilot-strategy-design.md`](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md) (reframes the "alert app" docs below).
 
 ## Index
 
