@@ -49,7 +49,7 @@ class TweaksNotifier extends StateNotifier<MapleTweaks> {
     _load();
   }
 
-  static const String _k = 'maple_tweaks_v1';
+  static const String _k = 'maple_tweaks_v2';
 
   Future<void> _load() async {
     try {
