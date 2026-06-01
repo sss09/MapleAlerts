@@ -125,8 +125,12 @@ lib/
 - [x] **Add-reminder sheet** — natural-language entry + smart categorization; `AlertsNotifier.addCustom` persists (degrades on web)
 - [x] Wired Timeline/Alerts/You tabs + FAB into MapleHomeShell — all 4 tabs are Aurora now
 
-### Next up (shipment Days 3–7)
-- [ ] Day 3: restyle **onboarding** (Aurora) — first thing a new user sees (still old red); reminder **detail** screen (affiliate CTA); polish
+### Day 3 — DONE (pushed to main, 98/98 tests)
+- [x] **Onboarding** restyled in Aurora (4 pages, aurora bg, accent CTAs, $4.99 copy) + fixed post-onboarding nav `/home`→`/` (was a latent blank-screen bug from the Day-1 route move)
+- [x] **Affiliate CTA** in reminder detail — category-aware (finance→EQ Bank, home→Ratehub) with a transparent "Partner" tag; opens via url_launcher
+
+### Next up (shipment Days 4–7)
+- [ ] Day 4: functionality wiring — add/edit/delete on Android, notification scheduling, premium gating + paywall hookup, empty/loading/error states
 - [ ] Day 4: wire add/edit/delete + notifications (Android); premium gating + paywall; empty/loading/error states
 - [ ] Day 5: physical Android device testing + bug fixes + perf/contrast pass
 - [ ] Day 6: app icon, screenshots, store listing, Android release signing, signed AAB; web build
@@ -164,4 +168,6 @@ lib/
 - Built the Aurora design system + Home in one session via subagent-driven dev (11 build tasks A1–A10, B1–B6). Reused all of Plan 1's domain core; only adapted the category registry. Verified on web; pushed to main (`d981e16`).
 - **Day 2 done:** built the remaining Aurora screens (Timeline, Alerts, You/Profile + appearance tweaks) and the natural-language add-reminder sheet; wired all four tabs + FAB into the shell. 94/94 tests; pushed to main (`38933c8`). All tabs are Aurora now.
 - **Next session (Day 3):** restyle **onboarding** (still old red — first impression for new users); reminder detail screen w/ affiliate CTA; then Day 4 functionality wiring, Day 5 device test, Day 6 release prep, Day 7 submit.
-- Note: headless Playwright browser is flaky at painting the Flutter web canvas (GPU/DWDS) — verify visually in the `flutter run -d chrome` window; functional coverage is via the 94 widget/unit tests.
+- Note: headless Playwright browser is flaky at painting the Flutter web canvas (GPU/DWDS) — verify visually in the `flutter run -d chrome` window; functional coverage is via the widget/unit tests.
+- **Day 3 done:** restyled onboarding in Aurora + fixed the `/home`→`/` nav bug; added category-aware affiliate CTA (finance/home) to the reminder detail. 98/98 tests; pushed to main. All user-facing screens are now Aurora.
+- **Next session (Day 4):** wire functionality — add/edit/delete + notifications (Android), premium gating/paywall, empty/loading/error states; then Day 5 device test, Day 6 release prep, Day 7 Play submit + web live.
