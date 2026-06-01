@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -22,6 +23,10 @@ class NotificationService {
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('America/Toronto'));
+
+    // Local notifications are not supported on web; skip native setup so the
+    // app still boots. (dart:io Platform is also unavailable on web.)
+    if (kIsWeb) return;
 
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -55,6 +60,7 @@ class NotificationService {
   }
 
   Future<bool> requestPermissions() async {
+    if (kIsWeb) return true;
     if (Platform.isIOS) {
       final result = await _plugin
           .resolvePlatformSpecificImplementation<
@@ -94,6 +100,7 @@ class NotificationService {
   }
 
   Future<void> scheduleAlert(Alert alert) async {
+    if (kIsWeb) return;
     final reminderDate = alert.deadline.subtract(const Duration(days: 7));
     final now = DateTime.now();
 
@@ -122,14 +129,17 @@ class NotificationService {
   }
 
   Future<void> cancelAlert(String alertId) async {
+    if (kIsWeb) return;
     await _plugin.cancel(alertId.hashCode);
   }
 
   Future<void> cancelAll() async {
+    if (kIsWeb) return;
     await _plugin.cancelAll();
   }
 
   Future<void> scheduleAnnualReminders() async {
+    if (kIsWeb) return;
     final year = DateTime.now().year;
 
     // RRSP reminder — Feb 20 at 9am Toronto
