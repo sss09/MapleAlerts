@@ -64,5 +64,18 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
     await updateAlert(alert.copyWith(reminderEnabled: !alert.reminderEnabled));
   }
 
+  /// Inserts a custom [alert] (no notification scheduling) then reloads.
+  ///
+  /// Used by [showAddReminderSheet] to persist a free-text reminder without
+  /// triggering the notification path (which requires platform setup).
+  Future<void> addCustom(Alert alert) async {
+    try {
+      await DatabaseService.instance.insertAlert(alert);
+    } catch (_) {
+      // Gracefully degrade on web / test environments where SQLite is absent.
+    }
+    await _load();
+  }
+
   Future<void> refresh() => _load();
 }
