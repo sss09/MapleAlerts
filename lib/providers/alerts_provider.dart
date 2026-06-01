@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/alert.dart';
 import '../services/database_service.dart';
 import '../services/canadian_dates_service.dart';
 import '../services/notification_service.dart';
+import '../utils/constants.dart';
 
 final alertsProvider =
     StateNotifierProvider<AlertsNotifier, AsyncValue<List<Alert>>>((ref) {
@@ -76,10 +78,20 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
     } catch (_) {
       // Gracefully degrade on web / test environments where SQLite is absent.
     }
+    // Only schedule a notification when the user has not disabled them.
+    bool notifyOn = true;
     try {
-      await NotificationService.instance.scheduleAlert(alert);
+      final prefs = await SharedPreferences.getInstance();
+      notifyOn = prefs.getBool(kNotificationsEnabledKey) ?? true;
     } catch (_) {
-      // kIsWeb-guarded inside scheduleAlert; also no-op when plugin absent.
+      // Web / test environments may not have SharedPreferences; default to on.
+    }
+    if (notifyOn) {
+      try {
+        await NotificationService.instance.scheduleAlert(alert);
+      } catch (_) {
+        // kIsWeb-guarded inside scheduleAlert; also no-op when plugin absent.
+      }
     }
     await _load();
   }

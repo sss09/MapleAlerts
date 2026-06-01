@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'utils/constants.dart';
 import 'services/notification_service.dart';
@@ -11,9 +12,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   await NotificationService.instance.initialize();
-  // Fire-and-forget: schedule annual Canadian reminders (RRSP, CCB, BoC).
+  // Fire-and-forget: schedule annual Canadian reminders (RRSP, CCB, BoC)
+  // only when the user has not disabled notifications.
   // kIsWeb-guarded inside scheduleAnnualReminders; never blocks startup.
-  NotificationService.instance.scheduleAnnualReminders();
+  SharedPreferences.getInstance().then((p) {
+    if (p.getBool(kNotificationsEnabledKey) ?? true) {
+      NotificationService.instance.scheduleAnnualReminders();
+    }
+  }).catchError((_) {});
   await RevenueCatService.instance.initialize();
   runApp(const ProviderScope(child: MapleAlertsApp()));
 }

@@ -8,7 +8,9 @@ import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
+import 'package:maple_alerts/providers/settings_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
+import 'package:maple_alerts/services/notification_service.dart';
 
 /// Aurora "You" / Profile screen — Day 2 task D2-3.
 ///
@@ -25,6 +27,8 @@ class ProfileScreenV2 extends ConsumerWidget {
     final tweaks = ref.watch(tweaksProvider);
     final subscriptionAsync = ref.watch(subscriptionProvider);
     final isPremium = subscriptionAsync.valueOrNull ?? false;
+    final notificationsEnabled =
+        ref.watch(settingsProvider).notificationsEnabled;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 64, 20, 130),
@@ -96,6 +100,40 @@ class ProfileScreenV2 extends ConsumerWidget {
                         .set(tweaks.copyWith(motion: v)),
                   ),
                 ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 28),
+
+          // ── 4. Notifications section ─────────────────────────────────────
+          const MapleSectionHeader(label: 'Notifications'),
+          const SizedBox(height: 12),
+
+          MapleSurface(
+            level: MapleSurfaceLevel.minimal,
+            radius: 18,
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+            child: Material(
+              type: MaterialType.transparency,
+              child: _TweakToggle(
+                label: 'Reminder notifications',
+                value: notificationsEnabled,
+                colors: colors,
+                onChanged: (v) async {
+                  await ref
+                      .read(settingsProvider.notifier)
+                      .setNotificationsEnabled(v);
+                  if (!v) {
+                    try {
+                      await NotificationService.instance.cancelAll();
+                    } catch (_) {}
+                  } else {
+                    try {
+                      await NotificationService.instance
+                          .scheduleAnnualReminders();
+                    } catch (_) {}
+                  }
+                },
               ),
             ),
           ),
