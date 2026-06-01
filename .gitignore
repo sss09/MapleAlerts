@@ -46,3 +46,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# scratch extract of design zip (canonical copy lives in docs/design/)
+_ux_design_tmp/
