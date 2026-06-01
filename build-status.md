@@ -111,11 +111,21 @@ lib/
 - Android: needs Android Studio + SDK (not installed)
 - Flutter SDK location: `C:\src\flutter`
 
-### Next up
-- [ ] Finish Plan 1 — Tasks 6–8 (Reminder entity, ReminderRepository interface + fake, barrel export) — Task 6 was interrupted
-- [ ] Plan 2 — data layer (DTO, AppDatabase, v1→v2 migration, LocalReminderRepository) + web SQLite (sqflite_common_ffi_web)
-- [ ] Plan 3 — wire new architecture into presentation (providers/screens) so the unified Reminder model is actually used by the UI
-- [ ] Consider guarding other dart:io/native usages for web (sqflite alerts load currently errors on web but degrades gracefully)
+### Aurora redesign — SHIPPED to main (Day 1 of 1-week shipment)
+- [x] Phase A — design system: tokens (MapleColors/Semantics/Aurora ThemeExtensions), theme + `designThemeProvider` + persisted tweaks, core widgets (StrokeIcon, ProgressRing, MapleSurface, AuroraBackground, MapleScaffold). All tested.
+- [x] Phase B — Home: `Alert→ReminderView` mapper (TDD), DayHandledHero, CategoryFilterChips/StatusLegend, ReminderCard (swipe+expand), SeasonalRail, `HomeScreenV2` + `MapleHomeShell` wired to existing `alertsProvider`. Old red theme/screens retired (not routed).
+- [x] Category registry adapted to 8 life-domains (in place; finance built-ins map to Finance/Family).
+- [x] Verified on web (Chrome) — Aurora Home renders: hero, chips, sections, cards, glass tab bar + FAB. Full suite green (~83 tests). Pushed to main (`d981e16`).
+- 8 life-domain categories live; launch content = Canadian financial reminders mapped in.
+
+### Next up (shipment Days 2–7)
+- [ ] Day 3: restyle onboarding (Aurora), Add-reminder sheet, Reminder detail (affiliate CTA), Settings/"You" (tweaks: aurora switch, calm mode, motion); Timeline + Alerts tabs (currently placeholders)
+- [ ] Day 4: wire add/edit/delete + notifications (Android); premium gating + paywall; empty/loading/error states
+- [ ] Day 5: physical Android device testing + bug fixes + perf/contrast pass
+- [ ] Day 6: app icon, screenshots, store listing, Android release signing, signed AAB; web build
+- [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
+- [ ] **User action (critical path):** create Google Play Developer account ($25) — start now
+- Post-launch: finish Plan 1 Tasks 6–8 + Plan 2 (data layer/migration) + wire UI to the unified Reminder repository; iOS (needs Mac); web SQLite persistence
 
 ---
 
@@ -141,5 +151,8 @@ lib/
 - Wrote Plan 1 (Reminders Domain Core) and executed Tasks 1–5 via subagent-driven development (fresh implementer + spec review + code-quality review per task). Reviewers caught real issues each round (graceful enum fallback, interval>1 guard via assert, fromJson default-leadTimes, registry key==id invariant) — all fixed.
 - Per user request: merged the whole feature branch into `main` (fast-forward, 23 commits) and pushed to GitHub.
 - Per user request: ran the app on web. Hit a blank screen — root-caused to `dart:io` `Platform.isAndroid` in NotificationService crashing the web build (also broke the GitHub Pages site). Guarded with `kIsWeb`; app now boots and routes to onboarding. Pushed fix to main.
-- **Next session:** finish Plan 1 Tasks 6–8, then Plan 2 (data layer + migration), then Plan 3 (wire into UI).
-- **Next session:** Flutter PATH + `flutter doctor`; user review of docs; then writing-plans → implementation.
+- Installed Android toolchain the lean way (no Android Studio): Microsoft OpenJDK 17 + SDK command-line tools + platform-tools + android-36 + build-tools; `flutter doctor` Android toolchain green. Physical-phone path (USB debugging) chosen.
+- User provided a finished Aurora design (`UX-design-1.zip`, Claude design) — dark aurora theme, "Your day, handled" hero, 8 life-domain categories, 6-status palette, 4 swappable auroras. Wrote design spec + preserved assets (`docs/design/ux-design-1/`).
+- User set a **1-week shipment goal** → wrote shipment plan (reskin existing app in Aurora; ship Web + Android; iOS post-launch — no Mac). Launch target Web+Android; Play account being created ($25).
+- Built the Aurora design system + Home in one session via subagent-driven dev (11 build tasks A1–A10, B1–B6). Reused all of Plan 1's domain core; only adapted the category registry. Verified on web; pushed to main (`d981e16`).
+- **Next session (Day 3):** restyle onboarding/add/detail/settings + Timeline/Alerts tabs; then wire functionality (Day 4), device-test (Day 5), release-prep (Day 6), submit (Day 7).
