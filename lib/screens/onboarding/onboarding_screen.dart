@@ -1,8 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/design/tokens/maple_colors.dart';
+import '../../core/design/widgets/aurora_background.dart';
+import '../../core/design/widgets/stroke_icon.dart';
 import '../../providers/settings_provider.dart';
-import '../../utils/constants.dart';
+
+// ---------------------------------------------------------------------------
+// Data model
+// ---------------------------------------------------------------------------
+
+class _PageData {
+  final String icon;
+  final String title;
+  final String description;
+
+  const _PageData({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+}
+
+const List<_PageData> _kPages = [
+  _PageData(
+    icon: 'sparkle',
+    title: 'Welcome to MapleAlerts',
+    description: 'Never miss a Canadian financial deadline again.',
+  ),
+  _PageData(
+    icon: 'calendar',
+    title: 'Your day, handled',
+    description:
+        'RRSP, TFSA, tax, benefits, renewals — we track the dates so you don\'t have to.',
+  ),
+  _PageData(
+    icon: 'leaf',
+    title: 'Calm, timely nudges',
+    description:
+        'Reminders that tell you what to do — never robotic, never panic.',
+  ),
+  _PageData(
+    icon: 'wallet',
+    title: 'Unlock everything',
+    description:
+        'Personalized trackers, all categories, no ads — \$4.99/mo. Start free.',
+  ),
+];
+
+// ---------------------------------------------------------------------------
+// Screen
+// ---------------------------------------------------------------------------
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,48 +63,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<_OnboardingPage> _pages = const [
-    _OnboardingPage(
-      emoji: '🍁',
-      title: 'Welcome to MapleAlerts',
-      description: 'Never miss a Canadian financial deadline again',
-    ),
-    _OnboardingPage(
-      emoji: '📅',
-      title: 'RRSP Deadlines',
-      description:
-          'Get reminded before the annual RRSP contribution deadline — typically March 1st',
-    ),
-    _OnboardingPage(
-      emoji: '💰',
-      title: 'TFSA Room Tracker',
-      description:
-          'Track your Tax-Free Savings Account contribution room updated every January',
-    ),
-    _OnboardingPage(
-      emoji: '⭐',
-      title: 'Unlock Everything',
-      description:
-          'Bank of Canada rate dates, CCB payments, mortgage renewal reminders — \$2.99/month',
-    ),
-  ];
+  Future<void> _complete() async {
+    await ref.read(settingsProvider.notifier).completeOnboarding();
+    if (mounted) context.go('/');
+  }
 
   void _nextPage() {
-    if (_currentPage < _pages.length - 1) {
+    if (_currentPage < _kPages.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
       );
     } else {
       _complete();
     }
-  }
-
-  void _skip() => _complete();
-
-  Future<void> _complete() async {
-    await ref.read(settingsProvider.notifier).completeOnboarding();
-    if (mounted) context.go('/home');
   }
 
   @override
@@ -67,79 +87,118 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLast = _currentPage == _pages.length - 1;
+    final colors = Theme.of(context).extension<MapleColors>() ??
+        MapleColors.fog;
+    final isLast = _currentPage == _kPages.length - 1;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
+          // ── Aurora atmosphere ─────────────────────────────────────────────
+          const Positioned.fill(child: AuroraBackground(motion: true)),
+
+          // ── Page content ──────────────────────────────────────────────────
           PageView.builder(
             controller: _pageController,
-            itemCount: _pages.length,
+            itemCount: _kPages.length,
             onPageChanged: (i) => setState(() => _currentPage = i),
             itemBuilder: (context, index) =>
-                _OnboardingPageView(page: _pages[index]),
+                _OnboardingPageView(page: _kPages[index], colors: colors),
           ),
+
+          // ── Skip button (top-right) ───────────────────────────────────────
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (!isLast)
-                        TextButton(
-                          onPressed: _skip,
-                          child: const Text(
-                            'Skip',
-                            style: TextStyle(color: Colors.white70),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: AnimatedOpacity(
+                  opacity: isLast ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: IgnorePointer(
+                    ignoring: isLast,
+                    child: TextButton(
+                      onPressed: _complete,
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                          color: colors.muted,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // ── Bottom controls ───────────────────────────────────────────────
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Dot indicators
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(_kPages.length, (i) {
+                        final active = i == _currentPage;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: active ? 22 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: active ? colors.accent : colors.faint,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 20),
+                    // Primary CTA button
+                    SizedBox(
+                      width: double.infinity,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF62D2A8), Color(0xFF3CA07E)],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: _nextPage,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            foregroundColor: const Color(0xFF06231C),
+                            padding: const EdgeInsets.symmetric(vertical: 17),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: Text(
+                            isLast ? 'Get Started' : 'Next',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF06231C),
+                            ),
                           ),
                         ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _pages.length,
-                      (i) => AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: _currentPage == i ? 20 : 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: _currentPage == i
-                              ? Colors.white
-                              : Colors.white38,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _nextPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: kSecondaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        isLast ? 'Get Started' : 'Next',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -149,68 +208,74 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-class _OnboardingPage {
-  final String emoji;
-  final String title;
-  final String description;
-
-  const _OnboardingPage({
-    required this.emoji,
-    required this.title,
-    required this.description,
-  });
-}
+// ---------------------------------------------------------------------------
+// Single page view
+// ---------------------------------------------------------------------------
 
 class _OnboardingPageView extends StatelessWidget {
-  final _OnboardingPage page;
+  final _PageData page;
+  final MapleColors colors;
 
-  const _OnboardingPageView({required this.page});
+  const _OnboardingPageView({required this.page, required this.colors});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [kSecondaryColor, Color(0xFFB71C1C)],
-          stops: [0.0, 1.0],
-        ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(32, 80, 32, 160),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                page.emoji,
-                style: const TextStyle(fontSize: 80),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Icon inside a soft glowing circle
+          Container(
+            width: 112,
+            height: 112,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  colors.accent.withValues(alpha: 0.22),
+                  colors.accent.withValues(alpha: 0.0),
+                ],
               ),
-              const SizedBox(height: 32),
-              Text(
-                page.title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  height: 1.2,
+              boxShadow: [
+                BoxShadow(
+                  color: colors.accent.withValues(alpha: 0.30),
+                  blurRadius: 32,
+                  spreadRadius: 4,
                 ),
+              ],
+            ),
+            child: Center(
+              child: StrokeIcon(
+                name: page.icon,
+                size: 64,
+                color: colors.accent,
+                strokeWidth: 1.4,
               ),
-              const SizedBox(height: 16),
-              Text(
-                page.description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                  height: 1.5,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: 36),
+          Text(
+            page.title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colors.text,
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            page.description,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colors.muted,
+              fontSize: 16,
+              height: 1.5,
+            ),
+          ),
+        ],
       ),
     );
   }
