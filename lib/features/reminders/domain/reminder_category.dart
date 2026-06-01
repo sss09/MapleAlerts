@@ -90,5 +90,6 @@ const Map<String, ReminderCategory> kReminderCategories = {
 };
 
 /// Resolves a category by id, falling back to `custom` for unknown ids.
+/// `custom` is guaranteed to exist in [kReminderCategories] (covered by a test).
 ReminderCategory categoryFor(String id) =>
     kReminderCategories[id] ?? kReminderCategories['custom']!;

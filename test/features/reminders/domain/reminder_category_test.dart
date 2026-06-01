@@ -28,5 +28,16 @@ void main() {
     test('categoryFor falls back to custom for unknown id', () {
       expect(categoryFor('does-not-exist').id, 'custom');
     });
+
+    test('every map key equals its category id', () {
+      for (final entry in kReminderCategories.entries) {
+        expect(entry.value.id, entry.key,
+            reason: 'id mismatch for key ${entry.key}');
+      }
+    });
+
+    test('custom category exists (categoryFor fallback invariant)', () {
+      expect(kReminderCategories.containsKey('custom'), isTrue);
+    });
   });
 }
