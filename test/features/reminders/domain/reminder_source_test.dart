@@ -11,6 +11,7 @@ void main() {
 
     test('fromValue parses known values', () {
       expect(ReminderSourceX.fromValue('system'), ReminderSource.system);
+      expect(ReminderSourceX.fromValue('user'), ReminderSource.user);
       expect(ReminderSourceX.fromValue('derived'), ReminderSource.derived);
     });
 

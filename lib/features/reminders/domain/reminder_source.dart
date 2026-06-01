@@ -6,7 +6,7 @@ extension ReminderSourceX on ReminderSource {
   String get value => name;
 
   /// Parses a persisted value; unknown values default to [ReminderSource.user].
-  static ReminderSource fromValue(String v) =>
-      ReminderSource.values.firstWhere((e) => e.name == v,
+  static ReminderSource fromValue(String raw) =>
+      ReminderSource.values.firstWhere((e) => e.name == raw,
           orElse: () => ReminderSource.user);
 }
