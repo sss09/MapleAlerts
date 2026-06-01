@@ -55,6 +55,11 @@ class MapleScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canvas =
+        Theme.of(context).extension<MapleColors>()?.canvas ??
+            const Color(0xFF070D15);
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
@@ -64,7 +69,28 @@ class MapleScaffold extends StatelessWidget {
           const Positioned.fill(child: AuroraBackground()),
           // 2. Active screen content.
           Positioned.fill(child: body),
-          // 3. Floating glass bottom bar + FAB.
+          // 3. Bottom fade — dissolves scrolling content into the canvas so the
+          //    floating dock reads as floating over a clean gradient, not over
+          //    leaked list content.
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: bottomInset + 96,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [canvas.withValues(alpha: 0.0), canvas],
+                    stops: const [0.0, 0.7],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // 4. Floating glass bottom bar + FAB.
           _BottomDock(
             tabs: tabs,
             currentIndex: currentIndex,
