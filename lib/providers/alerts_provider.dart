@@ -17,7 +17,14 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
   Future<void> _load() async {
     state = await AsyncValue.guard(() async {
       final db = DatabaseService.instance;
-      final saved = await db.getAlerts();
+      // SQLite has no web implementation; degrade gracefully so the built-in
+      // Canadian reminders still load (web demo, or first launch).
+      List<Alert> saved;
+      try {
+        saved = await db.getAlerts();
+      } catch (_) {
+        saved = <Alert>[];
+      }
       final builtIn =
           CanadianDatesService.getBuiltInAlerts(DateTime.now().year);
       final savedIds = saved.map((a) => a.id).toSet();

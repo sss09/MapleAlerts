@@ -99,7 +99,13 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                     ],
                   ),
                   data: (alerts) {
+                    // Only show reminders due today or in the future — built-in
+                    // Canadian dates from earlier this year are in the past.
+                    final today = DateTime(now.year, now.month, now.day);
                     final views = alerts
+                        .where((a) => !DateTime(a.deadline.year,
+                                a.deadline.month, a.deadline.day)
+                            .isBefore(today))
                         .map((a) => AlertPresentation.map(a, now))
                         .toList();
 
