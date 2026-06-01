@@ -13,8 +13,10 @@ class Recurrence {
       };
 
   factory Recurrence.fromJson(Map<String, dynamic> json) => Recurrence(
-        frequency: RecurrenceFrequency.values
-            .firstWhere((e) => e.name == json['frequency']),
+        frequency: RecurrenceFrequency.values.firstWhere(
+          (e) => e.name == json['frequency'],
+          orElse: () => RecurrenceFrequency.annual,
+        ),
         interval: (json['interval'] as int?) ?? 1,
       );
 }

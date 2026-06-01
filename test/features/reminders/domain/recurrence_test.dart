@@ -21,5 +21,10 @@ void main() {
       final back = Recurrence.fromJson({'frequency': 'annual'});
       expect(back.interval, 1);
     });
+
+    test('fromJson falls back to annual for unknown frequency', () {
+      final back = Recurrence.fromJson({'frequency': 'weekly'});
+      expect(back.frequency, RecurrenceFrequency.annual);
+    });
   });
 }
