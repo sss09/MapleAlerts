@@ -118,8 +118,15 @@ lib/
 - [x] Verified on web (Chrome) — Aurora Home renders: hero, chips, sections, cards, glass tab bar + FAB. Full suite green (~83 tests). Pushed to main (`d981e16`).
 - 8 life-domain categories live; launch content = Canadian financial reminders mapped in.
 
-### Next up (shipment Days 2–7)
-- [ ] Day 3: restyle onboarding (Aurora), Add-reminder sheet, Reminder detail (affiliate CTA), Settings/"You" (tweaks: aurora switch, calm mode, motion); Timeline + Alerts tabs (currently placeholders)
+### Day 2 — DONE (pushed to main, 94/94 tests)
+- [x] Aurora **Timeline** screen (vertical timeline on real alerts)
+- [x] Aurora **Alerts** screen ("Calm notifications")
+- [x] Aurora **You/Profile** screen — premium card + **Appearance tweaks** (aurora swatches, calm mode, legend, motion) wired to tweaksProvider
+- [x] **Add-reminder sheet** — natural-language entry + smart categorization; `AlertsNotifier.addCustom` persists (degrades on web)
+- [x] Wired Timeline/Alerts/You tabs + FAB into MapleHomeShell — all 4 tabs are Aurora now
+
+### Next up (shipment Days 3–7)
+- [ ] Day 3: restyle **onboarding** (Aurora) — first thing a new user sees (still old red); reminder **detail** screen (affiliate CTA); polish
 - [ ] Day 4: wire add/edit/delete + notifications (Android); premium gating + paywall; empty/loading/error states
 - [ ] Day 5: physical Android device testing + bug fixes + perf/contrast pass
 - [ ] Day 6: app icon, screenshots, store listing, Android release signing, signed AAB; web build
@@ -155,4 +162,6 @@ lib/
 - User provided a finished Aurora design (`UX-design-1.zip`, Claude design) — dark aurora theme, "Your day, handled" hero, 8 life-domain categories, 6-status palette, 4 swappable auroras. Wrote design spec + preserved assets (`docs/design/ux-design-1/`).
 - User set a **1-week shipment goal** → wrote shipment plan (reskin existing app in Aurora; ship Web + Android; iOS post-launch — no Mac). Launch target Web+Android; Play account being created ($25).
 - Built the Aurora design system + Home in one session via subagent-driven dev (11 build tasks A1–A10, B1–B6). Reused all of Plan 1's domain core; only adapted the category registry. Verified on web; pushed to main (`d981e16`).
-- **Next session (Day 3):** restyle onboarding/add/detail/settings + Timeline/Alerts tabs; then wire functionality (Day 4), device-test (Day 5), release-prep (Day 6), submit (Day 7).
+- **Day 2 done:** built the remaining Aurora screens (Timeline, Alerts, You/Profile + appearance tweaks) and the natural-language add-reminder sheet; wired all four tabs + FAB into the shell. 94/94 tests; pushed to main (`38933c8`). All tabs are Aurora now.
+- **Next session (Day 3):** restyle **onboarding** (still old red — first impression for new users); reminder detail screen w/ affiliate CTA; then Day 4 functionality wiring, Day 5 device test, Day 6 release prep, Day 7 submit.
+- Note: headless Playwright browser is flaky at painting the Flutter web canvas (GPU/DWDS) — verify visually in the `flutter run -d chrome` window; functional coverage is via the 94 widget/unit tests.
