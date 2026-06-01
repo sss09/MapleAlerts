@@ -105,10 +105,15 @@ class _BottomDock extends StatelessWidget {
     final left = tabs.take(2).toList();
     final right = tabs.skip(2).take(2).toList();
 
+    // Lift the dock above the system navigation bar / gesture area so it never
+    // overlaps the OS nav. viewPadding.bottom is the raw inset even with
+    // extendBody / SafeArea consumed.
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+
     return Positioned(
       left: 14,
       right: 14,
-      bottom: 16,
+      bottom: 16 + bottomInset,
       height: 66,
       child: Stack(
         clipBehavior: Clip.none,
