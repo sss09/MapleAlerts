@@ -64,15 +64,22 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
     await updateAlert(alert.copyWith(reminderEnabled: !alert.reminderEnabled));
   }
 
-  /// Inserts a custom [alert] (no notification scheduling) then reloads.
+  /// Inserts a custom [alert], schedules a notification if the deadline is
+  /// still in the future, then reloads.
   ///
-  /// Used by [showAddReminderSheet] to persist a free-text reminder without
-  /// triggering the notification path (which requires platform setup).
+  /// Used by [showAddReminderSheet] to persist a free-text reminder.
+  /// Notification scheduling is wrapped in try/catch so it never blocks the
+  /// insert on web or test environments where the plugin is absent.
   Future<void> addCustom(Alert alert) async {
     try {
       await DatabaseService.instance.insertAlert(alert);
     } catch (_) {
       // Gracefully degrade on web / test environments where SQLite is absent.
+    }
+    try {
+      await NotificationService.instance.scheduleAlert(alert);
+    } catch (_) {
+      // kIsWeb-guarded inside scheduleAlert; also no-op when plugin absent.
     }
     await _load();
   }

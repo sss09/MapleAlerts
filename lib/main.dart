@@ -11,6 +11,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   await NotificationService.instance.initialize();
+  // Fire-and-forget: schedule annual Canadian reminders (RRSP, CCB, BoC).
+  // kIsWeb-guarded inside scheduleAnnualReminders; never blocks startup.
+  NotificationService.instance.scheduleAnnualReminders();
   await RevenueCatService.instance.initialize();
   runApp(const ProviderScope(child: MapleAlertsApp()));
 }
