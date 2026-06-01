@@ -78,6 +78,8 @@ void main() {
     expect(find.text('Renew passport in September'), findsOneWidget);
     // Primary button disabled label
     expect(find.text('Type something to begin'), findsOneWidget);
+    // Date row is always visible
+    expect(find.text('When?'), findsOneWidget);
   });
 
   testWidgets('tapping a suggestion chip fills the text field', (tester) async {

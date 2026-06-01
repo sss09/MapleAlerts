@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
@@ -94,6 +95,7 @@ class AddReminderSheetContent extends StatefulWidget {
 class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
   final TextEditingController _ctrl = TextEditingController();
   String _text = '';
+  DateTime _due = DateTime.now().add(const Duration(days: 7));
 
   @override
   void dispose() {
@@ -120,7 +122,7 @@ class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
       title: trimmed,
       description: '',
       type: AlertType.custom,
-      deadline: DateTime.now().add(const Duration(days: 30)),
+      deadline: DateTime(_due.year, _due.month, _due.day, 9),
     );
 
     await widget.ref.read(alertsProvider.notifier).addCustom(alert);
@@ -158,7 +160,8 @@ class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
           20,
           MediaQuery.of(context).viewInsets.bottom + 30,
         ),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -304,6 +307,51 @@ class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
               ),
             ),
 
+            // ── Date picker row ───────────────────────────────────────────────
+            const SizedBox(height: 14),
+            GestureDetector(
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: _due,
+                  firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                  lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                );
+                if (picked != null) setState(() => _due = picked);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: const Color(0x80111E28),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: colors.line, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    const StrokeIcon(name: 'calendar', size: 18, color: accent),
+                    const SizedBox(width: 10),
+                    Text(
+                      'When?',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: colors.muted,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      DateFormat('MMM d, yyyy').format(_due),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: colors.text,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             // ── Primary action button ─────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.only(top: 16),
@@ -345,6 +393,7 @@ class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
               ),
             ),
           ],
+          ),
         ),
       ),
     );

@@ -20,7 +20,7 @@ class MapleTweaks {
     this.auroraId = 'emerald',
     this.cardStyle = 'minimal',
     this.warmAccents = true,
-    this.legend = true,
+    this.legend = false,
     this.motion = true,
     this.fab = 'dock',
   });
