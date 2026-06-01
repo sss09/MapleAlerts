@@ -86,5 +86,25 @@ void main() {
       expect(r.rule.frequency, RecurrenceFrequency.monthly);
       expect(r.anchor, DateTime(2024, 1, 20));
     });
+
+    test('rejects interval > 1 (not yet anchor-aligned)', () {
+      expect(
+        () => RecurringSchedule(
+          rule: const Recurrence(
+              frequency: RecurrenceFrequency.monthly, interval: 2),
+          anchor: DateTime(2024, 1, 20),
+        ),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+  });
+
+  group('ReminderSchedule.fromJson', () {
+    test('throws on unknown schedule type', () {
+      expect(
+        () => ReminderSchedule.fromJson({'type': 'weekly'}),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
   });
 }

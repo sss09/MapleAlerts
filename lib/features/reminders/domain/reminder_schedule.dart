@@ -47,7 +47,12 @@ class RecurringSchedule extends ReminderSchedule {
     required this.rule,
     required this.anchor,
     this.until,
-  });
+  }) : assert(
+          rule.interval == 1,
+          'RecurringSchedule currently supports only interval == 1. '
+          'Multi-unit intervals are not yet anchor-aligned, so they would '
+          'produce dates relative to the query instead of the anchor epoch.',
+        );
 
   @override
   DateTime? nextOccurrenceAfter(DateTime from) {
@@ -74,6 +79,8 @@ class RecurringSchedule extends ReminderSchedule {
   }
 
   /// Builds a date, clamping [day] to the last valid day of the month.
+  ///
+  /// Note: a Feb-29 anchor clamps to Feb 28 in non-leap years (by design).
   static DateTime _clamp(int year, int month, int day) {
     final lastDay = DateTime(year, month + 1, 0).day; // day 0 = last of prev month
     return DateTime(year, month, day > lastDay ? lastDay : day);
