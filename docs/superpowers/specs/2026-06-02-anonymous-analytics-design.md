@@ -84,9 +84,10 @@ titles or free text, province, kid counts. Topic names and card ids only:
 named `amount`, `income`, `value`, `title`, `birthYear`, `province` (guard
 test asserts against a denylist at every call site via the spy).
 
-`insight_card_viewed` fires once per card id per app session (in-memory
-de-dupe in the service), not per rebuild — widget rebuild noise would swamp
-the signal and burn the free tier.
+`insight_card_viewed` fires once per card id per app session, and
+`best_move_shown` once per kind+target per session (in-memory de-dupe in the
+service) — both are emitted from `build`, and widget rebuild noise would
+otherwise swamp the signal and burn the free tier.
 
 ## Settings UI
 
