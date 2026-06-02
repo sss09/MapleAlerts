@@ -145,18 +145,8 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         DayHandledHero(needs: needs, total: total),
                         const SizedBox(height: 16),
 
-                        // Best move right now — the single top recommendation
-                        const BestMoveCard(),
-
-                        // Found money — TFSA / RRSP / CCB cards
-                        const FoundMoneySection(),
-                        const SizedBox(height: 16),
-
-                        // Live BoC policy rate (hidden until available)
-                        const BocRateCard(),
-                        const SizedBox(height: 8),
-
-                        // Category filter chips
+                        // ── Upcoming alerts first (the proven, time-sensitive
+                        //    core) — chips + legend + Today/This Week/Upcoming ──
                         CategoryFilterChips(
                           active: _activeCategory,
                           onPick: (c) =>
@@ -164,14 +154,12 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         ),
                         const SizedBox(height: 12),
 
-                        // Status legend
                         if (tweaks.legend) ...[
                           const StatusLegend(),
                           const SizedBox(height: 20),
                         ] else
                           const SizedBox(height: 8),
 
-                        // Sections
                         ..._buildSections(
                           filtered,
                           colors: colors,
@@ -179,6 +167,19 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                             hiddenRemindersProvider.notifier,
                           ),
                         ),
+
+                        // ── Money co-pilot layer, below the alerts ──────────
+                        const SizedBox(height: 12),
+
+                        // Best move right now — the single top recommendation
+                        const BestMoveCard(),
+
+                        // Found money — TFSA / RRSP / CCB / OAS / GIC cards
+                        const FoundMoneySection(),
+                        const SizedBox(height: 16),
+
+                        // Live BoC policy rate (hidden until available)
+                        const BocRateCard(),
 
                         // Seasonal rail
                         const SizedBox(height: 24),
