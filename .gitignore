@@ -49,3 +49,14 @@ app.*.map.json
 
 # scratch extract of design zip (canonical copy lives in docs/design/)
 _ux_design_tmp/
+
+# dev/QA screenshots dropped at repo root during device testing
+/*.png
+/*.jpeg
+/*.jpg
+
+# Playwright MCP browser scratch
+.playwright-mcp/
+
+# original design zip (canonical copy lives in docs/design/)
+UX-design-1.zip
