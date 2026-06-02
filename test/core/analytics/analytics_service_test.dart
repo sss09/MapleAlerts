@@ -59,5 +59,10 @@ void main() {
       expect(() => make().track('bad_event', {'amount': '5'}),
           throwsAssertionError);
     });
+
+    test('asserts when a de-duped event omits a required key', () {
+      expect(() => make().track('best_move_shown', {'kind': 'opportunity'}),
+          throwsAssertionError);
+    });
   });
 }

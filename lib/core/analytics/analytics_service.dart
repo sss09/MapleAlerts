@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Where events go in production (Aptabase) or tests (a spy).
 typedef AnalyticsSink = void Function(String event, Map<String, Object> props);
 
@@ -24,7 +22,6 @@ class AnalyticsService {
   /// Property names that must never appear on any event — the spec's
   /// "never sent" denylist. Topic names and card ids only; never numbers,
   /// never identity, never location.
-  @visibleForTesting
   static const Set<String> kDeniedPropKeys = {
     'amount', 'income', 'value', 'title', 'birthyear', 'birth_year',
     'province', 'kids', 'contributed', 'email', 'name',
@@ -37,6 +34,8 @@ class AnalyticsService {
   };
 
   void track(String event, [Map<String, Object> props = const {}]) {
+    // PII guard runs even when disabled — a call site that leaks PII is a bug
+    // regardless of the toggle state, and must be caught in debug builds.
     assert(
       props.keys.every((k) => !kDeniedPropKeys.contains(k.toLowerCase())),
       'Denylisted analytics property on "$event": ${props.keys}',
@@ -44,7 +43,12 @@ class AnalyticsService {
     if (!isEnabled()) return;
     final dedupeBy = _dedupeKeys[event];
     if (dedupeBy != null) {
-      final key = '$event|${dedupeBy.map((k) => props[k]).join('|')}';
+      assert(
+        dedupeBy.every((k) => props.containsKey(k)),
+        'De-dupe event "$event" is missing required prop(s): '
+        '${dedupeBy.where((k) => !props.containsKey(k)).toList()}',
+      );
+      final key = '$event|${dedupeBy.map((k) => props[k] ?? '').join('|')}';
       if (!_seenViews.add(key)) return;
     }
     try {
