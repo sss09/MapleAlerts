@@ -142,7 +142,7 @@ lib/
 - [x] Notifications toggle in You → Appearance
 - Known/minor (test-data only, removable via swipe-Done): duplicate custom reminder + legacy items showing "In 30 days" (added before the date picker). Edit-reminder = post-launch.
 
-### Canadian Data Engine — Slice 1 (TFSA room + guardrail) — DONE (133 tests, on main pending)
+### Canadian Data Engine — Slice 1 (TFSA room + guardrail) — DONE (133 tests, pushed)
 - [x] **Pure-Dart engine module** `lib/engine/canadian_data_engine/` (no Flutter imports, single barrel). One rule = one pure fn returning a typed result carrying its own `sources` + `isEstimate`. `DataPack` override seam (`EmbeddedDataPack` now → hosted JSON later). TFSA limit table 2009–2026 embedded with `packVersion`.
 - [x] **TFSA rule (TDD, 11 tests):** `room = Σ annual limits[max(2009, turned-18) .. asOf] − contributed`; statuses `notYetEligible / overContributed / nearLimit (≤$1k) / healthy`. Over-contribution preserves the true (negative) overage.
 - [x] **Structured `MoneyProfile` store** (one JSON blob, `kMoneyProfileKey`) replacing scattered settings scalars; read-through migration of legacy `tfsa_birth_year`. Tested (4). `moneyProfileProvider` StateNotifier.
@@ -151,7 +151,7 @@ lib/
 - [x] Spec: `docs/superpowers/specs/2026-06-01-canadian-data-engine-tfsa-slice-design.md`. Analyzer clean for all new code.
 - Deferred (later slices): hosted JSON pack loader, BoC Valet client, RRSP/CCB/carbon/OAS rules, "best move" ranking engine, province/life-stage onboarding. **Verify-on-device + commit/push still pending.**
 
-### Canadian Data Engine — Slice 2 (RRSP) — DONE (154 tests, on main pending)
+### Canadian Data Engine — Slice 2 (RRSP) — DONE (154 tests, pushed)
 - [x] **First province- + income-aware rule.** `MoneyProfile` grew by 4 fields (province, annualIncome, rrspDeductionLimit, rrspContributed) — no new prefs keys, store unchanged (validates the structured-profile claim).
 - [x] **Tax engine:** federal + all 13 provincial/territorial 2025 marginal-bracket tables (`tax_brackets.dart`, version-stamped); `tax_rule.marginalTaxRate(year, province, income)` = federal + provincial (reusable by future rules). **Verified vs source: federal, ON, BC, AB, QC; VERIFY flag on the rest.** QC excludes the federal abatement (slightly conservative).
 - [x] **RRSP rule (TDD):** room = NOA deduction limit − contributed; **estimated tax savings = room × combined marginal rate** (the headline differentiator); next ~Mar-1 deadline + days-to; statuses `noLongerEligible (age>71, reuses birthYear) / overContributed (past $2,000 buffer) / withinBuffer / nearLimit / healthy`. 8 tests.
@@ -160,7 +160,7 @@ lib/
 - [x] Spec: `docs/superpowers/specs/2026-06-01-rrsp-slice-design.md`. Analyzer clean for new code.
 - Pending (with TFSA): on-device visual check; push. Bracket-table verification pass for the 9 unverified jurisdictions before launch.
 
-### Canadian Data Engine — Slice 3 (CCB) — DONE (163 tests, on main pending)
+### Canadian Data Engine — Slice 3 (CCB) — DONE (163 tests, pushed)
 - [x] **Pivot from Carbon Rebate (accuracy catch):** verified the **Canada Carbon Rebate for individuals is CLOSED** (final payment Apr 15 2025; fuel charge ended Apr 1 2025). A carbon found-money card would have shown money that no longer exists — built CCB instead. (Moat = accuracy; this is why we verify.)
 - [x] **CCB rule (TDD, 5):** base by age band (under-6 $7,997 / 6–17 $6,748, Jul 2025–Jun 2026), two-step phase-out by child count (Step-1 7/13.5/19/23%, Step-2 3.2/5.7/8/9.5% + computed base over thresholds $37,487 / $81,222); monthly + annual; statuses `notEligible / zeroByIncome / receiving`. Verified vs CRA calc sheet.
 - [x] **Profile +3 fields** (kidsUnder6, kids6to17, familyNetIncome=AFNI, distinct from RRSP individual income) — still no store changes.
@@ -168,13 +168,13 @@ lib/
 - [x] Spec: `docs/superpowers/specs/2026-06-01-ccb-slice-design.md`. Analyzer clean for new code.
 - **⚠️ UX debt (documented):** new users now see **3 setup prompts** (TFSA/RRSP/CCB), and CCB is irrelevant to non-parents. Next: an onboarding **"which apply to you"** gate and/or consolidating setup prompts into one — its own slice.
 
-### Canadian Data Engine — Slice 4 (Topics gate) — DONE (170 tests, on main pending)
+### Canadian Data Engine — Slice 4 (Topics gate) — DONE (170 tests, pushed)
 - [x] **Resolves the 3-setup-prompt clutter** flagged in Slice 3. `MoneyTopic` enum (tfsa/rrsp/ccb) + `enabledTopicsProvider` (prefs-backed; defaults TFSA+RRSP on, CCB opt-in). Pure `partitionFoundMoney` helper + codec (TDD, 7).
 - [x] **`FoundMoneySection` refactor:** filters insights to enabled topics; **collapses all unconfigured-but-enabled topics into ONE "Set up your money profile" card** (tappable row per topic) instead of N prompts; real cards for configured topics; **"Track more"** → `MoneyTopicsSheet` (enable/disable topics anytime). Empty-state prompt when nothing tracked.
 - [x] **Onboarding step:** new final "What should we track?" page with topic toggles writing `enabledTopicsProvider` (the strategy's "onboarding profile decides which cards appear").
 - [x] Spec/UX debt from Slice 3 **closed.** Widget tests updated for the persistent section. Analyzer clean.
 
-### Canadian Data Engine — Slice 5 (Best move right now) — DONE (179 tests, on main pending)
+### Canadian Data Engine — Slice 5 (Best move right now) — DONE (179 tests, pushed)
 - [x] **The flagship differentiator.** Engine-level `bestMove(profile, asOf, dataPack) → BestMove?` reasons across the typed TFSA + RRSP results (NOT the lossy MoneyInsights — so **MoneyInsight stayed unchanged a 5th time**).
 - [x] **Deterministic priority cascade:** RRSP over-contribution → TFSA over-contribution → RRSP deadline ≤60d (w/ room+savings) → opportunity tie-break (RRSP if marginal rate ≥30%, else TFSA, else RRSP). CCB excluded (automatic, not an action). Returns null when nothing actionable. TDD, 7 tests covering ordering + RRSP-vs-TFSA threshold + null cases.
 - [x] `BestMove` carries `targetInsightId` ('rrsp_room'/'tfsa_room') so the app maps to a setup action via `MoneyTopic` — engine stays free of presentation enums.
@@ -182,7 +182,7 @@ lib/
 - [x] Spec: `docs/superpowers/specs/2026-06-01-best-move-slice-design.md`. Analyzer clean.
 - Deferred: GIC-maturity / cross-product moves (need GIC wired into the engine/profile); multi-move lists. `kRrspPreferredMarginalRate` (0.30) is a documented, tunable heuristic.
 
-### Canadian Data Engine — Slice 6 (BoC live rate) — DONE (188 tests, on main pending)
+### Canadian Data Engine — Slice 6 (BoC live rate) — DONE (188 tests, pushed)
 - [x] **First network dependency** + first card needing no user input. Added `http` package.
 - [x] `BocRateService` fetches the **BoC policy rate** from the free **Valet API** (series V39079, no auth), with an **injectable fetcher** (tests never hit the network), **prefs caching + offline fallback** ("as of" date), graceful degradation on failure. `parseValetPolicyRate` + cache/fallback TDD'd (6 tests).
 - [x] **Typical prime = policy + 2.20%**, clearly labelled "typical" (banks set prime; not claimed live). A later enhancement can fetch a verified prime series.
@@ -190,13 +190,13 @@ lib/
 - [x] Spec: `docs/superpowers/specs/2026-06-01-boc-rate-slice-design.md`. Analyzer clean.
 - **⚠️ Web caveat:** Valet may not send CORS headers → live fetch can fail on Flutter **web** (works on Android/native); the offline-fallback path covers it (card hidden until first successful fetch). Verify on-device.
 
-### Canadian Data Engine — Slice 7 (OAS clawback) — DONE (199 tests, on main pending)
+### Canadian Data Engine — Slice 7 (OAS clawback) — DONE (199 tests, pushed)
 - [x] Completes the strategy's named found-money/guardrail set. **Reuses existing profile fields** (birthYear + annualIncome) — zero new MoneyProfile fields.
 - [x] `oas_rule` (TDD, 6): age-65 gate, 15% recovery tax on net income over $93,454 (2025), capped at max OAS by age band (65–74 / 75+). Statuses `notYetEligible / safe / approaching / clawback`. Verified vs Service Canada.
 - [x] `oasInsights` mapper (TDD, 5) → reuses the generic `InsightCard` (no new card type); `oasInsightsProvider` into `moneyInsightsProvider` (now TFSA+RRSP+CCB+OAS). `MoneyTopic.oas` (opt-in) + `OasSetupSheet`. **MoneyInsight unchanged a 6th time.**
 - [x] Spec-less (template-following, captured here). Analyzer clean.
 
-### Canadian Data Engine — Slice 8 (GIC → best move) — DONE (213 tests, on main pending)
+### Canadian Data Engine — Slice 8 (GIC → best move) — DONE (213 tests, pushed)
 - [x] Realizes the strategy's **flagship cross-product move**: a maturing GIC + available room → "shelter it". On-device validation of slices 1–7 done first (S25, all rendered; BoC live fetch returned 2.25% as of May 29 2026).
 - [x] **Single tracked GIC via profile** (gicAmount + gicMaturityDate; ISO in JSON) — not the orphaned V1 multi-GIC table. `gic_rule` (TDD, 5): status none/later/maturingSoon(≤60d)/matured + daysToMaturity.
 - [x] **best_move new rung** (after over-contribution guardrails, before RRSP deadline): maturing GIC ≤60d + TFSA room (else RRSP) → `BestMoveKind.deadline`, value = min(GIC, room), target tfsa/rrsp. TDD (5): TFSA-first, room cap, RRSP fallback, guardrail-still-outranks, no-room→skip.
@@ -207,20 +207,26 @@ lib/
 ### Home reorder — alerts-first (committed)
 - [x] Per user feedback ("show upcoming alerts to start off"): `HomeScreenV2` now leads with the hero → **category chips + Today/This Week/Upcoming reminders** → then best move → found money → rates → seasonal rail. The proven reminder feature is front-and-centre; the money co-pilot is the rich layer below.
 
-### Canadian Data Engine — Slice 9 (FHSA) — DONE (223 tests, on main pending)
+### Canadian Data Engine — Slice 9 (FHSA) — DONE (223 tests, pushed)
 - [x] First Home Savings Account found-money card (high relevance for the likely first-home-buyer audience). Reuses the tax engine for the deduction-savings line.
 - [x] `fhsa_rule` (TDD, 6): single-number v1 — lifetime room = $40,000 − contributed; annual contributable = min($8,000, room); deduction tax savings = contributable × marginal rate; statuses healthy/nearLimit/overContributed. Verified vs CRA ($8k/yr, $40k lifetime, 1%/mo penalty).
 - [x] `fhsaInsights` mapper (TDD, 4) → generic InsightCard; `fhsaInsightsProvider` into combined list (TFSA+RRSP+**FHSA**+CCB+OAS+GIC). `MoneyTopic.fhsa` (opt-in) + `FhsaSetupSheet`. **MoneyInsight unchanged an 8th time.** Profile +1 field (fhsaContributed).
 - [x] Analyzer clean. Deferred: $8k annual carry-forward modelling (single-number lifetime v1), FHSA→best-move integration.
 
-### FHSA → best move — DONE (227 tests, on main pending)
+### FHSA → best move — DONE (227 tests, pushed)
 - [x] Folded FHSA into the cross-account best-move cascade. New rungs: **FHSA over-contribution guardrail** (with the other guardrails), and an **FHSA opportunity that ranks ABOVE the RRSP/TFSA tie-break** — for first-home savers the FHSA is hard to beat (deductible like RRSP + tax-free on withdrawal), and opting into the topic signals the intent. Still ranks below time-bound moves (over-contributions, maturing GIC). TDD (4): FHSA beats RRSP/TFSA opportunity, FHSA over→guardrail, GIC still outranks, over-contribution still outranks.
 - [x] Cascade now: RRSP-over → TFSA-over → FHSA-over → GIC-maturing → RRSP-deadline → **FHSA opportunity** → RRSP-vs-TFSA. 227 tests green, analyzer clean.
 
-### Explainers layer — DONE (248 tests, on main pending)
+### Explainers layer — DONE (248 tests, pushed)
 - [x] The strategy's "know-your-rights / jargon explainers" pillar. **Content-as-data in the engine** (`content/explainers.dart`, pure Dart, liftable): `Explainer` model + ~10 curated, source-cited entries — TFSA, RRSP, FHSA, CCB, OAS, GIC + jargon (marginal rate, contribution room, RRSP-vs-TFSA, AFNI). `explainerForInsightId` links each to its money card. TDD (4): every card topic has an explainer; jargon present; all have title/summary/points/source.
 - [x] **`ExplainerSheet`** (plain-language detail: summary, key points, sources, "not advice" footer), **`LearnSection`** horizontal rail on Home (below Rates), and a **"Learn more" link on each money card** (`InsightCard.onLearnMore`, wired in `FoundMoneySection` via `explainerForInsightId`). Widget tests (2).
 - [x] Accuracy: explainer figures match the embedded data packs, source/year stamped. Analyzer clean.
+
+### Light theme + locale-aware money formatting — DONE (248 tests, pushed)
+- [x] **Light/daylight theme:** `MapleColors.daylight` tokens (light canvas `#F4F7F6`, white surfaces, AA-deep accent `#0E7D52`) + `MapleSemantics.light` (deepened status hues) + `kDesignThemesLight` registry (all 4 auroras). `mapleThemeData` gained a `brightness` param (dark remains default — back-compat tested). Aurora/glass widgets render a light wash when ambient brightness is light.
+- [x] **Theme-mode tweak:** `MapleTweaks.themeMode` ('system'|'light'|'dark', persisted; defaults dark) → `themeModeProvider` + `lightThemeDataProvider`/`darkThemeDataProvider` wired into `MaterialApp.router` (theme/darkTheme/themeMode). Tests (7).
+- [x] **`MapleMoney`** (`lib/core/format/maple_money.dart`): locale-aware CAD formatting — `cad` (en_CA `$1,234.56` / fr_CA `1 234,56 $`), `cadAuto` (drops whole-dollar cents), `cadCompact` (`$1.2K`). App-level counterpart to the engine's dependency-free `formatDollars` (engine stays portable). Tests (9).
+- [x] Also: `android/gradle.properties` Flutter-migrator flags (`builtInKotlin=false`, `newDsl=false`).
 
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
@@ -252,6 +258,12 @@ lib/
 - Established this build-status doc + hook-backed session memory rule (SessionStart hook in `.claude/settings.json`).
 - Received full product thesis (monetization, onboarding, notifications, MVP, moat, marketing, full alert taxonomy). Categorized into a 7-file product doc suite + architecture spec.
 - Made + documented key recommendations: add Tax-filing alert to MVP (→8); reshape free/paid to gate personalization not public info; **no ads at launch**; content-as-data for the moat.
+
+### 2026-06-02 — Session 3
+- Reviewed the uncommitted WIP found at session start (light theme + money formatter — built at the tail of Session 2, not yet documented/committed).
+- Verified the WIP: full suite **248 tests green** (light-theme tests + MapleMoney tests confirmed in the run), `flutter analyze` clean for all new/changed files (14 pre-existing info lints in old V1 screens/tests only).
+- Committed in logical pieces (light theme; MapleMoney CAD formatter; gradle migrator flags; this doc update) and **pushed everything to GitHub** — including the previously unpushed explainers commit (`0de17dd`). origin/main is now fully up to date with all 9 engine slices + best-move cascade + explainers + light theme.
+- Remaining before launch: Day 6 release prep (icon, screenshots, listing, signing, AAB, web build), Day 7 Play upload + web live; verify the 9 unverified provincial tax-bracket tables; Google Play account (user).
 
 ### 2026-06-01 — Session 2
 - Wrote Plan 1 (Reminders Domain Core) and executed Tasks 1–5 via subagent-driven development (fresh implementer + spec review + code-quality review per task). Reviewers caught real issues each round (graceful enum fallback, interval>1 guard via assert, fromJson default-leadTimes, registry key==id invariant) — all fixed.
