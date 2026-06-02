@@ -6,10 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('analyticsEnabledProvider defaults to true', () {
+  test('analyticsEnabledProvider defaults to true', () async {
     SharedPreferences.setMockInitialValues({});
     final container = ProviderContainer();
     addTearDown(container.dispose);
+    // Drain the event queue so _load() completes against empty prefs —
+    // asserts the post-load default, not just the pre-load initial state.
+    await Future<void>.delayed(Duration.zero);
     expect(container.read(analyticsEnabledProvider), isTrue);
   });
 
