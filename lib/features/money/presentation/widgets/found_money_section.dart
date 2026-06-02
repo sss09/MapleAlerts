@@ -17,6 +17,7 @@ import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sh
 import 'package:maple_alerts/features/money/presentation/widgets/oas_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/rrsp_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/tfsa_setup_sheet.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/enabled_topics_provider.dart';
 import 'package:maple_alerts/providers/money_insights_provider.dart';
 
@@ -60,10 +61,15 @@ class FoundMoneySection extends ConsumerWidget {
       children.add(const SizedBox(height: 10));
     }
 
+    void openTopics() {
+      ref.read(analyticsProvider).track('topics_sheet_opened');
+      showMoneyTopicsSheet(context);
+    }
+
     if (view.cards.isEmpty && view.setups.isEmpty) {
-      children.add(_TrackPrompt(colors: colors, onTap: () => showMoneyTopicsSheet(context)));
+      children.add(_TrackPrompt(colors: colors, onTap: openTopics));
     } else {
-      children.add(_TrackMoreButton(colors: colors, onTap: () => showMoneyTopicsSheet(context)));
+      children.add(_TrackMoreButton(colors: colors, onTap: openTopics));
     }
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
