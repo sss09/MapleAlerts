@@ -6,6 +6,7 @@ import '../../core/design/widgets/aurora_background.dart';
 import '../../core/design/widgets/maple_surface.dart';
 import '../../core/design/widgets/stroke_icon.dart';
 import '../../features/money/presentation/money_topic.dart';
+import '../../providers/analytics_provider.dart';
 import '../../providers/enabled_topics_provider.dart';
 import '../../providers/settings_provider.dart';
 
@@ -69,6 +70,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (mounted) context.go('/');
   }
 
+  void _skip() {
+    ref.read(analyticsProvider).track('onboarding_skip', {'at_page': '$_currentPage'});
+    _complete();
+  }
+
+  void _finish() {
+    final topics = ref.read(enabledTopicsProvider).map((t) => t.name).toList()..sort();
+    ref.read(analyticsProvider)
+        .track('onboarding_complete', {'topics_enabled': topics.join(',')});
+    _complete();
+  }
+
   void _nextPage() {
     if (_currentPage < _pageCount - 1) {
       _pageController.nextPage(
@@ -76,7 +89,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      _complete();
+      _finish();
     }
   }
 
@@ -103,7 +116,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           PageView.builder(
             controller: _pageController,
             itemCount: _pageCount,
-            onPageChanged: (i) => setState(() => _currentPage = i),
+            onPageChanged: (i) {
+              ref.read(analyticsProvider).track('onboarding_page_view', {'index': '$i'});
+              setState(() => _currentPage = i);
+            },
             itemBuilder: (context, index) => index < _kPages.length
                 ? _OnboardingPageView(page: _kPages[index], colors: colors)
                 : _TopicsPage(colors: colors),
@@ -122,7 +138,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: IgnorePointer(
                     ignoring: isLast,
                     child: TextButton(
-                      onPressed: _complete,
+                      onPressed: _skip,
                       child: Text(
                         'Skip',
                         style: TextStyle(
