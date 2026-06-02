@@ -46,3 +46,15 @@ const String kMoneyProfileKey = 'money_profile';
 
 /// Which found-money topics the user is tracking (list of MoneyTopic names).
 const String kEnabledTopicsKey = 'enabled_money_topics';
+
+/// Cached Bank of Canada policy rate (JSON: rate + asOf date).
+const String kBocRateKey = 'boc_rate_cache';
+
+/// Bank of Canada Valet API: target for the overnight rate (policy rate).
+const String kBocValetPolicyRateUrl =
+    'https://www.bankofcanada.ca/valet/observations/V39079/json?recent=1';
+const String kBocValetPolicySeries = 'V39079';
+
+/// Standing spread of the chartered-bank prime rate over the BoC policy rate.
+/// Prime is set by banks, not the BoC — shown as a "typical" derived figure.
+const double kBocPrimeSpread = 2.20;
