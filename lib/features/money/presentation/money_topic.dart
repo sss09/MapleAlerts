@@ -37,6 +37,13 @@ enum MoneyTopic {
     blurb: 'Track a maturing GIC and where to shelter the cash',
     icon: 'clock',
     setupAction: InsightAction.editGicProfile,
+  ),
+  fhsa(
+    insightId: 'fhsa',
+    label: 'FHSA (first home)',
+    blurb: 'First-home savings room — deductible and tax-free',
+    icon: 'home',
+    setupAction: InsightAction.editFhsaProfile,
   );
 
   const MoneyTopic({

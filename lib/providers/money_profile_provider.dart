@@ -56,6 +56,11 @@ class MoneyProfileNotifier extends StateNotifier<MoneyProfile> {
         clearRrspContributed: amount == null,
       ));
 
+  Future<void> setFhsaContributed(double? amount) => _update(state.copyWith(
+        fhsaContributed: amount,
+        clearFhsaContributed: amount == null,
+      ));
+
   /// Sets the tracked GIC (used by the GIC setup sheet).
   Future<void> setGic({
     required double amount,

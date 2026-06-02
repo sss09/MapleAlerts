@@ -7,6 +7,7 @@ import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.da
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 import 'package:maple_alerts/features/money/presentation/money_topic.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/fhsa_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/gic_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/oas_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/rrsp_setup_sheet.dart';
@@ -51,6 +52,8 @@ class _BestMoveCardState extends ConsumerState<BestMoveCard> {
         showOasSetupSheet(context);
       case InsightAction.editGicProfile:
         showGicSetupSheet(context);
+      case InsightAction.editFhsaProfile:
+        showFhsaSetupSheet(context);
       case null:
         break;
     }

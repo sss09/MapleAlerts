@@ -1,5 +1,6 @@
 import '../domain/province.dart';
 import 'ccb_amounts.dart';
+import 'fhsa_limits.dart';
 import 'oas_amounts.dart';
 import 'rrsp_limits.dart';
 import 'tax_brackets.dart';
@@ -41,6 +42,12 @@ abstract class DataPack {
 
   /// OAS recovery-tax (clawback) parameters for [year].
   OasParams oasParams(int year);
+
+  /// FHSA annual participation limit (dollars).
+  double get fhsaAnnualLimit;
+
+  /// FHSA lifetime contribution limit (dollars).
+  double get fhsaLifetimeLimit;
 }
 
 /// The default pack: numbers compiled into the app from [kTfsaAnnualLimits].
@@ -79,4 +86,10 @@ class EmbeddedDataPack implements DataPack {
 
   @override
   OasParams oasParams(int year) => kOasParams2025;
+
+  @override
+  double get fhsaAnnualLimit => kFhsaAnnualLimit;
+
+  @override
+  double get fhsaLifetimeLimit => kFhsaLifetimeLimit;
 }

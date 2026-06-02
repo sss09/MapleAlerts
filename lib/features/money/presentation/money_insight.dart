@@ -14,6 +14,7 @@ enum InsightAction {
   editCcbProfile,
   editOasProfile,
   editGicProfile,
+  editFhsaProfile,
 }
 
 class InsightCta {
@@ -444,6 +445,86 @@ List<MoneyInsight> gicInsights(
           sources: result.sources,
           isEstimate: false,
           cta: const InsightCta('Update', InsightAction.editGicProfile),
+        ),
+      ];
+  }
+}
+
+/// Projects an [FhsaResult] onto presentation insights. [hasRequiredInput] is
+/// true when the user's total FHSA contributions are set.
+List<MoneyInsight> fhsaInsights(
+  FhsaResult result, {
+  required bool hasRequiredInput,
+}) {
+  const id = 'fhsa';
+
+  if (!hasRequiredInput) {
+    return const [
+      MoneyInsight(
+        id: id,
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Find your FHSA room',
+        subline:
+            'Saving for a first home? Track your FHSA — deductible like an RRSP, '
+            'tax-free like a TFSA.',
+        cta: InsightCta('Set up', InsightAction.editFhsaProfile),
+      ),
+    ];
+  }
+
+  final savings = result.estimatedTaxSavings > 0
+      ? ' Contributing this year could save ≈${formatDollars(result.estimatedTaxSavings)} in tax.'
+      : '';
+
+  switch (result.status) {
+    case FhsaStatus.overContributed:
+      final overage = -result.room;
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.alert,
+          headline: "You're ${formatDollars(overage)} over your FHSA limit",
+          subline:
+              'Past the \$40,000 lifetime limit — CRA charges 1%/month on the '
+              'excess. Withdraw it to stop the penalty.',
+          amount: overage,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: const InsightCta('Update my number', InsightAction.editFhsaProfile),
+        ),
+      ];
+
+    case FhsaStatus.nearLimit:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.caution,
+          headline: '${formatDollars(result.room)} of FHSA room left',
+          subline: "You're almost at your \$40,000 lifetime limit.",
+          amount: result.room,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: const InsightCta('Update my number', InsightAction.editFhsaProfile),
+        ),
+      ];
+
+    case FhsaStatus.healthy:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.foundMoney,
+          severity: InsightSeverity.positive,
+          headline: 'You have ${formatDollars(result.room)} of FHSA room',
+          subline:
+              'Up to ${formatDollars(result.annualContributable)} this year, '
+              'tax-free for a first home.$savings',
+          amount: result.room,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: const InsightCta('Update my number', InsightAction.editFhsaProfile),
         ),
       ];
   }

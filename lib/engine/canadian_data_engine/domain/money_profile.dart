@@ -41,6 +41,9 @@ class MoneyProfile {
   /// Maturity date of the tracked GIC.
   final DateTime? gicMaturityDate;
 
+  /// Total contributed to the user's FHSA(s) to date, in dollars.
+  final double? fhsaContributed;
+
   const MoneyProfile({
     this.birthYear,
     this.tfsaContributed,
@@ -53,6 +56,7 @@ class MoneyProfile {
     this.familyNetIncome,
     this.gicAmount,
     this.gicMaturityDate,
+    this.fhsaContributed,
   });
 
   static const empty = MoneyProfile();
@@ -69,6 +73,7 @@ class MoneyProfile {
     double? familyNetIncome,
     double? gicAmount,
     DateTime? gicMaturityDate,
+    double? fhsaContributed,
     bool clearBirthYear = false,
     bool clearTfsaContributed = false,
     bool clearProvince = false,
@@ -80,6 +85,7 @@ class MoneyProfile {
     bool clearFamilyNetIncome = false,
     bool clearGicAmount = false,
     bool clearGicMaturityDate = false,
+    bool clearFhsaContributed = false,
   }) {
     return MoneyProfile(
       birthYear: clearBirthYear ? null : (birthYear ?? this.birthYear),
@@ -103,6 +109,9 @@ class MoneyProfile {
       gicMaturityDate: clearGicMaturityDate
           ? null
           : (gicMaturityDate ?? this.gicMaturityDate),
+      fhsaContributed: clearFhsaContributed
+          ? null
+          : (fhsaContributed ?? this.fhsaContributed),
     );
   }
 
@@ -119,6 +128,7 @@ class MoneyProfile {
         if (gicAmount != null) 'gicAmount': gicAmount,
         if (gicMaturityDate != null)
           'gicMaturityDate': gicMaturityDate!.toIso8601String(),
+        if (fhsaContributed != null) 'fhsaContributed': fhsaContributed,
       };
 
   factory MoneyProfile.fromJson(Map<String, dynamic> json) {
@@ -138,6 +148,7 @@ class MoneyProfile {
       familyNetIncome: asDouble(json['familyNetIncome']),
       gicAmount: asDouble(json['gicAmount']),
       gicMaturityDate: gicDate is String ? DateTime.tryParse(gicDate) : null,
+      fhsaContributed: asDouble(json['fhsaContributed']),
     );
   }
 
@@ -154,7 +165,8 @@ class MoneyProfile {
       other.kids6to17 == kids6to17 &&
       other.familyNetIncome == familyNetIncome &&
       other.gicAmount == gicAmount &&
-      other.gicMaturityDate == gicMaturityDate;
+      other.gicMaturityDate == gicMaturityDate &&
+      other.fhsaContributed == fhsaContributed;
 
   @override
   int get hashCode => Object.hashAll([
@@ -169,5 +181,6 @@ class MoneyProfile {
         familyNetIncome,
         gicAmount,
         gicMaturityDate,
+        fhsaContributed,
       ]);
 }

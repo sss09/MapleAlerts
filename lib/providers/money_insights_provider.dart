@@ -69,12 +69,21 @@ final gicInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return gicInsights(result, hasRequiredInput: hasRequiredInput);
 });
 
+/// FHSA room + deduction-savings insight from the current profile.
+final fhsaInsightsProvider = Provider<List<MoneyInsight>>((ref) {
+  final profile = ref.watch(moneyProfileProvider);
+  final result =
+      fhsaRule(profile: profile, asOf: DateTime.now(), dataPack: const EmbeddedDataPack());
+  return fhsaInsights(result, hasRequiredInput: profile.fhsaContributed != null);
+});
+
 /// The single list of money insights the Home "Found money" surface renders —
-/// TFSA + RRSP + CCB + OAS + GIC. The "best move" card ranks over this domain.
+/// TFSA + RRSP + FHSA + CCB + OAS + GIC. The "best move" card ranks over this.
 final moneyInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return [
     ...ref.watch(tfsaInsightsProvider),
     ...ref.watch(rrspInsightsProvider),
+    ...ref.watch(fhsaInsightsProvider),
     ...ref.watch(ccbInsightsProvider),
     ...ref.watch(oasInsightsProvider),
     ...ref.watch(gicInsightsProvider),
