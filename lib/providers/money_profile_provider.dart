@@ -35,4 +35,38 @@ class MoneyProfileNotifier extends StateNotifier<MoneyProfile> {
         tfsaContributed: amount,
         clearTfsaContributed: amount == null,
       ));
+
+  Future<void> setProvince(Province? province) => _update(state.copyWith(
+        province: province,
+        clearProvince: province == null,
+      ));
+
+  Future<void> setAnnualIncome(double? amount) => _update(state.copyWith(
+        annualIncome: amount,
+        clearAnnualIncome: amount == null,
+      ));
+
+  Future<void> setRrspDeductionLimit(double? amount) => _update(state.copyWith(
+        rrspDeductionLimit: amount,
+        clearRrspDeductionLimit: amount == null,
+      ));
+
+  Future<void> setRrspContributed(double? amount) => _update(state.copyWith(
+        rrspContributed: amount,
+        clearRrspContributed: amount == null,
+      ));
+
+  /// Sets all four RRSP-related inputs at once (used by the RRSP setup sheet).
+  Future<void> setRrspInputs({
+    required Province province,
+    required double annualIncome,
+    required double deductionLimit,
+    required double contributed,
+  }) =>
+      _update(state.copyWith(
+        province: province,
+        annualIncome: annualIncome,
+        rrspDeductionLimit: deductionLimit,
+        rrspContributed: contributed,
+      ));
 }

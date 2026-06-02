@@ -7,11 +7,11 @@ import 'package:maple_alerts/core/design/maple_theme.dart';
 import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/found_money_section.dart';
-import 'package:maple_alerts/providers/tfsa_insight_provider.dart';
+import 'package:maple_alerts/providers/money_insights_provider.dart';
 
 Widget _wrap(List<MoneyInsight> insights) => ProviderScope(
       overrides: [
-        tfsaInsightsProvider.overrideWithValue(insights),
+        moneyInsightsProvider.overrideWithValue(insights),
       ],
       child: MaterialApp(
         theme: mapleThemeData(DesignTheme.fog),
@@ -69,5 +69,29 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('2026 TFSA limit'), findsOneWidget);
     expect(find.textContaining('not financial advice'), findsOneWidget);
+  });
+
+  testWidgets('renders TFSA and RRSP cards together from the combined list',
+      (tester) async {
+    await tester.pumpWidget(_wrap(const [
+      MoneyInsight(
+        id: 'tfsa_room',
+        kind: InsightKind.foundMoney,
+        severity: InsightSeverity.positive,
+        headline: r'You have $14,000 in TFSA room',
+      ),
+      MoneyInsight(
+        id: 'rrsp_room',
+        kind: InsightKind.foundMoney,
+        severity: InsightSeverity.positive,
+        headline: r'You have $30,000 of RRSP room',
+        subline: r'Contributing it could save ≈$8,895 at your ~30% marginal rate.',
+      ),
+    ]));
+    await tester.pump();
+
+    expect(find.text(r'You have $14,000 in TFSA room'), findsOneWidget);
+    expect(find.text(r'You have $30,000 of RRSP room'), findsOneWidget);
+    expect(find.text('FOUND MONEY'), findsNWidgets(2));
   });
 }

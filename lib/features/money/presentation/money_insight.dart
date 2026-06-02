@@ -8,7 +8,7 @@ enum InsightSeverity { positive, info, caution, alert }
 
 /// An action a card CTA can trigger. The widget layer interprets these; the
 /// mapper stays pure (no callbacks/Flutter), so it's trivially testable.
-enum InsightAction { editTfsaProfile }
+enum InsightAction { editTfsaProfile, editRrspProfile }
 
 class InsightCta {
   final String label;
@@ -138,3 +138,132 @@ List<MoneyInsight> tfsaInsights(
       ];
   }
 }
+
+/// RRSP contributions deadline gets urgent within this many days.
+const int _rrspDeadlineWindowDays = 60;
+
+/// Projects an [RrspResult] onto presentation insights. [hasRequiredInput] is
+/// true only when province, income, deduction limit, and contributions are all
+/// set — otherwise a setup prompt is shown.
+List<MoneyInsight> rrspInsights(
+  RrspResult result, {
+  required bool hasRequiredInput,
+}) {
+  const id = 'rrsp_room';
+
+  if (!hasRequiredInput) {
+    return const [
+      MoneyInsight(
+        id: id,
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Estimate your RRSP refund',
+        subline:
+            'Add your province, income, and RRSP deduction limit — we’ll show '
+            'your room and the tax it could save.',
+        cta: InsightCta('Set up', InsightAction.editRrspProfile),
+      ),
+    ];
+  }
+
+  final ratePct = (result.marginalRate * 100).round();
+  final savings = formatDollars(result.estimatedTaxSavings);
+  const editCta = InsightCta('Update my numbers', InsightAction.editRrspProfile);
+
+  switch (result.status) {
+    case RrspStatus.noLongerEligible:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'RRSP converts to a RRIF at 71',
+          subline:
+              'You can no longer contribute to an RRSP — talk to your '
+              'institution about converting to a RRIF.',
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+        ),
+      ];
+
+    case RrspStatus.overContributed:
+      final overage = -result.room;
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.alert,
+          headline: "You're ${formatDollars(overage)} over your RRSP limit",
+          subline:
+              'Past the \$2,000 buffer — CRA charges 1%/month on the excess. '
+              'Consider withdrawing to stop it.',
+          amount: overage,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: editCta,
+        ),
+      ];
+
+    case RrspStatus.withinBuffer:
+      final into = -result.room;
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.caution,
+          headline: '${formatDollars(into)} into your \$2,000 RRSP buffer',
+          subline:
+              "No penalty yet, but you're past your deduction limit — best to "
+              'stop contributing.',
+          amount: into,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: editCta,
+        ),
+      ];
+
+    case RrspStatus.nearLimit:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.caution,
+          headline: '${formatDollars(result.room)} of RRSP room left',
+          subline: "You're almost at your deduction limit.",
+          amount: result.room,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: editCta,
+        ),
+      ];
+
+    case RrspStatus.healthy:
+      final nearDeadline = result.daysToDeadline <= _rrspDeadlineWindowDays;
+      final subline = nearDeadline
+          ? 'RRSP deadline ${_formatDate(result.nextDeadline)} — contributing '
+              'your room could save ≈$savings at ~$ratePct%.'
+          : 'Contributing it could save ≈$savings at your ~$ratePct% '
+              'marginal rate.';
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.foundMoney,
+          severity:
+              nearDeadline ? InsightSeverity.caution : InsightSeverity.positive,
+          headline: 'You have ${formatDollars(result.room)} of RRSP room',
+          subline: subline,
+          amount: result.room,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: editCta,
+        ),
+      ];
+  }
+}
+
+const _monthsAbbr = [
+  '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+String _formatDate(DateTime d) => '${_monthsAbbr[d.month]} ${d.day}, ${d.year}';

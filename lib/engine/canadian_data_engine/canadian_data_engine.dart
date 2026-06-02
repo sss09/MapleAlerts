@@ -6,9 +6,15 @@
 library;
 
 export 'data/data_pack.dart';
+export 'data/rrsp_limits.dart';
+export 'data/tax_brackets.dart';
 export 'data/tfsa_limits.dart';
 export 'domain/figure_source.dart';
 export 'domain/money_profile.dart';
+export 'domain/province.dart';
+export 'domain/rrsp_room.dart';
 export 'domain/tfsa_room.dart';
+export 'rules/rrsp_rule.dart';
+export 'rules/tax_rule.dart';
 export 'rules/tfsa_rule.dart';
 export 'util/money_format.dart';

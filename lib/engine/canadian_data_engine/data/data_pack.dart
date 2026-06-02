@@ -1,3 +1,6 @@
+import '../domain/province.dart';
+import 'rrsp_limits.dart';
+import 'tax_brackets.dart';
 import 'tfsa_limits.dart';
 
 /// Read-only source of the changing Canadian numbers the rules depend on
@@ -18,6 +21,18 @@ abstract class DataPack {
 
   /// The latest year the pack has a TFSA limit for.
   int get tfsaLatestYear;
+
+  /// Federal marginal tax brackets for [year].
+  List<TaxBracket> federalBrackets(int year);
+
+  /// Provincial/territorial marginal tax brackets for [year] and [province].
+  List<TaxBracket> provincialBrackets(int year, Province province);
+
+  /// The RRSP dollar maximum for [year], or null if unknown.
+  int? rrspAnnualMax(int year);
+
+  /// CRA lifetime RRSP over-contribution buffer (dollars).
+  double get rrspOverContributionBuffer;
 }
 
 /// The default pack: numbers compiled into the app from [kTfsaAnnualLimits].
@@ -37,4 +52,17 @@ class EmbeddedDataPack implements DataPack {
   @override
   int get tfsaLatestYear =>
       kTfsaAnnualLimits.keys.reduce((a, b) => a > b ? a : b);
+
+  @override
+  List<TaxBracket> federalBrackets(int year) => kFederalBrackets2025;
+
+  @override
+  List<TaxBracket> provincialBrackets(int year, Province province) =>
+      kProvincialBrackets2025[province] ?? const [];
+
+  @override
+  int? rrspAnnualMax(int year) => kRrspAnnualMax[year];
+
+  @override
+  double get rrspOverContributionBuffer => kRrspOverContributionBuffer;
 }
