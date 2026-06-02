@@ -5,11 +5,13 @@ import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
+import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 import 'package:maple_alerts/features/money/presentation/money_topic.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/fhsa_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/gic_setup_sheet.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/explainer_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/insight_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/oas_setup_sheet.dart';
@@ -38,9 +40,13 @@ class FoundMoneySection extends ConsumerWidget {
     ];
 
     for (final card in view.cards) {
+      final explainer = explainerForInsightId(card.id);
       children.add(InsightCard(
         insight: card,
         onAction: (a) => _handleAction(context, a),
+        onLearnMore: explainer == null
+            ? null
+            : () => showExplainerSheet(context, explainer),
       ));
       children.add(const SizedBox(height: 10));
     }

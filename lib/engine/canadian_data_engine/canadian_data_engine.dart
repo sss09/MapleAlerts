@@ -5,6 +5,7 @@
 /// App code imports ONLY this barrel; never reach into the files directly.
 library;
 
+export 'content/explainers.dart';
 export 'data/ccb_amounts.dart';
 export 'data/data_pack.dart';
 export 'data/fhsa_limits.dart';

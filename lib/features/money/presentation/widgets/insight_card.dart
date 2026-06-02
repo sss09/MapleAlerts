@@ -11,12 +11,20 @@ import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 /// [MoneyInsight] and is drawn by this single card, so Home doesn't accrete
 /// bespoke widgets per feature.
 class InsightCard extends StatefulWidget {
-  const InsightCard({required this.insight, this.onAction, super.key});
+  const InsightCard({
+    required this.insight,
+    this.onAction,
+    this.onLearnMore,
+    super.key,
+  });
 
   final MoneyInsight insight;
 
   /// Invoked when the card's CTA is tapped.
   final void Function(InsightAction action)? onAction;
+
+  /// When non-null, a "Learn more" link is shown that opens the topic explainer.
+  final VoidCallback? onLearnMore;
 
   @override
   State<InsightCard> createState() => _InsightCardState();
@@ -120,6 +128,30 @@ class _InsightCardState extends State<InsightCard> {
             Text(
               insight.subline!,
               style: TextStyle(fontSize: 13, height: 1.45, color: colors.muted),
+            ),
+          ],
+
+          // ── Learn more (opens the topic explainer) ───────────────────────
+          if (widget.onLearnMore != null) ...[
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: widget.onLearnMore,
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Learn more',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                      color: accent,
+                    ),
+                  ),
+                  const SizedBox(width: 3),
+                  Icon(Icons.arrow_forward, size: 13, color: accent),
+                ],
+              ),
             ),
           ],
 

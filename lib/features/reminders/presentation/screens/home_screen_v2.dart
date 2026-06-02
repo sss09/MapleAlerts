@@ -13,6 +13,7 @@ import 'package:maple_alerts/features/reminders/presentation/widgets/seasonal_ra
 import 'package:maple_alerts/features/money/presentation/widgets/found_money_section.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/best_move_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/boc_rate_card.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/learn_section.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
@@ -180,6 +181,10 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
 
                         // Live BoC policy rate (hidden until available)
                         const BocRateCard(),
+
+                        // Learn the rules — plain-language explainers
+                        const SizedBox(height: 20),
+                        const LearnSection(),
 
                         // Seasonal rail
                         const SizedBox(height: 24),
