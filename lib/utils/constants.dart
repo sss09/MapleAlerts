@@ -58,3 +58,6 @@ const String kBocValetPolicySeries = 'V39079';
 /// Standing spread of the chartered-bank prime rate over the BoC policy rate.
 /// Prime is set by banks, not the BoC — shown as a "typical" derived figure.
 const double kBocPrimeSpread = 2.20;
+
+/// Prefs key: anonymous analytics opt-out (bool, default true = sharing on).
+const String kAnalyticsEnabledKey = 'analytics_enabled_v1';
