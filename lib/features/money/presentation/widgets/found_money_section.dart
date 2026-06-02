@@ -41,13 +41,21 @@ class FoundMoneySection extends ConsumerWidget {
     ];
 
     for (final card in view.cards) {
+      ref.read(analyticsProvider).track('insight_card_viewed', {'id': card.id});
       final explainer = explainerForInsightId(card.id);
       children.add(InsightCard(
         insight: card,
-        onAction: (a) => _handleAction(context, a),
+        onAction: (a) {
+          ref.read(analyticsProvider).track('insight_cta_tapped', {'id': card.id});
+          _handleAction(context, a);
+        },
         onLearnMore: explainer == null
             ? null
-            : () => showExplainerSheet(context, explainer),
+            : () {
+                ref.read(analyticsProvider)
+                    .track('explainer_opened', {'id': card.id});
+                showExplainerSheet(context, explainer);
+              },
       ));
       children.add(const SizedBox(height: 10));
     }
@@ -56,7 +64,10 @@ class FoundMoneySection extends ConsumerWidget {
       children.add(_GetStartedCard(
         setups: view.setups,
         colors: colors,
-        onTap: (a) => _handleAction(context, a),
+        onTap: (insight, a) {
+          ref.read(analyticsProvider).track('insight_cta_tapped', {'id': insight.id});
+          _handleAction(context, a);
+        },
       ));
       children.add(const SizedBox(height: 10));
     }
@@ -104,7 +115,7 @@ class _GetStartedCard extends StatelessWidget {
 
   final List<MoneyInsight> setups;
   final MapleColors colors;
-  final void Function(InsightAction action) onTap;
+  final void Function(MoneyInsight insight, InsightAction action) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -151,14 +162,14 @@ class _SetupRow extends StatelessWidget {
 
   final MoneyInsight insight;
   final MapleColors colors;
-  final void Function(InsightAction action) onTap;
+  final void Function(MoneyInsight insight, InsightAction action) onTap;
 
   @override
   Widget build(BuildContext context) {
     final topic = MoneyTopic.fromInsightId(insight.id);
     final action = insight.cta?.action;
     return GestureDetector(
-      onTap: action == null ? null : () => onTap(action),
+      onTap: action == null ? null : () => onTap(insight, action),
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 11),

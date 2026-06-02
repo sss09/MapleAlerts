@@ -9,10 +9,12 @@ import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.da
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/found_money_section.dart';
 import 'package:maple_alerts/providers/money_insights_provider.dart';
+import '../../helpers/analytics_spy.dart';
 
-Widget _wrap(List<MoneyInsight> insights) => ProviderScope(
+Widget _wrap(List<MoneyInsight> insights, {AnalyticsSpy? spy}) => ProviderScope(
       overrides: [
         moneyInsightsProvider.overrideWithValue(insights),
+        if (spy != null) spy.override,
       ],
       child: MaterialApp(
         theme: mapleThemeData(DesignTheme.fog),
@@ -37,7 +39,7 @@ void main() {
         headline: 'Find your TFSA room',
         cta: InsightCta('Set up', InsightAction.editTfsaProfile),
       ),
-    ]));
+    ], spy: AnalyticsSpy()));
     await tester.pump();
 
     expect(find.text('Found money'), findsOneWidget);
@@ -55,7 +57,7 @@ void main() {
         headline: 'Estimate your Canada Child Benefit',
         cta: InsightCta('Set up', InsightAction.editCcbProfile),
       ),
-    ]));
+    ], spy: AnalyticsSpy()));
     await tester.pump();
 
     // CCB is not in the default enabled set → its prompt is hidden.
@@ -76,7 +78,7 @@ void main() {
         amount: 14000,
         sources: [FigureSource('2026 TFSA limit', r'$7,000', 'CRA')],
       ),
-    ]));
+    ], spy: AnalyticsSpy()));
     await tester.pump();
 
     expect(find.text(r'You have $14,000 in TFSA room'), findsOneWidget);
@@ -90,6 +92,7 @@ void main() {
 
   testWidgets('renders TFSA and RRSP cards together from the combined list',
       (tester) async {
+    final spy = AnalyticsSpy();
     await tester.pumpWidget(_wrap(const [
       MoneyInsight(
         id: 'tfsa_room',
@@ -104,12 +107,15 @@ void main() {
         headline: r'You have $30,000 of RRSP room',
         subline: r'Contributing it could save ≈$8,895 at your ~30% marginal rate.',
       ),
-    ]));
+    ], spy: spy));
     await tester.pump();
 
     expect(find.text(r'You have $14,000 in TFSA room'), findsOneWidget);
     expect(find.text(r'You have $30,000 of RRSP room'), findsOneWidget);
     expect(find.text('FOUND MONEY'), findsNWidgets(2));
     expect(find.text('Track more'), findsOneWidget);
+
+    expect(spy.fired('insight_card_viewed'), isTrue);
+    expect((spy.propsOf('insight_card_viewed')!['id'] as String), isNotEmpty);
   });
 }

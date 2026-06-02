@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
@@ -6,13 +7,14 @@ import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
 import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/explainer_sheet.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 
 /// "Learn the rules" — a horizontal rail of plain-language explainer chips.
-class LearnSection extends StatelessWidget {
+class LearnSection extends ConsumerWidget {
   const LearnSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).extension<MapleColors>()!;
 
     return Column(
@@ -30,7 +32,10 @@ class LearnSection extends StatelessWidget {
             itemBuilder: (context, i) {
               final e = kExplainers[i];
               return GestureDetector(
-                onTap: () => showExplainerSheet(context, e),
+                onTap: () {
+                  ref.read(analyticsProvider).track('explainer_opened', {'id': e.id});
+                  showExplainerSheet(context, e);
+                },
                 child: SizedBox(
                   width: 168,
                   child: MapleSurface(

@@ -12,6 +12,7 @@ import 'package:maple_alerts/features/money/presentation/widgets/gic_setup_sheet
 import 'package:maple_alerts/features/money/presentation/widgets/oas_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/rrsp_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/tfsa_setup_sheet.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/best_move_provider.dart';
 
 /// The pinned "Your best move" recommendation card at the top of Home. Hidden
@@ -64,6 +65,11 @@ class _BestMoveCardState extends ConsumerState<BestMoveCard> {
     final colors = Theme.of(context).extension<MapleColors>()!;
     final move = ref.watch(bestMoveProvider);
     if (move == null) return const SizedBox.shrink();
+
+    ref.read(analyticsProvider).track('best_move_shown', {
+      'kind': move.kind.name,
+      'target': move.targetInsightId ?? '',
+    });
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
