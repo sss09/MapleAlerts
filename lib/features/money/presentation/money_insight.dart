@@ -13,6 +13,7 @@ enum InsightAction {
   editRrspProfile,
   editCcbProfile,
   editOasProfile,
+  editGicProfile,
 }
 
 class InsightCta {
@@ -359,6 +360,90 @@ List<MoneyInsight> oasInsights(
           sources: result.sources,
           isEstimate: result.isEstimate,
           cta: const InsightCta('Update my numbers', InsightAction.editOasProfile),
+        ),
+      ];
+  }
+}
+
+/// Projects a [GicResult] onto presentation insights. [hasRequiredInput] is true
+/// only when a GIC amount and maturity date are set.
+List<MoneyInsight> gicInsights(
+  GicResult result, {
+  required bool hasRequiredInput,
+}) {
+  const id = 'gic';
+
+  if (!hasRequiredInput) {
+    return const [
+      MoneyInsight(
+        id: id,
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Track a maturing GIC',
+        subline:
+            'Tell us a GIC’s amount and maturity date — we’ll remind you and '
+            'suggest where to shelter the cash.',
+        isEstimate: false,
+        cta: InsightCta('Set up', InsightAction.editGicProfile),
+      ),
+    ];
+  }
+
+  switch (result.status) {
+    case GicStatus.none:
+      return const [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'Add your GIC details',
+          isEstimate: false,
+          cta: InsightCta('Set up', InsightAction.editGicProfile),
+        ),
+      ];
+
+    case GicStatus.matured:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'Your ${formatDollars(result.amount)} GIC has matured',
+          subline: 'Reinvest or shelter the cash so it keeps working.',
+          sources: result.sources,
+          isEstimate: false,
+          cta: const InsightCta('Update', InsightAction.editGicProfile),
+        ),
+      ];
+
+    case GicStatus.maturingSoon:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.foundMoney,
+          severity: InsightSeverity.positive,
+          headline:
+              'Your ${formatDollars(result.amount)} GIC matures in ${result.daysToMaturity} days',
+          subline: 'We’ll suggest the best place to move it (see your best move).',
+          amount: result.amount,
+          sources: result.sources,
+          isEstimate: false,
+          cta: const InsightCta('Update', InsightAction.editGicProfile),
+        ),
+      ];
+
+    case GicStatus.later:
+      final d = result.maturityDate!;
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'Your ${formatDollars(result.amount)} GIC matures '
+              '${_monthsAbbr[d.month]} ${d.day}, ${d.year}',
+          sources: result.sources,
+          isEstimate: false,
+          cta: const InsightCta('Update', InsightAction.editGicProfile),
         ),
       ];
   }

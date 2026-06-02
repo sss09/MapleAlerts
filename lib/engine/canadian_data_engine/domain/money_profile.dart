@@ -35,6 +35,12 @@ class MoneyProfile {
   /// Distinct from [annualIncome] (the individual figure used for marginal rate).
   final double? familyNetIncome;
 
+  /// Principal of a GIC the user is tracking, in dollars.
+  final double? gicAmount;
+
+  /// Maturity date of the tracked GIC.
+  final DateTime? gicMaturityDate;
+
   const MoneyProfile({
     this.birthYear,
     this.tfsaContributed,
@@ -45,6 +51,8 @@ class MoneyProfile {
     this.kidsUnder6,
     this.kids6to17,
     this.familyNetIncome,
+    this.gicAmount,
+    this.gicMaturityDate,
   });
 
   static const empty = MoneyProfile();
@@ -59,6 +67,8 @@ class MoneyProfile {
     int? kidsUnder6,
     int? kids6to17,
     double? familyNetIncome,
+    double? gicAmount,
+    DateTime? gicMaturityDate,
     bool clearBirthYear = false,
     bool clearTfsaContributed = false,
     bool clearProvince = false,
@@ -68,6 +78,8 @@ class MoneyProfile {
     bool clearKidsUnder6 = false,
     bool clearKids6to17 = false,
     bool clearFamilyNetIncome = false,
+    bool clearGicAmount = false,
+    bool clearGicMaturityDate = false,
   }) {
     return MoneyProfile(
       birthYear: clearBirthYear ? null : (birthYear ?? this.birthYear),
@@ -87,6 +99,10 @@ class MoneyProfile {
       familyNetIncome: clearFamilyNetIncome
           ? null
           : (familyNetIncome ?? this.familyNetIncome),
+      gicAmount: clearGicAmount ? null : (gicAmount ?? this.gicAmount),
+      gicMaturityDate: clearGicMaturityDate
+          ? null
+          : (gicMaturityDate ?? this.gicMaturityDate),
     );
   }
 
@@ -100,12 +116,16 @@ class MoneyProfile {
         if (kidsUnder6 != null) 'kidsUnder6': kidsUnder6,
         if (kids6to17 != null) 'kids6to17': kids6to17,
         if (familyNetIncome != null) 'familyNetIncome': familyNetIncome,
+        if (gicAmount != null) 'gicAmount': gicAmount,
+        if (gicMaturityDate != null)
+          'gicMaturityDate': gicMaturityDate!.toIso8601String(),
       };
 
   factory MoneyProfile.fromJson(Map<String, dynamic> json) {
     double? asDouble(Object? v) => v is num ? v.toDouble() : null;
     int? asInt(Object? v) => v is num ? v.toInt() : null;
     final by = json['birthYear'];
+    final gicDate = json['gicMaturityDate'];
     return MoneyProfile(
       birthYear: by is num ? by.toInt() : null,
       tfsaContributed: asDouble(json['tfsaContributed']),
@@ -116,6 +136,8 @@ class MoneyProfile {
       kidsUnder6: asInt(json['kidsUnder6']),
       kids6to17: asInt(json['kids6to17']),
       familyNetIncome: asDouble(json['familyNetIncome']),
+      gicAmount: asDouble(json['gicAmount']),
+      gicMaturityDate: gicDate is String ? DateTime.tryParse(gicDate) : null,
     );
   }
 
@@ -130,7 +152,9 @@ class MoneyProfile {
       other.rrspContributed == rrspContributed &&
       other.kidsUnder6 == kidsUnder6 &&
       other.kids6to17 == kids6to17 &&
-      other.familyNetIncome == familyNetIncome;
+      other.familyNetIncome == familyNetIncome &&
+      other.gicAmount == gicAmount &&
+      other.gicMaturityDate == gicMaturityDate;
 
   @override
   int get hashCode => Object.hashAll([
@@ -143,5 +167,7 @@ class MoneyProfile {
         kidsUnder6,
         kids6to17,
         familyNetIncome,
+        gicAmount,
+        gicMaturityDate,
       ]);
 }

@@ -1,10 +1,14 @@
+import 'dart:math' as math;
+
 import '../data/data_pack.dart';
 import '../domain/best_move.dart';
 import '../domain/figure_source.dart';
+import '../domain/gic_holding.dart';
 import '../domain/money_profile.dart';
 import '../domain/rrsp_room.dart';
 import '../domain/tfsa_room.dart';
 import '../util/money_format.dart';
+import 'gic_rule.dart';
 import 'rrsp_rule.dart';
 import 'tfsa_rule.dart';
 
@@ -68,7 +72,32 @@ BestMove? bestMove({
     );
   }
 
-  // 3. RRSP contribution deadline within 60 days.
+  // Room available to shelter freed-up cash (TFSA preferred, then RRSP).
+  final hasTfsaRoomNow =
+      tfsa != null && tfsa.status != TfsaStatus.notYetEligible && tfsa.room > 0;
+  final hasRrspRoomNow = rrsp != null && rrsp.isEligibleResult && rrsp.room > 0;
+
+  // 3. A GIC maturing soon + somewhere to shelter the proceeds.
+  final gic = gicRule(profile: profile, asOf: asOf);
+  if (gic.status == GicStatus.maturingSoon && (hasTfsaRoomNow || hasRrspRoomNow)) {
+    final intoTfsa = hasTfsaRoomNow;
+    final room = intoTfsa ? tfsa.room : rrsp!.room;
+    final value = math.min(gic.amount, room);
+    final account = intoTfsa ? 'TFSA' : 'RRSP';
+    return BestMove(
+      kind: BestMoveKind.deadline,
+      title: 'Shelter your maturing GIC',
+      detail:
+          'Your ${formatDollars(gic.amount)} GIC matures in ${gic.daysToMaturity} '
+          'days. Move up to ${formatDollars(value)} into your $account so the '
+          'cash keeps growing tax-sheltered instead of sitting idle.',
+      dollarValue: value,
+      targetInsightId: intoTfsa ? 'tfsa_room' : 'rrsp_room',
+      sources: gic.sources,
+    );
+  }
+
+  // 4. RRSP contribution deadline within 60 days.
   if (rrsp != null &&
       rrsp.room > 0 &&
       rrsp.estimatedTaxSavings > 0 &&
@@ -86,10 +115,9 @@ BestMove? bestMove({
     );
   }
 
-  // 4. Opportunity tie-break.
-  final hasRrspRoom = rrsp != null && rrsp.isEligibleResult && rrsp.room > 0;
-  final hasTfsaRoom =
-      tfsa != null && tfsa.status != TfsaStatus.notYetEligible && tfsa.room > 0;
+  // 5. Opportunity tie-break.
+  final hasRrspRoom = hasRrspRoomNow;
+  final hasTfsaRoom = hasTfsaRoomNow;
 
   if (hasRrspRoom && rrsp.marginalRate >= kRrspPreferredMarginalRate) {
     final pct = (rrsp.marginalRate * 100).round();

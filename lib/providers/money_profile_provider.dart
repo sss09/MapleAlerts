@@ -56,6 +56,18 @@ class MoneyProfileNotifier extends StateNotifier<MoneyProfile> {
         clearRrspContributed: amount == null,
       ));
 
+  /// Sets the tracked GIC (used by the GIC setup sheet).
+  Future<void> setGic({
+    required double amount,
+    required DateTime maturityDate,
+  }) =>
+      _update(state.copyWith(gicAmount: amount, gicMaturityDate: maturityDate));
+
+  /// Clears the tracked GIC.
+  Future<void> clearGic() => _update(
+        state.copyWith(clearGicAmount: true, clearGicMaturityDate: true),
+      );
+
   /// Sets the CCB inputs at once (used by the CCB setup sheet).
   Future<void> setCcbInputs({
     required int kidsUnder6,

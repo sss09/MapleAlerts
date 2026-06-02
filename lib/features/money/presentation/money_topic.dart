@@ -30,6 +30,13 @@ enum MoneyTopic {
     blurb: 'See if your income triggers the OAS recovery tax (65+)',
     icon: 'bell',
     setupAction: InsightAction.editOasProfile,
+  ),
+  gic(
+    insightId: 'gic',
+    label: 'GIC maturity',
+    blurb: 'Track a maturing GIC and where to shelter the cash',
+    icon: 'clock',
+    setupAction: InsightAction.editGicProfile,
   );
 
   const MoneyTopic({

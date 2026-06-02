@@ -8,6 +8,7 @@ import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 import 'package:maple_alerts/features/money/presentation/money_topic.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/gic_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/insight_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/oas_setup_sheet.dart';
@@ -71,6 +72,8 @@ class FoundMoneySection extends ConsumerWidget {
         showCcbSetupSheet(context);
       case InsightAction.editOasProfile:
         showOasSetupSheet(context);
+      case InsightAction.editGicProfile:
+        showGicSetupSheet(context);
     }
   }
 }

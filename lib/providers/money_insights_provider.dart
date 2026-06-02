@@ -56,13 +56,27 @@ final oasInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return oasInsights(result, hasRequiredInput: hasRequiredInput);
 });
 
+/// Tracked-GIC maturity insight from the current profile.
+final gicInsightsProvider = Provider<List<MoneyInsight>>((ref) {
+  final profile = ref.watch(moneyProfileProvider);
+
+  final result = gicRule(profile: profile, asOf: DateTime.now());
+
+  final hasRequiredInput = profile.gicAmount != null &&
+      profile.gicAmount! > 0 &&
+      profile.gicMaturityDate != null;
+
+  return gicInsights(result, hasRequiredInput: hasRequiredInput);
+});
+
 /// The single list of money insights the Home "Found money" surface renders —
-/// TFSA + RRSP + CCB + OAS. A future "best move" surface ranks over this list.
+/// TFSA + RRSP + CCB + OAS + GIC. The "best move" card ranks over this domain.
 final moneyInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return [
     ...ref.watch(tfsaInsightsProvider),
     ...ref.watch(rrspInsightsProvider),
     ...ref.watch(ccbInsightsProvider),
     ...ref.watch(oasInsightsProvider),
+    ...ref.watch(gicInsightsProvider),
   ];
 });
