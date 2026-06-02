@@ -53,7 +53,7 @@ class FoundMoneySection extends ConsumerWidget {
             ? null
             : () {
                 ref.read(analyticsProvider)
-                    .track('explainer_opened', {'id': card.id});
+                    .track('explainer_opened', {'id': explainer.id});
                 showExplainerSheet(context, explainer);
               },
       ));

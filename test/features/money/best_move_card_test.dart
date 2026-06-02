@@ -22,7 +22,8 @@ Widget _wrap(BestMove? move, {AnalyticsSpy? spy}) => ProviderScope(
 
 void main() {
   testWidgets('hides when there is no best move', (tester) async {
-    await tester.pumpWidget(_wrap(null));
+    final spy = AnalyticsSpy();
+    await tester.pumpWidget(_wrap(null, spy: spy));
     await tester.pump();
     expect(find.text('YOUR BEST MOVE'), findsNothing);
   });
