@@ -23,6 +23,13 @@ enum MoneyTopic {
     blurb: 'Estimate your monthly Canada Child Benefit',
     icon: 'family',
     setupAction: InsightAction.editCcbProfile,
+  ),
+  oas(
+    insightId: 'oas',
+    label: 'OAS clawback',
+    blurb: 'See if your income triggers the OAS recovery tax (65+)',
+    icon: 'bell',
+    setupAction: InsightAction.editOasProfile,
   );
 
   const MoneyTopic({

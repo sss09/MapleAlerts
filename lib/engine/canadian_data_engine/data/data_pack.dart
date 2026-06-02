@@ -1,5 +1,6 @@
 import '../domain/province.dart';
 import 'ccb_amounts.dart';
+import 'oas_amounts.dart';
 import 'rrsp_limits.dart';
 import 'tax_brackets.dart';
 import 'tfsa_limits.dart';
@@ -37,6 +38,9 @@ abstract class DataPack {
 
   /// Canada Child Benefit parameters for the benefit year covering [year].
   CcbParams ccbParams(int year);
+
+  /// OAS recovery-tax (clawback) parameters for [year].
+  OasParams oasParams(int year);
 }
 
 /// The default pack: numbers compiled into the app from [kTfsaAnnualLimits].
@@ -72,4 +76,7 @@ class EmbeddedDataPack implements DataPack {
 
   @override
   CcbParams ccbParams(int year) => kCcbParams2025;
+
+  @override
+  OasParams oasParams(int year) => kOasParams2025;
 }

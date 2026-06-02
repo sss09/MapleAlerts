@@ -8,7 +8,12 @@ enum InsightSeverity { positive, info, caution, alert }
 
 /// An action a card CTA can trigger. The widget layer interprets these; the
 /// mapper stays pure (no callbacks/Flutter), so it's trivially testable.
-enum InsightAction { editTfsaProfile, editRrspProfile, editCcbProfile }
+enum InsightAction {
+  editTfsaProfile,
+  editRrspProfile,
+  editCcbProfile,
+  editOasProfile,
+}
 
 class InsightCta {
   final String label;
@@ -267,6 +272,97 @@ const _monthsAbbr = [
 ];
 
 String _formatDate(DateTime d) => '${_monthsAbbr[d.month]} ${d.day}, ${d.year}';
+
+/// Projects an [OasResult] onto presentation insights. [hasRequiredInput] is
+/// true only when birth year and income are set.
+List<MoneyInsight> oasInsights(
+  OasResult result, {
+  required bool hasRequiredInput,
+}) {
+  const id = 'oas';
+
+  if (!hasRequiredInput) {
+    return const [
+      MoneyInsight(
+        id: id,
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Check your OAS clawback risk',
+        subline:
+            'Near or over 65? See whether your income triggers the OAS recovery '
+            'tax — and by how much.',
+        cta: InsightCta('Set up', InsightAction.editOasProfile),
+      ),
+    ];
+  }
+
+  switch (result.status) {
+    case OasStatus.notYetEligible:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'OAS starts at 65',
+          subline:
+              'We’ll watch your income against the clawback threshold as you '
+              'approach eligibility.',
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+        ),
+      ];
+
+    case OasStatus.safe:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'Your income is below the OAS clawback threshold',
+          subline:
+              'You keep your full OAS — no recovery tax at ${formatDollars(result.income)}.',
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+        ),
+      ];
+
+    case OasStatus.approaching:
+      final headroom = result.threshold - result.income;
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.caution,
+          headline:
+              "You're ${formatDollars(headroom)} below the OAS clawback threshold",
+          subline:
+              'Income over ${formatDollars(result.threshold)} starts clawing '
+              'back OAS at 15%.',
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: const InsightCta('Update my numbers', InsightAction.editOasProfile),
+        ),
+      ];
+
+    case OasStatus.clawback:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.caution,
+          headline:
+              '≈${formatDollars(result.clawbackAnnual)} of your OAS is clawed back',
+          subline:
+              'At ${formatDollars(result.income)}, the 15% recovery tax applies '
+              'to income over ${formatDollars(result.threshold)}.',
+          amount: result.clawbackAnnual,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: const InsightCta('Update my numbers', InsightAction.editOasProfile),
+        ),
+      ];
+  }
+}
 
 /// Projects a [CcbResult] onto presentation insights. [hasRequiredInput] is true
 /// only when both child counts and family net income are set.

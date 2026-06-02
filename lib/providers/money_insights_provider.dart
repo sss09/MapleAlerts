@@ -40,12 +40,29 @@ final ccbInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return ccbInsights(result, hasRequiredInput: hasRequiredInput);
 });
 
+/// OAS recovery-tax (clawback) insight from the current profile.
+final oasInsightsProvider = Provider<List<MoneyInsight>>((ref) {
+  final profile = ref.watch(moneyProfileProvider);
+
+  final result = oasRule(
+    profile: profile,
+    asOf: DateTime.now(),
+    dataPack: const EmbeddedDataPack(),
+  );
+
+  final hasRequiredInput =
+      profile.birthYear != null && profile.annualIncome != null;
+
+  return oasInsights(result, hasRequiredInput: hasRequiredInput);
+});
+
 /// The single list of money insights the Home "Found money" surface renders —
-/// today TFSA + RRSP + CCB. A future "best move" surface ranks over this list.
+/// TFSA + RRSP + CCB + OAS. A future "best move" surface ranks over this list.
 final moneyInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return [
     ...ref.watch(tfsaInsightsProvider),
     ...ref.watch(rrspInsightsProvider),
     ...ref.watch(ccbInsightsProvider),
+    ...ref.watch(oasInsightsProvider),
   ];
 });

@@ -10,6 +10,7 @@ import 'package:maple_alerts/features/money/presentation/money_topic.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/insight_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sheet.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/oas_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/rrsp_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/tfsa_setup_sheet.dart';
 import 'package:maple_alerts/providers/enabled_topics_provider.dart';
@@ -68,6 +69,8 @@ class FoundMoneySection extends ConsumerWidget {
         showRrspSetupSheet(context);
       case InsightAction.editCcbProfile:
         showCcbSetupSheet(context);
+      case InsightAction.editOasProfile:
+        showOasSetupSheet(context);
     }
   }
 }
