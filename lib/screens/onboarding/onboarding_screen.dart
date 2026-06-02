@@ -94,6 +94,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // onPageChanged never fires for the initial page — emit page 0 here so
+    // the funnel's first step is counted.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(analyticsProvider).track('onboarding_page_view', {'index': '0'});
+    });
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();

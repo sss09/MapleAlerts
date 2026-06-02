@@ -128,11 +128,15 @@ void main() {
     await tester.tap(find.text('Get Started'));
     await tester.pump();
 
-    expect(spy.fired('onboarding_page_view'), isTrue);
+    final pageViews = spy.events
+        .where((r) => r.$1 == 'onboarding_page_view')
+        .map((r) => r.$2['index'])
+        .toList();
+    expect(pageViews, ['0', '1', '2', '3']);
     final complete = spy.propsOf('onboarding_complete');
     expect(complete, isNotNull);
-    // Defaults: TFSA + RRSP enabled.
-    expect(complete!['topics_enabled'], contains('tfsa'));
+    // Defaults: TFSA + RRSP enabled — sorted alphabetically by enum name.
+    expect(complete!['topics_enabled'], 'rrsp,tfsa');
     expect(spy.fired('onboarding_skip'), isFalse);
   });
 
