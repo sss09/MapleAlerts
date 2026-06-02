@@ -1,3 +1,4 @@
+import 'package:aptabase_flutter/aptabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,13 @@ void main() async {
     }
   }).catchError((_) {});
   await RevenueCatService.instance.initialize();
+  // Anonymous analytics (Aptabase). The key is a public app identifier.
+  // Failure must never block boot — offline/blocked is fine.
+  try {
+    await Aptabase.init('A-US-2496453611');
+  } catch (_) {
+    // App works fully without analytics.
+  }
   runApp(const ProviderScope(child: MapleAlertsApp()));
 }
 
