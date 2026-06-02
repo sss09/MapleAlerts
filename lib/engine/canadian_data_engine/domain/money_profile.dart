@@ -25,6 +25,16 @@ class MoneyProfile {
   /// Amount contributed against the current RRSP deduction limit, in dollars.
   final double? rrspContributed;
 
+  /// Number of children under 6 (for the Canada Child Benefit).
+  final int? kidsUnder6;
+
+  /// Number of children aged 6 to 17 (for the Canada Child Benefit).
+  final int? kids6to17;
+
+  /// Adjusted family net income (both spouses) — the CCB phase-out basis.
+  /// Distinct from [annualIncome] (the individual figure used for marginal rate).
+  final double? familyNetIncome;
+
   const MoneyProfile({
     this.birthYear,
     this.tfsaContributed,
@@ -32,6 +42,9 @@ class MoneyProfile {
     this.annualIncome,
     this.rrspDeductionLimit,
     this.rrspContributed,
+    this.kidsUnder6,
+    this.kids6to17,
+    this.familyNetIncome,
   });
 
   static const empty = MoneyProfile();
@@ -43,12 +56,18 @@ class MoneyProfile {
     double? annualIncome,
     double? rrspDeductionLimit,
     double? rrspContributed,
+    int? kidsUnder6,
+    int? kids6to17,
+    double? familyNetIncome,
     bool clearBirthYear = false,
     bool clearTfsaContributed = false,
     bool clearProvince = false,
     bool clearAnnualIncome = false,
     bool clearRrspDeductionLimit = false,
     bool clearRrspContributed = false,
+    bool clearKidsUnder6 = false,
+    bool clearKids6to17 = false,
+    bool clearFamilyNetIncome = false,
   }) {
     return MoneyProfile(
       birthYear: clearBirthYear ? null : (birthYear ?? this.birthYear),
@@ -63,6 +82,11 @@ class MoneyProfile {
       rrspContributed: clearRrspContributed
           ? null
           : (rrspContributed ?? this.rrspContributed),
+      kidsUnder6: clearKidsUnder6 ? null : (kidsUnder6 ?? this.kidsUnder6),
+      kids6to17: clearKids6to17 ? null : (kids6to17 ?? this.kids6to17),
+      familyNetIncome: clearFamilyNetIncome
+          ? null
+          : (familyNetIncome ?? this.familyNetIncome),
     );
   }
 
@@ -73,10 +97,14 @@ class MoneyProfile {
         if (annualIncome != null) 'annualIncome': annualIncome,
         if (rrspDeductionLimit != null) 'rrspDeductionLimit': rrspDeductionLimit,
         if (rrspContributed != null) 'rrspContributed': rrspContributed,
+        if (kidsUnder6 != null) 'kidsUnder6': kidsUnder6,
+        if (kids6to17 != null) 'kids6to17': kids6to17,
+        if (familyNetIncome != null) 'familyNetIncome': familyNetIncome,
       };
 
   factory MoneyProfile.fromJson(Map<String, dynamic> json) {
     double? asDouble(Object? v) => v is num ? v.toDouble() : null;
+    int? asInt(Object? v) => v is num ? v.toInt() : null;
     final by = json['birthYear'];
     return MoneyProfile(
       birthYear: by is num ? by.toInt() : null,
@@ -85,6 +113,9 @@ class MoneyProfile {
       annualIncome: asDouble(json['annualIncome']),
       rrspDeductionLimit: asDouble(json['rrspDeductionLimit']),
       rrspContributed: asDouble(json['rrspContributed']),
+      kidsUnder6: asInt(json['kidsUnder6']),
+      kids6to17: asInt(json['kids6to17']),
+      familyNetIncome: asDouble(json['familyNetIncome']),
     );
   }
 
@@ -96,9 +127,21 @@ class MoneyProfile {
       other.province == province &&
       other.annualIncome == annualIncome &&
       other.rrspDeductionLimit == rrspDeductionLimit &&
-      other.rrspContributed == rrspContributed;
+      other.rrspContributed == rrspContributed &&
+      other.kidsUnder6 == kidsUnder6 &&
+      other.kids6to17 == kids6to17 &&
+      other.familyNetIncome == familyNetIncome;
 
   @override
-  int get hashCode => Object.hash(birthYear, tfsaContributed, province,
-      annualIncome, rrspDeductionLimit, rrspContributed);
+  int get hashCode => Object.hashAll([
+        birthYear,
+        tfsaContributed,
+        province,
+        annualIncome,
+        rrspDeductionLimit,
+        rrspContributed,
+        kidsUnder6,
+        kids6to17,
+        familyNetIncome,
+      ]);
 }

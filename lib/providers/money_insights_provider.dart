@@ -23,11 +23,29 @@ final rrspInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return rrspInsights(result, hasRequiredInput: hasRequiredInput);
 });
 
+/// Canada Child Benefit monthly-estimate insight from the current profile.
+final ccbInsightsProvider = Provider<List<MoneyInsight>>((ref) {
+  final profile = ref.watch(moneyProfileProvider);
+
+  final result = ccbRule(
+    profile: profile,
+    asOf: DateTime.now(),
+    dataPack: const EmbeddedDataPack(),
+  );
+
+  final hasRequiredInput = profile.familyNetIncome != null &&
+      profile.kidsUnder6 != null &&
+      profile.kids6to17 != null;
+
+  return ccbInsights(result, hasRequiredInput: hasRequiredInput);
+});
+
 /// The single list of money insights the Home "Found money" surface renders —
-/// today TFSA + RRSP. A future "best move" surface ranks over this same list.
+/// today TFSA + RRSP + CCB. A future "best move" surface ranks over this list.
 final moneyInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return [
     ...ref.watch(tfsaInsightsProvider),
     ...ref.watch(rrspInsightsProvider),
+    ...ref.watch(ccbInsightsProvider),
   ];
 });

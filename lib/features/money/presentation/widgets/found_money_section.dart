@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/insight_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/rrsp_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/tfsa_setup_sheet.dart';
@@ -40,6 +41,8 @@ class FoundMoneySection extends ConsumerWidget {
         showTfsaSetupSheet(context);
       case InsightAction.editRrspProfile:
         showRrspSetupSheet(context);
+      case InsightAction.editCcbProfile:
+        showCcbSetupSheet(context);
     }
   }
 }

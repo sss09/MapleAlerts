@@ -8,7 +8,7 @@ enum InsightSeverity { positive, info, caution, alert }
 
 /// An action a card CTA can trigger. The widget layer interprets these; the
 /// mapper stays pure (no callbacks/Flutter), so it's trivially testable.
-enum InsightAction { editTfsaProfile, editRrspProfile }
+enum InsightAction { editTfsaProfile, editRrspProfile, editCcbProfile }
 
 class InsightCta {
   final String label;
@@ -267,3 +267,70 @@ const _monthsAbbr = [
 ];
 
 String _formatDate(DateTime d) => '${_monthsAbbr[d.month]} ${d.day}, ${d.year}';
+
+/// Projects a [CcbResult] onto presentation insights. [hasRequiredInput] is true
+/// only when both child counts and family net income are set.
+List<MoneyInsight> ccbInsights(
+  CcbResult result, {
+  required bool hasRequiredInput,
+}) {
+  const id = 'ccb';
+
+  if (!hasRequiredInput) {
+    return const [
+      MoneyInsight(
+        id: id,
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Estimate your Canada Child Benefit',
+        subline:
+            'Have kids under 18? Add your family net income and we’ll estimate '
+            'your monthly tax-free CCB.',
+        cta: InsightCta('Set up', InsightAction.editCcbProfile),
+      ),
+    ];
+  }
+
+  switch (result.status) {
+    case CcbStatus.notEligible:
+      return const [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'CCB is for families with children under 18',
+          subline: 'Add children to your profile to estimate it.',
+        ),
+      ];
+
+    case CcbStatus.zeroByIncome:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'At your family income, CCB phases out to \$0',
+          subline: 'The benefit reduces as adjusted family net income rises.',
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+        ),
+      ];
+
+    case CcbStatus.receiving:
+      return [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.foundMoney,
+          severity: InsightSeverity.positive,
+          headline:
+              '≈${formatDollars(result.monthlyAmount)}/month in Canada Child Benefit',
+          subline:
+              '≈${formatDollars(result.annualAmount)}/year, tax-free, paid monthly.',
+          amount: result.monthlyAmount,
+          sources: result.sources,
+          isEstimate: result.isEstimate,
+          cta: const InsightCta('Update my numbers', InsightAction.editCcbProfile),
+        ),
+      ];
+  }
+}

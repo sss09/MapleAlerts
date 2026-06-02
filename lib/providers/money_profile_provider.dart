@@ -56,6 +56,18 @@ class MoneyProfileNotifier extends StateNotifier<MoneyProfile> {
         clearRrspContributed: amount == null,
       ));
 
+  /// Sets the CCB inputs at once (used by the CCB setup sheet).
+  Future<void> setCcbInputs({
+    required int kidsUnder6,
+    required int kids6to17,
+    required double familyNetIncome,
+  }) =>
+      _update(state.copyWith(
+        kidsUnder6: kidsUnder6,
+        kids6to17: kids6to17,
+        familyNetIncome: familyNetIncome,
+      ));
+
   /// Sets all four RRSP-related inputs at once (used by the RRSP setup sheet).
   Future<void> setRrspInputs({
     required Province province,
