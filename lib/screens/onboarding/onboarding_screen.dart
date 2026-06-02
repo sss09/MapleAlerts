@@ -35,19 +35,14 @@ const List<_PageData> _kPages = [
     icon: 'calendar',
     title: 'Your day, handled',
     description:
-        'RRSP, TFSA, tax, benefits, renewals — we track the dates so you don\'t have to.',
+        'RRSP, TFSA, tax, benefits, renewals — calm nudges that tell you '
+        'what to do, never panic.',
   ),
   _PageData(
     icon: 'leaf',
-    title: 'Calm, timely nudges',
+    title: 'Free, private, yours',
     description:
-        'Reminders that tell you what to do — never robotic, never panic.',
-  ),
-  _PageData(
-    icon: 'wallet',
-    title: 'Unlock everything',
-    description:
-        'Personalized trackers, all categories, no ads — \$4.99/mo. Start free.',
+        'No account, no email, no sign-up. Your data stays on your phone.',
   ),
 ];
 
@@ -301,38 +296,37 @@ class _TopicsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final enabled = ref.watch(enabledTopicsProvider);
 
-    return Padding(
+    // Scrollable: six topic cards exceed short viewports (small phones,
+    // landscape) — the list scrolls under the bottom controls.
+    return ListView(
       padding: const EdgeInsets.fromLTRB(28, 100, 28, 140),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'What should we track?',
-            style: TextStyle(
-              color: colors.text,
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-              height: 1.2,
-            ),
+      children: [
+        Text(
+          'What should we track?',
+          style: TextStyle(
+            color: colors.text,
+            fontSize: 26,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
           ),
-          const SizedBox(height: 10),
-          Text(
-            'Pick what applies to you. You can change this anytime.',
-            style: TextStyle(color: colors.muted, fontSize: 15, height: 1.5),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Pick what applies to you. You can change this anytime.',
+          style: TextStyle(color: colors.muted, fontSize: 15, height: 1.5),
+        ),
+        const SizedBox(height: 24),
+        for (final topic in MoneyTopic.values) ...[
+          _TopicToggle(
+            topic: topic,
+            selected: enabled.contains(topic),
+            colors: colors,
+            onTap: () =>
+                ref.read(enabledTopicsProvider.notifier).toggle(topic),
           ),
-          const SizedBox(height: 24),
-          for (final topic in MoneyTopic.values) ...[
-            _TopicToggle(
-              topic: topic,
-              selected: enabled.contains(topic),
-              colors: colors,
-              onTap: () =>
-                  ref.read(enabledTopicsProvider.notifier).toggle(topic),
-            ),
-            const SizedBox(height: 12),
-          ],
+          const SizedBox(height: 12),
         ],
-      ),
+      ],
     );
   }
 }

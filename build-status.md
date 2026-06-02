@@ -228,6 +228,12 @@ lib/
 - [x] **`MapleMoney`** (`lib/core/format/maple_money.dart`): locale-aware CAD formatting — `cad` (en_CA `$1,234.56` / fr_CA `1 234,56 $`), `cadAuto` (drops whole-dollar cents), `cadCompact` (`$1.2K`). App-level counterpart to the engine's dependency-free `formatDollars` (engine stays portable). Tests (9).
 - [x] Also: `android/gradle.properties` Flutter-migrator flags (`builtInKotlin=false`, `newDsl=false`).
 
+### Onboarding revamp — first-impression QA (249 tests, pushed)
+- [x] **Fixed topics-page overflow** (user-reported, screenshot): six topic cards exceeded short viewports — "What should we track?" Column → ListView (scrolls under the bottom controls). Regression widget test reproduces the RenderFlex overflow at 1320×800 (red → green).
+- [x] **Trimmed to 3 info pages + topics** (was 4+1): merged "Your day, handled" + "Calm nudges" into one; **dropped the $4.99 mention** from onboarding (user: premature for a first impression) — premium is discovered in-app/paywall instead.
+- [x] **New page 3 = trust message:** "Free, private, yours — no account, no email, no sign-up. Your data stays on your phone." (the moat, stated up front). NOTE: this is now a product promise — any future email capture must be visibly optional (value-moment opt-in, never a gate).
+- **Decision (2026-06-02): no email/sign-up at launch.** Distribution for the app chain via push + in-app cross-promo + post-launch opt-in lead magnet (deadline calendar email); accounts arrive naturally with premium sync. **Pre-launch candidate: anonymous aggregate analytics slice** (topic-enable rates, card engagement, retention) — product data needs no PII.
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
