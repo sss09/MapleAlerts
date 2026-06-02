@@ -11,6 +11,7 @@ import 'package:maple_alerts/features/reminders/presentation/widgets/day_handled
 import 'package:maple_alerts/features/reminders/presentation/widgets/reminder_card.dart';
 import 'package:maple_alerts/features/reminders/presentation/widgets/seasonal_rail.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/found_money_section.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/best_move_card.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
@@ -143,7 +144,10 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         DayHandledHero(needs: needs, total: total),
                         const SizedBox(height: 16),
 
-                        // Found money — TFSA room + over-contribution guardrail
+                        // Best move right now — the single top recommendation
+                        const BestMoveCard(),
+
+                        // Found money — TFSA / RRSP / CCB cards
                         const FoundMoneySection(),
                         const SizedBox(height: 8),
 
