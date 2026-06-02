@@ -46,6 +46,27 @@ class MapleColors extends ThemeExtension<MapleColors> {
     slate: Color(0xFF8A99AC),        // C.slate #8A99AC
   );
 
+  /// The light ("daylight") theme — soft cool off-white with a green-steel
+  /// tint, designed to pair with [MapleSemantics.light]. Mirrors the [fog]
+  /// token roles so widgets that read the extension work unchanged.
+  ///
+  /// Accent is a deeper emerald than [fog] so it clears WCAG AA contrast on a
+  /// near-white surface; [accentHi] is the brighter emerald used for glows and
+  /// gradient highlights.
+  static const MapleColors daylight = MapleColors(
+    canvas: Color(0xFFF4F7F6),       // soft off-white, faint cool tint
+    surface1: Color(0xFFFFFFFF),     // pure white cards
+    surface2: Color(0xFFEAF0EE),     // raised / inset light surface
+    line: Color(0x14122A22),         // rgba(18,42,34,0.08) hairline on light
+    lineStrong: Color(0x24122A22),   // rgba(18,42,34,0.14) stronger divider
+    text: Color(0xFF0E1A16),         // near-black green-navy ink
+    muted: Color(0x99142A22),        // rgba(20,42,34,0.60) secondary text
+    faint: Color(0x59142A22),        // rgba(20,42,34,0.35) tertiary text
+    accent: Color(0xFF0E7D52),       // deep emerald — AA on white
+    accentHi: Color(0xFF13A06C),     // brighter emerald for glow/gradient
+    slate: Color(0xFF5E6E7C),        // muted slate ink
+  );
+
   @override
   MapleColors copyWith({
     Color? canvas,

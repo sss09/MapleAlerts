@@ -30,12 +30,15 @@ class MapleAlertsApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    final theme = ref.watch(themeDataProvider);
+    final lightTheme = ref.watch(lightThemeDataProvider);
+    final darkTheme = ref.watch(darkThemeDataProvider);
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       title: kAppName,
       debugShowCheckedModeBanner: false,
-      darkTheme: theme,
-      themeMode: ThemeMode.dark,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

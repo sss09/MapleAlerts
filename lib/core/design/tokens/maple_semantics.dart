@@ -108,6 +108,54 @@ class MapleSemantics extends ThemeExtension<MapleSemantics> {
     ),
   );
 
+  /// Light-mode semantic palette — deepened hues so badges and text clear
+  /// WCAG AA contrast on a near-white canvas, with [soft] tints that read as
+  /// gentle background fills on light surfaces. Pairs with [MapleColors.daylight].
+  static const MapleSemantics light = MapleSemantics(
+    urgent: MapleStatus(
+      color: Color(0xFFC2492F),
+      edge: Color(0x8CC2492F),   // 0.55
+      glow: Color(0x33C2492F),   // 0.20
+      soft: Color(0x1AC2492F),   // 0.10
+      label: 'Urgent',
+    ),
+    attention: MapleStatus(
+      color: Color(0xFFA9740F),
+      edge: Color(0x8CA9740F),
+      glow: Color(0x33A9740F),
+      soft: Color(0x1AA9740F),
+      label: 'Needs attention',
+    ),
+    upcoming: MapleStatus(
+      color: Color(0xFF12865C),
+      edge: Color(0x8012865C),   // 0.50
+      glow: Color(0x3312865C),
+      soft: Color(0x1A12865C),
+      label: 'Upcoming',
+    ),
+    info: MapleStatus(
+      color: Color(0xFF1F7E96),
+      edge: Color(0x801F7E96),
+      glow: Color(0x331F7E96),
+      soft: Color(0x1A1F7E96),
+      label: 'Good to know',
+    ),
+    planning: MapleStatus(
+      color: Color(0xFF5B4FB0),
+      edge: Color(0x755B4FB0),   // 0.46
+      glow: Color(0x335B4FB0),
+      soft: Color(0x1A5B4FB0),
+      label: 'Planning ahead',
+    ),
+    done: MapleStatus(
+      color: Color(0xFF5E6E7C),
+      edge: Color(0x595E6E7C),   // 0.35
+      glow: Color(0x295E6E7C),
+      soft: Color(0x1A5E6E7C),
+      label: 'Handled',
+    ),
+  );
+
   /// The calm-mode slate used when [warmAccents] = false for warm statuses.
   static const Color _calmSlate = Color(0xFF8FA8C0);
 

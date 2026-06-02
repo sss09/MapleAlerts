@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../design_theme.dart';
 import '../tokens/maple_aurora.dart';
+import '../tokens/maple_colors.dart';
 
 /// An animated aurora atmosphere background.
 ///
@@ -90,6 +91,19 @@ class _AuroraBackgroundState extends State<AuroraBackground>
     final aurora = _resolveAurora(context);
     final animate =
         widget.motion && !MediaQuery.of(context).disableAnimations;
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final colors = Theme.of(context).extension<MapleColors>();
+
+    // In light mode the dark night-sky base stops are replaced with a soft
+    // wash derived from the canvas tokens; the translucent aurora blobs then
+    // read as gentle colour hints rather than glowing lights.
+    final List<Color> baseStops = isLight
+        ? <Color>[
+            (colors?.surface2 ?? const Color(0xFFEAF0EE)),
+            (colors?.canvas ?? const Color(0xFFF4F7F6)),
+            (colors?.canvas ?? const Color(0xFFF4F7F6)),
+          ]
+        : aurora.baseStops;
 
     return Stack(
       fit: StackFit.expand,
@@ -100,7 +114,7 @@ class _AuroraBackgroundState extends State<AuroraBackground>
             gradient: RadialGradient(
               center: const Alignment(0, -1.2),
               radius: 1.3,
-              colors: aurora.baseStops,
+              colors: baseStops,
             ),
           ),
         ),
@@ -116,16 +130,22 @@ class _AuroraBackgroundState extends State<AuroraBackground>
           ),
 
         // ── 3. Fog veil ──────────────────────────────────────────────────
-        const DecoratedBox(
+        DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Color(0x1A080E16), // 10 %
-                Color(0x4D070C14), // 30 %
-                Color(0x9E060B12), // 62 %
-              ],
+              colors: isLight
+                  ? const [
+                      Color(0x0AFFFFFF), // 4 %  white
+                      Color(0x40F4F7F6), // 25 % canvas
+                      Color(0x99F4F7F6), // 60 % canvas
+                    ]
+                  : const [
+                      Color(0x1A080E16), // 10 %
+                      Color(0x4D070C14), // 30 %
+                      Color(0x9E060B12), // 62 %
+                    ],
             ),
           ),
         ),

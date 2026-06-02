@@ -19,22 +19,45 @@ class DesignTheme {
     required this.aurora,
   });
 
-  /// Default design theme — emerald aurora + fog color tokens.
+  /// Default dark design theme — emerald aurora + fog color tokens.
   static final DesignTheme fog = DesignTheme(
     id: 'emerald',
     colors: MapleColors.fog,
     semantics: MapleSemantics.standard,
     aurora: kAuroras['emerald']!,
   );
+
+  /// Default light design theme — emerald aurora + daylight color tokens.
+  ///
+  /// The aurora art is shared with the dark variant; [AuroraBackground] and the
+  /// glass widgets read the ambient [Brightness] to render a light wash rather
+  /// than a dark night sky.
+  static final DesignTheme fogLight = DesignTheme(
+    id: 'emerald',
+    colors: MapleColors.daylight,
+    semantics: MapleSemantics.light,
+    aurora: kAuroras['emerald']!,
+  );
 }
 
-/// One [DesignTheme] per aurora variant (colors + semantics are shared for now).
+/// One dark [DesignTheme] per aurora variant (colors + semantics shared for now).
 final Map<String, DesignTheme> kDesignThemes = {
   for (final entry in kAuroras.entries)
     entry.key: DesignTheme(
       id: entry.key,
       colors: MapleColors.fog,
       semantics: MapleSemantics.standard,
+      aurora: entry.value,
+    ),
+};
+
+/// One light [DesignTheme] per aurora variant — daylight colors + light semantics.
+final Map<String, DesignTheme> kDesignThemesLight = {
+  for (final entry in kAuroras.entries)
+    entry.key: DesignTheme(
+      id: entry.key,
+      colors: MapleColors.daylight,
+      semantics: MapleSemantics.light,
       aurora: entry.value,
     ),
 };

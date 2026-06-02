@@ -21,8 +21,9 @@ ThemeData mapleThemeData(
   DesignTheme t, {
   bool warmAccents = true,
   bool googleFontsEnabled = false,
+  Brightness brightness = Brightness.dark,
 }) {
-  final base = ThemeData(brightness: Brightness.dark, useMaterial3: true);
+  final base = ThemeData(brightness: brightness, useMaterial3: true);
 
   final TextTheme textTheme = googleFontsEnabled
       ? GoogleFonts.manropeTextTheme(base.textTheme)
@@ -36,7 +37,11 @@ ThemeData mapleThemeData(
     ),
     colorScheme: base.colorScheme.copyWith(
       primary: t.colors.accent,
+      onPrimary: brightness == Brightness.light
+          ? const Color(0xFFFFFFFF)
+          : t.colors.canvas,
       surface: t.colors.surface2,
+      onSurface: t.colors.text,
     ),
     extensions: [t.colors, t.semantics, t.aurora],
   );

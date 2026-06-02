@@ -76,24 +76,33 @@ class MapleSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<MapleColors>()!;
     final sem = Theme.of(context).extension<MapleSemantics>()!;
+    final isLight = Theme.of(context).brightness == Brightness.light;
 
     // ── Background color & blur sigma ──────────────────────────────────────
     final Color bg;
     final double blurSigma;
 
     if (passive) {
-      bg = const Color(0x6B0D141D); // rgba(13,20,29,0.42)
+      bg = isLight
+          ? const Color(0x99F1F5F3) // rgba(241,245,243,0.60) light matte
+          : const Color(0x6B0D141D); // rgba(13,20,29,0.42)
       blurSigma = 6;
     } else {
       switch (level) {
         case MapleSurfaceLevel.minimal:
-          bg = const Color(0x8C111E28); // rgba(17,30,40,0.55)
+          bg = isLight
+              ? const Color(0xBFFFFFFF) // white @ 0.75
+              : const Color(0x8C111E28); // rgba(17,30,40,0.55)
           blurSigma = 9;
         case MapleSurfaceLevel.bordered:
-          bg = const Color(0x6B0D1822); // rgba(13,24,34,0.42)
+          bg = isLight
+              ? const Color(0x99FFFFFF) // white @ 0.60
+              : const Color(0x6B0D1822); // rgba(13,24,34,0.42)
           blurSigma = 7;
         case MapleSurfaceLevel.solid:
-          bg = const Color(0xB816232E); // rgba(22,35,46,0.72)
+          bg = isLight
+              ? const Color(0xF2FFFFFF) // white @ 0.95
+              : const Color(0xB816232E); // rgba(22,35,46,0.72)
           blurSigma = 12;
       }
     }
@@ -116,7 +125,7 @@ class MapleSurface extends StatelessWidget {
       shadows = [
         BoxShadow(color: statusTokens.glow, blurRadius: 26),
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.40),
+          color: Colors.black.withValues(alpha: isLight ? 0.10 : 0.40),
           blurRadius: 30,
           offset: const Offset(0, 12),
         ),
@@ -124,7 +133,7 @@ class MapleSurface extends StatelessWidget {
     } else {
       shadows = [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.30),
+          color: Colors.black.withValues(alpha: isLight ? 0.08 : 0.30),
           blurRadius: 22,
           offset: const Offset(0, 8),
         ),

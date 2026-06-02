@@ -15,6 +15,7 @@ class MapleTweaks {
   final bool legend;      // show legend overlay
   final bool motion;      // enable animated aurora
   final String fab;       // 'dock' | 'float' | 'radial'
+  final String themeMode; // 'system' | 'light' | 'dark'
 
   const MapleTweaks({
     this.auroraId = 'emerald',
@@ -23,7 +24,21 @@ class MapleTweaks {
     this.legend = false,
     this.motion = true,
     this.fab = 'dock',
+    this.themeMode = 'dark',
   });
+
+  /// Maps the persisted [themeMode] string to a Flutter [ThemeMode].
+  ThemeMode get flutterThemeMode {
+    switch (themeMode) {
+      case 'light':
+        return ThemeMode.light;
+      case 'system':
+        return ThemeMode.system;
+      case 'dark':
+      default:
+        return ThemeMode.dark;
+    }
+  }
 
   MapleTweaks copyWith({
     String? auroraId,
@@ -32,6 +47,7 @@ class MapleTweaks {
     bool? legend,
     bool? motion,
     String? fab,
+    String? themeMode,
   }) =>
       MapleTweaks(
         auroraId: auroraId ?? this.auroraId,
@@ -40,6 +56,7 @@ class MapleTweaks {
         legend: legend ?? this.legend,
         motion: motion ?? this.motion,
         fab: fab ?? this.fab,
+        themeMode: themeMode ?? this.themeMode,
       );
 }
 
@@ -63,6 +80,7 @@ class TweaksNotifier extends StateNotifier<MapleTweaks> {
         legend: p.getBool('${_k}_legend'),
         motion: p.getBool('${_k}_motion'),
         fab: p.getString('${_k}_fab'),
+        themeMode: p.getString('${_k}_themeMode'),
       );
     } catch (_) {
       // Prefs unavailable (e.g. tests without plugin registration) — keep defaults.
@@ -78,6 +96,7 @@ class TweaksNotifier extends StateNotifier<MapleTweaks> {
       await p.setBool('${_k}_legend', state.legend);
       await p.setBool('${_k}_motion', state.motion);
       await p.setString('${_k}_fab', state.fab);
+      await p.setString('${_k}_themeMode', state.themeMode);
     } catch (_) {
       // Write failures are non-fatal; defaults will be used next launch.
     }
@@ -94,16 +113,43 @@ class TweaksNotifier extends StateNotifier<MapleTweaks> {
 final tweaksProvider =
     StateNotifierProvider<TweaksNotifier, MapleTweaks>((ref) => TweaksNotifier());
 
-/// Derives the active [DesignTheme] from the current tweaks.
+/// Derives the active dark [DesignTheme] from the current tweaks.
 final designThemeProvider = Provider<DesignTheme>((ref) {
   final t = ref.watch(tweaksProvider);
   return kDesignThemes[t.auroraId] ?? DesignTheme.fog;
 });
 
-/// Derives the active [ThemeData] from the current tweaks — pass to
-/// [MaterialApp.theme].
+/// The dark [ThemeData] for the current tweaks — pass to [MaterialApp.darkTheme].
+///
+/// Retained under its original name for backwards compatibility; equivalent to
+/// [darkThemeDataProvider].
 final themeDataProvider = Provider<ThemeData>((ref) {
   final t = ref.watch(tweaksProvider);
   final dt = kDesignThemes[t.auroraId] ?? DesignTheme.fog;
-  return mapleThemeData(dt, warmAccents: t.warmAccents, googleFontsEnabled: true);
+  return mapleThemeData(
+    dt,
+    warmAccents: t.warmAccents,
+    googleFontsEnabled: true,
+    brightness: Brightness.dark,
+  );
+});
+
+/// The dark [ThemeData] for the current tweaks — pass to [MaterialApp.darkTheme].
+final darkThemeDataProvider = themeDataProvider;
+
+/// The light [ThemeData] for the current tweaks — pass to [MaterialApp.theme].
+final lightThemeDataProvider = Provider<ThemeData>((ref) {
+  final t = ref.watch(tweaksProvider);
+  final dt = kDesignThemesLight[t.auroraId] ?? DesignTheme.fogLight;
+  return mapleThemeData(
+    dt,
+    warmAccents: t.warmAccents,
+    googleFontsEnabled: true,
+    brightness: Brightness.light,
+  );
+});
+
+/// The user's selected [ThemeMode] — pass to [MaterialApp.themeMode].
+final themeModeProvider = Provider<ThemeMode>((ref) {
+  return ref.watch(tweaksProvider).flutterThemeMode;
 });

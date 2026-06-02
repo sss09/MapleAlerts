@@ -123,8 +123,16 @@ class _BottomDock extends StatelessWidget {
     // Resolve accent colour from MapleColors theme extension.
     final mc = Theme.of(context).extension<MapleColors>();
     final accentHi = mc?.accentHi ?? const Color(0xFF62D2A8);
+    final isLight = Theme.of(context).brightness == Brightness.light;
 
-    const unselectedColor = Color(0x80BECCDA);
+    // Glass dock surface adapts to brightness: dark navy glass at night, frosted
+    // white in daylight.
+    final barColor =
+        isLight ? const Color(0xCCFFFFFF) : const Color(0xA80B131E);
+    final barBorder =
+        isLight ? const Color(0x14102A22) : const Color(0x1F9CB2C8);
+    final unselectedColor =
+        isLight ? const Color(0x99465562) : const Color(0x80BECCDA);
     const barRadius = Radius.circular(26);
     const barBorderRadius = BorderRadius.all(barRadius);
 
@@ -151,10 +159,10 @@ class _BottomDock extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xA80B131E),
+                  color: barColor,
                   borderRadius: barBorderRadius,
                   border: Border.all(
-                    color: const Color(0x1F9CB2C8),
+                    color: barBorder,
                     width: 1,
                   ),
                 ),
