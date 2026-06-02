@@ -39,3 +39,7 @@ const String kOnboardingDoneKey = 'onboarding_done';
 const String kNotificationsEnabledKey = 'notifications_enabled';
 const String kTfsaBirthYearKey = 'tfsa_birth_year';
 const String kRrspContributionKey = 'rrsp_contribution';
+
+/// Structured MoneyProfile blob (JSON). Single key for all financial inputs the
+/// Canadian Data Engine reads — see MoneyProfileStore.
+const String kMoneyProfileKey = 'money_profile';

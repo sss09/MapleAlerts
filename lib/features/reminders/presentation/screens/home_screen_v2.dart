@@ -10,6 +10,7 @@ import 'package:maple_alerts/features/reminders/presentation/widgets/category_fi
 import 'package:maple_alerts/features/reminders/presentation/widgets/day_handled_hero.dart';
 import 'package:maple_alerts/features/reminders/presentation/widgets/reminder_card.dart';
 import 'package:maple_alerts/features/reminders/presentation/widgets/seasonal_rail.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/found_money_section.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
@@ -141,6 +142,10 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         // Hero summary
                         DayHandledHero(needs: needs, total: total),
                         const SizedBox(height: 16),
+
+                        // Found money — TFSA room + over-contribution guardrail
+                        const FoundMoneySection(),
+                        const SizedBox(height: 8),
 
                         // Category filter chips
                         CategoryFilterChips(
