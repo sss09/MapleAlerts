@@ -2,12 +2,14 @@ import 'dart:math' as math;
 
 import '../data/data_pack.dart';
 import '../domain/best_move.dart';
+import '../domain/fhsa_account.dart';
 import '../domain/figure_source.dart';
 import '../domain/gic_holding.dart';
 import '../domain/money_profile.dart';
 import '../domain/rrsp_room.dart';
 import '../domain/tfsa_room.dart';
 import '../util/money_format.dart';
+import 'fhsa_rule.dart';
 import 'gic_rule.dart';
 import 'rrsp_rule.dart';
 import 'tfsa_rule.dart';
@@ -36,10 +38,14 @@ BestMove? bestMove({
       profile.rrspDeductionLimit != null &&
       profile.rrspContributed != null;
 
+  final fhsaConfigured = profile.fhsaContributed != null;
+
   final tfsa =
       tfsaConfigured ? tfsaRule(profile: profile, asOf: asOf, dataPack: dataPack) : null;
   final rrsp =
       rrspConfigured ? rrspRule(profile: profile, asOf: asOf, dataPack: dataPack) : null;
+  final fhsa =
+      fhsaConfigured ? fhsaRule(profile: profile, asOf: asOf, dataPack: dataPack) : null;
 
   // 1. RRSP over-contribution.
   if (rrsp != null && rrsp.status == RrspStatus.overContributed) {
@@ -69,6 +75,22 @@ BestMove? bestMove({
       dollarValue: overage,
       targetInsightId: 'tfsa_room',
       sources: tfsa.sources,
+    );
+  }
+
+  // 2b. FHSA over-contribution.
+  if (fhsa != null && fhsa.status == FhsaStatus.overContributed) {
+    final overage = -fhsa.room;
+    return BestMove(
+      kind: BestMoveKind.fixGuardrail,
+      title: 'Fix your FHSA over-contribution',
+      detail:
+          "You're ${formatDollars(overage)} over the \$40,000 FHSA lifetime "
+          'limit — CRA charges 1%/month on the excess. Withdraw it to stop the '
+          'penalty.',
+      dollarValue: overage,
+      targetInsightId: 'fhsa',
+      sources: fhsa.sources,
     );
   }
 
@@ -115,7 +137,29 @@ BestMove? bestMove({
     );
   }
 
-  // 5. Opportunity tie-break.
+  // 5. FHSA opportunity — for first-home savers it beats RRSP/TFSA (deductible
+  //    now AND tax-free on withdrawal for a home). Opting into the FHSA topic
+  //    signals the intent, so a configured FHSA with room ranks first here.
+  if (fhsa != null && fhsa.room > 0) {
+    final savingsNote = fhsa.estimatedTaxSavings > 0
+        ? ' Contributing this year could save ≈${formatDollars(fhsa.estimatedTaxSavings)} in tax,'
+        : ' Contributing';
+    return BestMove(
+      kind: BestMoveKind.opportunity,
+      title: 'Contribute to your FHSA',
+      detail:
+          'The FHSA is hard to beat for a first home — deductible like an RRSP '
+          'and tax-free on withdrawal.$savingsNote and it grows tax-free. '
+          'Up to ${formatDollars(fhsa.annualContributable)} this year.',
+      dollarValue: fhsa.estimatedTaxSavings > 0
+          ? fhsa.estimatedTaxSavings
+          : fhsa.annualContributable,
+      targetInsightId: 'fhsa',
+      sources: fhsa.sources,
+    );
+  }
+
+  // 6. Opportunity tie-break (RRSP vs TFSA).
   final hasRrspRoom = hasRrspRoomNow;
   final hasTfsaRoom = hasTfsaRoomNow;
 

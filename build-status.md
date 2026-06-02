@@ -213,6 +213,10 @@ lib/
 - [x] `fhsaInsights` mapper (TDD, 4) → generic InsightCard; `fhsaInsightsProvider` into combined list (TFSA+RRSP+**FHSA**+CCB+OAS+GIC). `MoneyTopic.fhsa` (opt-in) + `FhsaSetupSheet`. **MoneyInsight unchanged an 8th time.** Profile +1 field (fhsaContributed).
 - [x] Analyzer clean. Deferred: $8k annual carry-forward modelling (single-number lifetime v1), FHSA→best-move integration.
 
+### FHSA → best move — DONE (227 tests, on main pending)
+- [x] Folded FHSA into the cross-account best-move cascade. New rungs: **FHSA over-contribution guardrail** (with the other guardrails), and an **FHSA opportunity that ranks ABOVE the RRSP/TFSA tie-break** — for first-home savers the FHSA is hard to beat (deductible like RRSP + tax-free on withdrawal), and opting into the topic signals the intent. Still ranks below time-bound moves (over-contributions, maturing GIC). TDD (4): FHSA beats RRSP/TFSA opportunity, FHSA over→guardrail, GIC still outranks, over-contribution still outranks.
+- [x] Cascade now: RRSP-over → TFSA-over → FHSA-over → GIC-maturing → RRSP-deadline → **FHSA opportunity** → RRSP-vs-TFSA. 227 tests green, analyzer clean.
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
