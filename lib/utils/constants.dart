@@ -43,3 +43,6 @@ const String kRrspContributionKey = 'rrsp_contribution';
 /// Structured MoneyProfile blob (JSON). Single key for all financial inputs the
 /// Canadian Data Engine reads — see MoneyProfileStore.
 const String kMoneyProfileKey = 'money_profile';
+
+/// Which found-money topics the user is tracking (list of MoneyTopic names).
+const String kEnabledTopicsKey = 'enabled_money_topics';

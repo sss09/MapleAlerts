@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:maple_alerts/core/design/design_theme.dart';
 import 'package:maple_alerts/core/design/maple_theme.dart';
@@ -22,13 +23,12 @@ Widget _wrap(List<MoneyInsight> insights) => ProviderScope(
     );
 
 void main() {
-  testWidgets('renders nothing when there are no insights', (tester) async {
-    await tester.pumpWidget(_wrap(const []));
-    await tester.pump();
-    expect(find.text('Found money'), findsNothing);
+  setUp(() {
+    // Enabled-topics provider loads defaults (TFSA + RRSP) from prefs.
+    SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('renders the setup prompt with its CTA', (tester) async {
+  testWidgets('collapses setup prompts into one get-started card', (tester) async {
     await tester.pumpWidget(_wrap(const [
       MoneyInsight(
         id: 'tfsa_room',
@@ -41,8 +41,27 @@ void main() {
     await tester.pump();
 
     expect(find.text('Found money'), findsOneWidget);
-    expect(find.text('Find your TFSA room'), findsOneWidget);
-    expect(find.text('Set up'), findsOneWidget);
+    expect(find.text('SET UP YOUR MONEY PROFILE'), findsOneWidget);
+    expect(find.text('Find your TFSA room'), findsOneWidget); // as a row
+  });
+
+  testWidgets('hides insights for disabled topics (CCB off by default)',
+      (tester) async {
+    await tester.pumpWidget(_wrap(const [
+      MoneyInsight(
+        id: 'ccb',
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Estimate your Canada Child Benefit',
+        cta: InsightCta('Set up', InsightAction.editCcbProfile),
+      ),
+    ]));
+    await tester.pump();
+
+    // CCB is not in the default enabled set → its prompt is hidden.
+    expect(find.text('Estimate your Canada Child Benefit'), findsNothing);
+    expect(find.text('Track more'), findsNothing); // nothing configured/tracked-visible
+    expect(find.textContaining('Track your TFSA'), findsOneWidget); // empty prompt
   });
 
   testWidgets('found-money insight reveals its sources when expanded',
@@ -62,8 +81,6 @@ void main() {
 
     expect(find.text(r'You have $14,000 in TFSA room'), findsOneWidget);
     expect(find.text('FOUND MONEY'), findsOneWidget);
-
-    // Sources are collapsed until tapped.
     expect(find.text('2026 TFSA limit'), findsNothing);
     await tester.tap(find.text('How we got this'));
     await tester.pumpAndSettle();
@@ -93,5 +110,6 @@ void main() {
     expect(find.text(r'You have $14,000 in TFSA room'), findsOneWidget);
     expect(find.text(r'You have $30,000 of RRSP room'), findsOneWidget);
     expect(find.text('FOUND MONEY'), findsNWidgets(2));
+    expect(find.text('Track more'), findsOneWidget);
   });
 }

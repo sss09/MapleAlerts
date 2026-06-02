@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/design/tokens/maple_colors.dart';
 import '../../core/design/widgets/aurora_background.dart';
+import '../../core/design/widgets/maple_surface.dart';
 import '../../core/design/widgets/stroke_icon.dart';
+import '../../features/money/presentation/money_topic.dart';
+import '../../providers/enabled_topics_provider.dart';
 import '../../providers/settings_provider.dart';
 
 // ---------------------------------------------------------------------------
@@ -63,13 +66,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  /// Info pages plus the final interactive "what should we track?" page.
+  int get _pageCount => _kPages.length + 1;
+
   Future<void> _complete() async {
     await ref.read(settingsProvider.notifier).completeOnboarding();
     if (mounted) context.go('/');
   }
 
   void _nextPage() {
-    if (_currentPage < _kPages.length - 1) {
+    if (_currentPage < _pageCount - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
@@ -89,7 +95,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<MapleColors>() ??
         MapleColors.fog;
-    final isLast = _currentPage == _kPages.length - 1;
+    final isLast = _currentPage == _pageCount - 1;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -101,10 +107,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           // ── Page content ──────────────────────────────────────────────────
           PageView.builder(
             controller: _pageController,
-            itemCount: _kPages.length,
+            itemCount: _pageCount,
             onPageChanged: (i) => setState(() => _currentPage = i),
-            itemBuilder: (context, index) =>
-                _OnboardingPageView(page: _kPages[index], colors: colors),
+            itemBuilder: (context, index) => index < _kPages.length
+                ? _OnboardingPageView(page: _kPages[index], colors: colors)
+                : _TopicsPage(colors: colors),
           ),
 
           // ── Skip button (top-right) ───────────────────────────────────────
@@ -150,7 +157,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     // Dot indicators
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(_kPages.length, (i) {
+                      children: List.generate(_pageCount, (i) {
                         final active = i == _currentPage;
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
@@ -276,6 +283,126 @@ class _OnboardingPageView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Interactive "what should we track?" page
+// ---------------------------------------------------------------------------
+
+class _TopicsPage extends ConsumerWidget {
+  const _TopicsPage({required this.colors});
+
+  final MapleColors colors;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(enabledTopicsProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 100, 28, 140),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'What should we track?',
+            style: TextStyle(
+              color: colors.text,
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Pick what applies to you. You can change this anytime.',
+            style: TextStyle(color: colors.muted, fontSize: 15, height: 1.5),
+          ),
+          const SizedBox(height: 24),
+          for (final topic in MoneyTopic.values) ...[
+            _TopicToggle(
+              topic: topic,
+              selected: enabled.contains(topic),
+              colors: colors,
+              onTap: () =>
+                  ref.read(enabledTopicsProvider.notifier).toggle(topic),
+            ),
+            const SizedBox(height: 12),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _TopicToggle extends StatelessWidget {
+  const _TopicToggle({
+    required this.topic,
+    required this.selected,
+    required this.colors,
+    required this.onTap,
+  });
+
+  final MoneyTopic topic;
+  final bool selected;
+  final MapleColors colors;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: MapleSurface(
+        level: MapleSurfaceLevel.minimal,
+        status: 'upcoming',
+        active: selected,
+        radius: 18,
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Row(
+          children: [
+            StrokeIcon(name: topic.icon, size: 20, color: colors.accent),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    topic.label,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: colors.text,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    topic.blurb,
+                    style: TextStyle(fontSize: 12.5, color: colors.muted),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected ? colors.accent : Colors.transparent,
+                border: Border.all(
+                  color: selected ? colors.accent : colors.lineStrong,
+                  width: 2,
+                ),
+              ),
+              child: selected
+                  ? const Icon(Icons.check, size: 16, color: Color(0xFF06231C))
+                  : null,
+            ),
+          ],
+        ),
       ),
     );
   }
