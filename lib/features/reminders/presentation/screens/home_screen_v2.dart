@@ -15,6 +15,7 @@ import 'package:maple_alerts/features/money/presentation/widgets/best_move_card.
 import 'package:maple_alerts/features/money/presentation/widgets/boc_rate_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/learn_section.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/reminder_collation.dart';
@@ -248,7 +249,11 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
         widgets.add(
           ReminderCard(
             item: item,
-            onDone: () => notifier.markDone(item.id),
+            onDone: () {
+              ref.read(analyticsProvider)
+                  .track('reminder_done', {'category': item.categoryId});
+              notifier.markDone(item.id);
+            },
             onSnooze: () => notifier.snooze(item.id),
           ),
         );

@@ -5,16 +5,20 @@ import 'package:maple_alerts/core/design/design_theme.dart';
 import 'package:maple_alerts/core/design/maple_theme.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/screens/paywall/paywall_screen.dart';
+import '../../helpers/analytics_spy.dart';
 
 void main() {
   testWidgets('PaywallScreen renders Aurora layout with key elements',
       (tester) async {
+    final spy = AnalyticsSpy();
+
     // Override subscriptionProvider so it emits AsyncData(false) immediately,
     // bypassing RevenueCat which is unavailable in tests.
     final container = ProviderContainer(overrides: [
       subscriptionProvider.overrideWith(
         (ref) => _StubSubscription(false),
       ),
+      spy.override,
     ]);
     addTearDown(container.dispose);
 
@@ -43,6 +47,9 @@ void main() {
 
     // MAPLEALERTS+ badge is visible
     expect(find.text('MAPLEALERTS+'), findsOneWidget);
+
+    // Analytics: paywall_viewed fired with source=profile
+    expect(spy.propsOf('paywall_viewed'), {'source': 'profile'});
   });
 }
 

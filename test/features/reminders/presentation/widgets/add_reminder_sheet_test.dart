@@ -6,17 +6,20 @@ import 'package:maple_alerts/core/design/maple_theme.dart';
 import 'package:maple_alerts/models/alert.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/widgets/add_reminder_sheet.dart';
+import '../../../../helpers/analytics_spy.dart';
 
 void main() {
   /// Helper that builds a full widget tree with ProviderScope so we can
   /// capture the WidgetRef and pass it to [AddReminderSheetContent].
   Widget _wrap({
     required _StubAlerts stub,
+    AnalyticsSpy? spy,
     required Widget Function(WidgetRef ref) builder,
   }) {
     return ProviderScope(
       overrides: [
         alertsProvider.overrideWith((_) => stub),
+        if (spy != null) spy.override,
       ],
       child: MaterialApp(
         theme: mapleThemeData(DesignTheme.fog),
@@ -108,12 +111,16 @@ void main() {
   testWidgets('addCustom is called and sheet closes on Add reminder tap',
       (tester) async {
     final stub = _StubAlerts();
+    final spy = AnalyticsSpy();
     late WidgetRef capturedRef;
 
     // Use a Navigator so pop() works
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [alertsProvider.overrideWith((_) => stub)],
+        overrides: [
+          alertsProvider.overrideWith((_) => stub),
+          spy.override,
+        ],
         child: MaterialApp(
           theme: mapleThemeData(DesignTheme.fog),
           home: Scaffold(
@@ -140,6 +147,7 @@ void main() {
 
     expect(stub.addCustomCalls, 1);
     expect(stub.lastAlert?.title, 'Pay my rent');
+    expect(spy.propsOf('reminder_added')!['category'], isNotEmpty);
   });
 }
 

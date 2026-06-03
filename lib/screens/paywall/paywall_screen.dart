@@ -5,6 +5,7 @@ import '../../core/design/tokens/maple_colors.dart';
 import '../../core/design/widgets/aurora_background.dart';
 import '../../core/design/widgets/maple_surface.dart';
 import '../../core/design/widgets/stroke_icon.dart';
+import '../../providers/analytics_provider.dart';
 import '../../providers/subscription_provider.dart';
 
 /// Aurora-styled paywall screen — Day 4 task D4-3.
@@ -26,9 +27,18 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   _Plan _selected = _Plan.yearly;
   bool _loading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // '/paywall' is only pushed from the profile premium card today.
+    ref.read(analyticsProvider).track('paywall_viewed', {'source': 'profile'});
+  }
+
   // ── Actions ────────────────────────────────────────────────────────────────
 
   Future<void> _purchase() async {
+    ref.read(analyticsProvider)
+        .track('purchase_started', {'package': _selected.name});
     setState(() => _loading = true);
     try {
       final ok = await ref.read(subscriptionProvider.notifier).purchase();

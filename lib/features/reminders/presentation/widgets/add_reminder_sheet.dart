@@ -8,6 +8,7 @@ import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
 import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 import 'package:maple_alerts/models/alert.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 
 // ── Natural-language smart categorization ─────────────────────────────────────
 // Ported from RULES + detect() in docs/design/ux-design-1/sheets.jsx.
@@ -125,6 +126,9 @@ class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
       deadline: DateTime(_due.year, _due.month, _due.day, 9),
     );
 
+    widget.ref
+        .read(analyticsProvider)
+        .track('reminder_added', {'category': alert.type.name});
     await widget.ref.read(alertsProvider.notifier).addCustom(alert);
 
     if (mounted) Navigator.of(context).pop();
