@@ -1,11 +1,16 @@
 name: CRA Data Watch
 
+# NOTE: the cron schedule is intentionally DISABLED. canada.ca's CDN/WAF
+# silently drops HTTP from datacenter IPs (GitHub Actions runners + the local
+# Dart VM both time out; only residential-IP curl reaches it). Until the fetch
+# is routed through something CRA accepts (open experiment: a `curl` prefetch
+# step — untested from a runner — or a residential/proxy fetch), a scheduled
+# run would just open a "couldn't parse" issue every month. So this is
+# manual-only (`workflow_dispatch`): run it from a network that can reach CRA,
+# or after the fetch path is fixed. Re-enable the crons below once it works:
+#   - cron: '0 13 1 * *'                       # monthly
+#   - cron: '0 13 1,8,15,22 11,12,1,6,7 *'     # weekly in indexation windows
 on:
-  schedule:
-    # Monthly on the 1st, 13:00 UTC; the indexation windows get extra weekly
-    # runs (Nov–Jan, Jun–Jul) via the broader day-of-month list.
-    - cron: '0 13 1 * *'
-    - cron: '0 13 1,8,15,22 11,12,1,6,7 *'
   workflow_dispatch:
 
 permissions:
