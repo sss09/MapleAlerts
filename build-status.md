@@ -241,6 +241,12 @@ lib/
 - [x] **Privacy toggle** in You → Privacy ("Share anonymous usage stats" + caption), wired live. Spy-based widget tests across all surfaces (test/helpers/analytics_spy.dart).
 - [ ] **Launch-day paperwork:** Play Data Safety form → declare anonymous "App interactions", not linked, not shared; privacy-policy line (in spec §Ops).
 
+### User QA round 2 — chips, topics, explainers (276 tests, pushed)
+- [x] **"Chips don't work" root-caused (user screenshot):** (1) built-ins only map to finance/family so 6 of 8 chips were always empty; (2) the add-sheet *detected* a category but **discarded it on save** (everything saved as bare `custom` — matched no chip); (3) empty category rendered literally nothing. Fixed: detected category persists in alert metadata + `AlertPresentation` reads it back; friendly per-category empty state ("No Vehicle reminders yet — tap + to add one").
+- [x] **Topic discoverability (user couldn't find how to change topics):** "Choose what we track" row added to You tab (opens the topics sheet; the buried "Track more" link under Found money remains). `MoneyTopicsSheet` made scrollable (overflowed 64px on short viewports — same bug class as the onboarding topics page).
+- [x] **Explainers → action (user suggestion):** account explainer sheets now show a **"Track \<topic\> on Home"** CTA when the topic isn't tracked — enables the topic + points to the setup card. Learn → act in one tap.
+- [x] FHSA best-move copy fix (broken sentence when no income set). All TDD'd; 276 tests green.
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
