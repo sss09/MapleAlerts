@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:maple_alerts/core/design/design_theme.dart';
 import 'package:maple_alerts/core/design/maple_theme.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/screens/profile_screen_v2.dart';
 
@@ -56,6 +57,40 @@ void main() {
 
     expect(find.text('Notifications'), findsOneWidget);
     expect(find.text('Reminder notifications'), findsOneWidget);
+  });
+
+  testWidgets('Privacy toggle flips analyticsEnabledProvider', (t) async {
+    final container = ProviderContainer(overrides: [
+      subscriptionProvider.overrideWith(
+        (ref) => _StubSubscription(false),
+      ),
+    ]);
+    addTearDown(container.dispose);
+
+    await t.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: mapleThemeData(DesignTheme.fog),
+        home: const Scaffold(body: ProfileScreenV2()),
+      ),
+    ));
+    await t.pump(const Duration(milliseconds: 50));
+
+    // SingleChildScrollView renders all children eagerly. ensureVisible scrolls
+    // the viewport so the Privacy tile is on screen before we tap the switch.
+    final toggleFinder =
+        find.widgetWithText(SwitchListTile, 'Share anonymous usage stats');
+    await t.ensureVisible(toggleFinder);
+    await t.pump();
+
+    expect(toggleFinder, findsOneWidget);
+
+    // Tap the Switch itself (not the label) to trigger onChanged.
+    final switchFinder = find
+        .descendant(of: toggleFinder, matching: find.byType(Switch));
+    await t.tap(switchFinder);
+    await t.pump();
+    expect(container.read(analyticsEnabledProvider), isFalse);
   });
 }
 

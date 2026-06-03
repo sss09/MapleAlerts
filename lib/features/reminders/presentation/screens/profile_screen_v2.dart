@@ -8,6 +8,7 @@ import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
+import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/settings_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/services/notification_service.dart';
@@ -135,6 +136,33 @@ class ProfileScreenV2 extends ConsumerWidget {
                   }
                 },
               ),
+            ),
+          ),
+          const SizedBox(height: 28),
+
+          // ── 5. Privacy section ───────────────────────────────────────────
+          const MapleSectionHeader(label: 'Privacy'),
+          const SizedBox(height: 12),
+          MapleSurface(
+            level: MapleSurfaceLevel.minimal,
+            radius: 18,
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+            child: Material(
+              type: MaterialType.transparency,
+              child: _TweakToggle(
+                label: 'Share anonymous usage stats',
+                value: ref.watch(analyticsEnabledProvider),
+                colors: colors,
+                onChanged: (v) =>
+                    ref.read(analyticsEnabledProvider.notifier).setEnabled(v),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+            child: Text(
+              'Helps us decide what to build next. Never your numbers, never your identity.',
+              style: TextStyle(fontSize: 12, color: colors.muted),
             ),
           ),
         ],
