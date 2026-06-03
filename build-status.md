@@ -337,6 +337,19 @@ Tax brackets are intentionally excluded — they are multi-row tables with many 
 - **CRA data-source watcher — DONE (Tasks 1–5 of `2026-06-02-data-source-watcher.md`):** `WatchedSource` + sanity-band evaluation, CRA HTML parsers (TFSA, RRSP, OAS, CCB×4) against captured fixtures, pack-merge helpers, runner with failure-precedence exit codes (0/10/20), I/O glue (`tool/check_data_sources.dart`), GitHub Action (`.github/workflows/data-watch.yml` — cron monthly+weekly indexation windows, PR-on-change, issue-on-failure, human merge gate). `.gitignore` updated (`.data-watch-summary.txt`). `build-status.md` updated with full mechanism + caveats. 327 tests green, analyzer clean (14 pre-existing infos unchanged).
 - Live-fetch verification: two workflow runs triggered. Both exited code 20 (parse failure) because canada.ca's CDN/WAF blocks HTTP connections from GitHub Actions runner IPs — every source times out (`TimeoutException after 0:00:30.000000`). This is an infrastructure block, NOT a parser regression. Branching logic confirmed correct: "Open PR on change" was skipped on both runs; "Open issue on parse failure" fired and created GitHub issue #1. All parsers verified correct via offline HTML fixtures. Pending fix: replace Dart http.get with a runner-compatible fetch mechanism (curl pre-fetch or proxy).
 
+### 2026-06-02 → 06-03 — Session 3 (wrap)
+**Where we resume:** Day 6 **release prep** — app icon (dark maple), store screenshots (from device), listing copy, Android release signing (keystore), signed AAB; then Day 7 Play internal-testing upload + web live. **User critical-path: create the Google Play Developer account ($25)** — identity verification is the slow part, start it first. New-phone on-device test is still pending (phone wasn't exposing USB debugging; enable File-transfer + USB debugging, accept the prompt, then `adb` will see it and I can install).
+
+**Session 3 arc (all pushed, ~329 tests green, analyzer clean):**
+- Onboarding QA → analytics slice → 3 rounds of user QA fixes → hosted data pack → data-source watcher → deadline-coverage audit. ~30 commits.
+- **Hosted data pack DONE** (rules update OTA, no app release) + **CI fix**: Pages deploy was dead on an old branch — now deploys from `main`; pack live at `…/datapack/pack.json`.
+- **CRA data-source watcher built** (auto-detect CRA changes → draft PR). Logic fully verified; **fetch blocked** — canada.ca's CDN drops datacenter IPs (GH runner + local Dart VM). Cron disabled → manual `workflow_dispatch` only; unblock = curl-prefetch experiment or proxy (logged above).
+- **Deadline audit**: removed discontinued Carbon Rebate (accuracy bug), added 5 universal deadlines; deferred OAS/CPP payment dates (need verified schedule), RRIF@71/HBP/RDSP (money-engine), province-specific (later).
+- **Notification gap fixed**: reminders <7 days out now notify (`reminderFireDate`); multi-lead-time series logged post-launch.
+- **Decisions locked**: no email/signups at launch; anonymous analytics only (Aptabase). Git author = sohail09.syed@gmail.com (repo-local).
+
+**Detailed Session-3 notes below.**
+
 ### 2026-06-02 — Session 3
 - **Onboarding first-impression QA (user walkthrough):** fixed the topics-page 122px overflow (ListView + regression test), trimmed onboarding to 3 info pages + topics, replaced the $4.99 pitch with the trust page ("no account, no email — data stays on your phone"). Pushed.
 - **Decision — no email/sign-ups at launch:** distribution for the app chain = push + in-app cross-promo + post-launch opt-in lead magnet; accounts arrive with premium sync. Product data comes from anonymous analytics instead.
