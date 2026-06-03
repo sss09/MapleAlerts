@@ -7,6 +7,7 @@ import 'package:maple_alerts/models/alert.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/screens/maple_home_shell.dart';
+import '../../../../helpers/analytics_spy.dart';
 
 void main() {
   final now = DateTime.now();
@@ -22,10 +23,12 @@ void main() {
 
   /// Build the shell with stubbed providers.
   Widget buildShell() {
+    final spy = AnalyticsSpy();
     return ProviderScope(
       overrides: [
         alertsProvider.overrideWith((ref) => _StubAlerts(sampleAlerts)),
         subscriptionProvider.overrideWith((_) => _StubSubscription(false)),
+        spy.override,
       ],
       child: MaterialApp(
         theme: mapleThemeData(DesignTheme.fog),

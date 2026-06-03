@@ -6,9 +6,11 @@ import 'package:maple_alerts/core/design/maple_theme.dart';
 import 'package:maple_alerts/models/alert.dart';
 import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/screens/home_screen_v2.dart';
+import '../../../../helpers/analytics_spy.dart';
 
 void main() {
   testWidgets('Home renders hero + a reminder from alertsProvider', (t) async {
+    final spy = AnalyticsSpy();
     final sample = [
       Alert(
         id: 'rrsp',
@@ -34,6 +36,7 @@ void main() {
         stub = _StubAlerts(sample);
         return stub;
       }),
+      spy.override,
     ]);
     addTearDown(container.dispose);
 
@@ -55,6 +58,61 @@ void main() {
 
     expect(find.text('YOUR DAY, HANDLED'), findsOneWidget);
     expect(find.text('RRSP deadline'), findsOneWidget);
+  });
+
+  testWidgets('reminder_done fires with non-empty category', (t) async {
+    final spy = AnalyticsSpy();
+
+    // Use a reminder due in the future so it survives the "today or future"
+    // filter in HomeScreenV2 and appears in the list.
+    final sample = [
+      Alert(
+        id: 'rrsp-done',
+        title: 'RRSP deadline',
+        description: 'Contribute before March 1',
+        type: AlertType.rrsp,
+        deadline: DateTime.now().add(const Duration(days: 3)),
+      ),
+    ];
+
+    late _StubAlerts stub;
+
+    final container = ProviderContainer(overrides: [
+      alertsProvider.overrideWith((ref) {
+        stub = _StubAlerts(sample);
+        return stub;
+      }),
+      spy.override,
+    ]);
+    addTearDown(container.dispose);
+
+    await t.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: mapleThemeData(DesignTheme.fog),
+        home: const Scaffold(body: HomeScreenV2()),
+      ),
+    ));
+
+    await t.pump();
+    stub.forceData(sample);
+    await t.pump();
+
+    // The card is rendered — tap its title to expand the detail section.
+    expect(find.text('RRSP deadline'), findsOneWidget);
+    await t.tap(find.text('RRSP deadline'));
+    // Drive the AnimatedSize animation to completion (250 ms).
+    await t.pump(const Duration(milliseconds: 50));
+    await t.pump(const Duration(milliseconds: 100));
+    await t.pump(const Duration(milliseconds: 150));
+
+    // Scroll the expanded "Mark done" pill into the visible viewport, then tap.
+    await t.ensureVisible(find.text('Mark done'));
+    await t.pump(const Duration(milliseconds: 50));
+    await t.tap(find.text('Mark done'), warnIfMissed: false);
+    await t.pump();
+
+    expect(spy.propsOf('reminder_done')!['category'], isNotEmpty);
   });
 }
 

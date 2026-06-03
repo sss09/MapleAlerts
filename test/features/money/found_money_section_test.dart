@@ -118,4 +118,55 @@ void main() {
     expect(spy.fired('insight_card_viewed'), isTrue);
     expect((spy.propsOf('insight_card_viewed')!['id'] as String), isNotEmpty);
   });
+
+  testWidgets('insight_cta_tapped fires when CTA is tapped', (tester) async {
+    final spy = AnalyticsSpy();
+    // foundMoney insight with a CTA — goes into view.cards (not setups).
+    // tfsa_room is in the default-enabled set so it passes the topic filter.
+    await tester.pumpWidget(_wrap(const [
+      MoneyInsight(
+        id: 'tfsa_room',
+        kind: InsightKind.foundMoney,
+        severity: InsightSeverity.positive,
+        headline: r'You have $14,000 in TFSA room',
+        cta: InsightCta('Update my number', InsightAction.editTfsaProfile),
+      ),
+    ], spy: spy));
+    await tester.pump();
+
+    // The CTA button is always visible on a foundMoney card (not hidden behind
+    // an expand gesture) — tap its label text directly.
+    expect(find.text('Update my number'), findsOneWidget);
+    await tester.tap(find.text('Update my number'));
+    await tester.pump();
+
+    expect(spy.propsOf('insight_cta_tapped')!['id'], isNotEmpty);
+  });
+
+  testWidgets('topics_sheet_opened fires when Track more is tapped',
+      (tester) async {
+    // Give the test a tall enough surface so the topics sheet does not
+    // overflow its Column during the pump after the tap.
+    await tester.binding.setSurfaceSize(const Size(800, 1400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final spy = AnalyticsSpy();
+    await tester.pumpWidget(_wrap(const [
+      MoneyInsight(
+        id: 'tfsa_room',
+        kind: InsightKind.foundMoney,
+        severity: InsightSeverity.positive,
+        headline: r'You have $14,000 in TFSA room',
+      ),
+    ], spy: spy));
+    await tester.pump();
+
+    // 'Track more' button is shown alongside the card (view.cards non-empty).
+    expect(find.text('Track more'), findsOneWidget);
+    await tester.tap(find.text('Track more'));
+    await tester.pump();
+
+    // Event is tracked synchronously before the sheet opens.
+    expect(spy.fired('topics_sheet_opened'), isTrue);
+  });
 }
