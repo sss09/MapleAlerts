@@ -61,3 +61,17 @@ const double kBocPrimeSpread = 2.20;
 
 /// Prefs key: anonymous analytics opt-out (bool, default true = sharing on).
 const String kAnalyticsEnabledKey = 'analytics_enabled_v1';
+
+/// Hosted data pack — the one JSON file that keeps Canadian figures current
+/// without an app release (see docs/superpowers/specs/2026-06-02-hosted-data-pack-design.md).
+const String kDataPackUrl =
+    'https://sss09.github.io/MapleAlerts/datapack/pack.json';
+
+/// Prefs key: raw cached pack JSON.
+const String kDataPackJsonKey = 'data_pack_json_v1';
+
+/// Prefs key: ISO timestamp of the last successful pack fetch.
+const String kDataPackFetchedAtKey = 'data_pack_fetched_at_v1';
+
+/// Re-fetch the pack when the cache is older than this.
+const Duration kDataPackTtl = Duration(hours: 24);
