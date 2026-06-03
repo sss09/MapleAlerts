@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:maple_alerts/core/design/design_theme.dart';
 import 'package:maple_alerts/core/design/maple_theme.dart';
+import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
 import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/screens/profile_screen_v2.dart';
@@ -126,6 +127,29 @@ void main() {
     await t.tap(switchFinder);
     await t.pump();
     expect(container.read(analyticsEnabledProvider), isFalse);
+  });
+
+  testWidgets('Privacy section shows the Canadian-data pack version', (t) async {
+    final spy = AnalyticsSpy();
+    final container = ProviderContainer(overrides: [
+      subscriptionProvider.overrideWith((ref) => _StubSubscription(false)),
+      spy.override,
+    ]);
+    addTearDown(container.dispose);
+
+    await t.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: mapleThemeData(DesignTheme.fog),
+        home: const Scaffold(body: ProfileScreenV2()),
+      ),
+    ));
+    await t.pump(const Duration(milliseconds: 50));
+
+    final line = find.textContaining('Canadian data: v$kEmbeddedPackVersion');
+    await t.ensureVisible(line);
+    expect(line, findsOneWidget);
+    expect(find.textContaining('built-in'), findsOneWidget);
   });
 }
 

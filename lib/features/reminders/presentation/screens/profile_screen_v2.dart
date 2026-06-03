@@ -8,8 +8,10 @@ import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
+import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sheet.dart';
 import 'package:maple_alerts/providers/analytics_provider.dart';
+import 'package:maple_alerts/providers/data_pack_provider.dart';
 import 'package:maple_alerts/providers/settings_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/services/notification_service.dart';
@@ -31,6 +33,7 @@ class ProfileScreenV2 extends ConsumerWidget {
     final isPremium = subscriptionAsync.valueOrNull ?? false;
     final notificationsEnabled =
         ref.watch(settingsProvider).notificationsEnabled;
+    final pack = ref.watch(dataPackProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 64, 20, 130),
@@ -209,6 +212,14 @@ class ProfileScreenV2 extends ConsumerWidget {
             child: Text(
               'Helps us decide what to build next. Never your numbers, never your identity.',
               style: TextStyle(fontSize: 12, color: colors.muted),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+            child: Text(
+              'Canadian data: v${pack.packVersion}'
+              '${pack is EmbeddedDataPack ? ' · built-in' : ' · updated over the air'}',
+              style: TextStyle(fontSize: 11, color: colors.faint),
             ),
           ),
         ],
