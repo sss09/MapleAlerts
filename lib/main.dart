@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aptabase_flutter/aptabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'utils/constants.dart';
 import 'services/notification_service.dart';
 import 'services/revenue_cat_service.dart';
 import 'core/design/design_theme_provider.dart';
+import 'providers/data_pack_provider.dart';
 import 'router.dart';
 
 void main() async {
@@ -29,7 +32,12 @@ void main() async {
   } catch (_) {
     // App works fully without analytics.
   }
-  runApp(const ProviderScope(child: MapleAlertsApp()));
+  final container = ProviderContainer();
+  unawaited(initDataPack(container));
+  runApp(UncontrolledProviderScope(
+    container: container,
+    child: const MapleAlertsApp(),
+  ));
 }
 
 class MapleAlertsApp extends ConsumerWidget {

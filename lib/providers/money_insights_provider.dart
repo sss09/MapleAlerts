@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../engine/canadian_data_engine/canadian_data_engine.dart';
 import '../features/money/presentation/money_insight.dart';
+import 'data_pack_provider.dart';
 import 'money_profile_provider.dart';
 import 'tfsa_insight_provider.dart';
 
@@ -12,7 +13,7 @@ final rrspInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   final result = rrspRule(
     profile: profile,
     asOf: DateTime.now(),
-    dataPack: const EmbeddedDataPack(),
+    dataPack: ref.watch(dataPackProvider),
   );
 
   final hasRequiredInput = profile.province != null &&
@@ -30,7 +31,7 @@ final ccbInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   final result = ccbRule(
     profile: profile,
     asOf: DateTime.now(),
-    dataPack: const EmbeddedDataPack(),
+    dataPack: ref.watch(dataPackProvider),
   );
 
   final hasRequiredInput = profile.familyNetIncome != null &&
@@ -47,7 +48,7 @@ final oasInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   final result = oasRule(
     profile: profile,
     asOf: DateTime.now(),
-    dataPack: const EmbeddedDataPack(),
+    dataPack: ref.watch(dataPackProvider),
   );
 
   final hasRequiredInput =
@@ -73,7 +74,7 @@ final gicInsightsProvider = Provider<List<MoneyInsight>>((ref) {
 final fhsaInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   final profile = ref.watch(moneyProfileProvider);
   final result =
-      fhsaRule(profile: profile, asOf: DateTime.now(), dataPack: const EmbeddedDataPack());
+      fhsaRule(profile: profile, asOf: DateTime.now(), dataPack: ref.watch(dataPackProvider));
   return fhsaInsights(result, hasRequiredInput: profile.fhsaContributed != null);
 });
 

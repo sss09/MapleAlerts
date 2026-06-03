@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../engine/canadian_data_engine/canadian_data_engine.dart';
 import '../features/money/presentation/money_insight.dart';
+import 'data_pack_provider.dart';
 import 'money_profile_provider.dart';
 
 /// Runs the TFSA room rule over the current [MoneyProfile] and the embedded
@@ -13,7 +14,7 @@ final tfsaInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   final result = tfsaRule(
     profile: profile,
     asOf: DateTime.now(),
-    dataPack: const EmbeddedDataPack(),
+    dataPack: ref.watch(dataPackProvider),
   );
 
   final hasRequiredInput =
