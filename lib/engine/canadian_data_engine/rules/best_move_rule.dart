@@ -142,14 +142,16 @@ BestMove? bestMove({
   //    signals the intent, so a configured FHSA with room ranks first here.
   if (fhsa != null && fhsa.room > 0) {
     final savingsNote = fhsa.estimatedTaxSavings > 0
-        ? ' Contributing this year could save ≈${formatDollars(fhsa.estimatedTaxSavings)} in tax,'
-        : ' Contributing';
+        ? ' Contributing this year could save '
+            '≈${formatDollars(fhsa.estimatedTaxSavings)} in tax, and it '
+            'grows tax-free.'
+        : ' Contributions grow tax-free.';
     return BestMove(
       kind: BestMoveKind.opportunity,
       title: 'Contribute to your FHSA',
       detail:
           'The FHSA is hard to beat for a first home — deductible like an RRSP '
-          'and tax-free on withdrawal.$savingsNote and it grows tax-free. '
+          'and tax-free on withdrawal.$savingsNote '
           'Up to ${formatDollars(fhsa.annualContributable)} this year.',
       dollarValue: fhsa.estimatedTaxSavings > 0
           ? fhsa.estimatedTaxSavings
