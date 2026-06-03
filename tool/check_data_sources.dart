@@ -54,9 +54,25 @@ Future<void> main() async {
 }
 
 Future<String> _fetch(Uri url) async {
-  final res = await http.get(url).timeout(const Duration(seconds: 10));
-  if (res.statusCode != 200) {
-    throw HttpException('HTTP ${res.statusCode}', uri: url);
+  // canada.ca can be slow to respond from CI runner IPs; retry up to 3 times
+  // with a 30-second timeout per attempt before declaring a fetch failure.
+  const attempts = 3;
+  Object? lastError;
+  for (var i = 0; i < attempts; i++) {
+    try {
+      final res = await http
+          .get(url, headers: {'User-Agent': 'MapleAlerts-data-watch/1.0'})
+          .timeout(const Duration(seconds: 30));
+      if (res.statusCode != 200) {
+        throw HttpException('HTTP ${res.statusCode}', uri: url);
+      }
+      return res.body;
+    } catch (e) {
+      lastError = e;
+      if (i < attempts - 1) {
+        await Future<void>.delayed(const Duration(seconds: 5));
+      }
+    }
   }
-  return res.body;
+  throw lastError!;
 }
