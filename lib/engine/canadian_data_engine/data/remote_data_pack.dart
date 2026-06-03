@@ -86,6 +86,8 @@ class RemoteDataPack implements DataPack {
   // ── Defensive section parsers: any malformed shape → null (fallback) ──────
 
   static Map<int, int>? _intIntMap(dynamic raw) {
+    // An explicitly empty {} is treated like a missing section (fallback) —
+    // an empty limits table is malformed, not an intentional "clear override".
     if (raw is! Map || raw.isEmpty) return null;
     try {
       return raw.map((k, v) => MapEntry(int.parse(k as String), (v as num).toInt()));
@@ -151,12 +153,16 @@ class RemoteDataPack implements DataPack {
         final province = Province.values
             .where((p) => p.name == entry.key)
             .firstOrNull;
-        if (province == null) return null;
+        // Skip keys this build doesn't know (e.g. a future pack adds a region
+        // an older app can't parse) — per-province fallback, never abort the
+        // whole map. A malformed bracket LIST for a known province still
+        // rejects the map (that's corrupt data, not just unknown).
+        if (province == null) continue;
         final brackets = _brackets(entry.value);
         if (brackets == null) return null;
         out[province] = brackets;
       }
-      return out;
+      return out.isEmpty ? null : out;
     } catch (_) {
       return null;
     }

@@ -247,6 +247,19 @@ lib/
 - [x] **Explainers → action (user suggestion):** account explainer sheets now show a **"Track \<topic\> on Home"** CTA when the topic isn't tracked — enables the topic + points to the setup card. Learn → act in one tap.
 - [x] FHSA best-move copy fix (broken sentence when no income set). All TDD'd; 276 tests green.
 
+### User QA round 3 — chip relevance + Household rename (pushed)
+- [x] Money co-pilot layer shows only under **All** and **Finance** chips; seasonal rail under **All**/**Seasonal** — other chips show just their reminders (user: "don't bombard with not related details"). 'Home' category chip → **'Household'** (label only, id unchanged) — collided with the Home nav tab.
+
+### Hosted data pack — DONE (297 tests; rules update OTA without app releases)
+- [x] **The currency mechanism** from `…/2026-06-02-hosted-data-pack-design.md`: `RemoteDataPack.fromJson` (pure Dart, per-field fallback to embedded, schemaVersion gate) + `DataPackService` (injectable fetcher, prefs cache, 24h TTL, fail-soft) + `dataPackProvider` (newest-pack-wins: remote only when packVersion > `kEmbeddedPackVersion`) wired into all 6 rule call sites + fire-and-forget `initDataPack` at startup.
+- [x] **Pack file** `web/datapack/pack.json` generated from the embedded tables by `tool/generate_data_pack.dart` (rerun after any embedded change); a sanity test reads the shipped file from disk and pins it equal to embedded. Served at `https://sss09.github.io/MapleAlerts/datapack/pack.json` (CORS-open; works Android + web).
+- [x] **Trust line** in You → Privacy: "Canadian data: v2026-06-02 · built-in / · updated over the air".
+- [x] **CI fix (found during verification):** `pages.yml` only deployed from a dead dev branch with Flutter 3.32 — the live site had been stale since the branch merge and the pack could never ship. Now deploys from `main` with Flutter 3.44.
+- **Ops loop:** Nov–Dec (CRA 2027 limits — FIRST REAL UPDATE DUE), July (CCB year), budgets → edit pack.json, cite source in commit, bump packVersion, push. Each release: refresh embedded tables + `dart run tool/generate_data_pack.dart` + bump `kEmbeddedPackVersion`.
+
+### ⚠️ Notification gap (found in code review of "how do alerts work")
+- Alerts schedule ONE local notification at deadline−7d 9:00 (exact, fires app-closed; web can't). **If a deadline is <7 days away when added → NO notification at all** (`notification_service.dart:104-107`). Fix proposed (fall back day-before → same-day); user decision pending. Multi-lead-times (60/30/7/1) = post-launch.
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce

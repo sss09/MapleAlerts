@@ -94,6 +94,26 @@ void main() {
       expect(pack.tfsaAnnualLimit(2027), 7500); // unaffected
     });
 
+    test('an unknown province key is skipped, not fatal to the whole map', () {
+      // Future pack adds a region this build's Province enum doesn't know —
+      // known provinces must still get the remote brackets (review finding).
+      final json = fullJson();
+      (json['tax'] as Map)['provincial'] = {
+        'on': [
+          [0, 0.0505],
+          [55000, 0.0915],
+        ],
+        'zz': [
+          [0, 0.01],
+        ],
+      };
+      final pack = RemoteDataPack.fromJson(json, fallback: fallback);
+      expect(pack.provincialBrackets(2027, Province.on)[1].lowerBound, 55000);
+      // Unlisted provinces still fall back per-province.
+      expect(pack.provincialBrackets(2027, Province.bc).length,
+          fallback.provincialBrackets(2027, Province.bc).length);
+    });
+
     test('unsupported schemaVersion throws', () {
       expect(
         () => RemoteDataPack.fromJson(
