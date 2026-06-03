@@ -23,11 +23,39 @@ void main() {
       expect(items.any((e) => e.title.contains('CRA')), isFalse);
     });
 
-    test('shows the quarterly July events in early June', () {
+    test('shows the quarterly July GST/HST event in early June', () {
       final items = upcomingSeasonalEvents(DateTime(2026, 6, 1));
       final titles = items.map((e) => e.title).toList();
-      expect(titles, contains('Canada Carbon Rebate'));
       expect(titles, contains('GST/HST credit'));
+    });
+
+    test('never shows the discontinued Canada Carbon Rebate', () {
+      // CCR for individuals ended (final payment Apr 2025); showing it would
+      // surface money that no longer exists. Check across the whole year.
+      for (var month = 1; month <= 12; month++) {
+        final items = upcomingSeasonalEvents(DateTime(2026, month, 10),
+            withinDays: 400, max: 50);
+        expect(items.any((e) => e.title.contains('Carbon')), isFalse,
+            reason: 'Carbon Rebate must not appear (month $month)');
+      }
+    });
+
+    test('covers the added universal deadlines somewhere in the year', () {
+      // Each should surface within its lead window at some point in the year.
+      final seen = <String>{};
+      for (var month = 1; month <= 12; month++) {
+        for (final e in upcomingSeasonalEvents(DateTime(2026, month, 1),
+            withinDays: 400, max: 50)) {
+          seen.add(e.title);
+        }
+      }
+      expect(seen, containsAll(<String>[
+        'Self-employed tax filing',
+        'RESP contribution cutoff',
+        'FHSA room opens',
+        'Charitable donation cutoff',
+        'Tax instalment due',
+      ]));
     });
 
     test('all returned events resolve to a non-past date for any month', () {

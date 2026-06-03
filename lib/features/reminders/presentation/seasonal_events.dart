@@ -68,17 +68,9 @@ List<SeasonalEvent> upcomingSeasonalEvents(
       sub: 'File your return to avoid penalties',
       date: _nextAnnual(now, 4, 30),
     ),
-    SeasonalEvent(
-      icon: 'leaf',
-      title: 'Canada Carbon Rebate',
-      sub: 'Quarterly CCR deposit lands',
-      date: _nextAmong(now, const [
-        [1, 15],
-        [4, 15],
-        [7, 15],
-        [10, 15],
-      ]),
-    ),
+    // NOTE: the Canada Carbon Rebate for individuals is DISCONTINUED (final
+    // payment Apr 2025; fuel charge ended Apr 1 2025). Deliberately omitted —
+    // showing it would surface money that no longer exists.
     SeasonalEvent(
       icon: 'finance',
       title: 'GST/HST credit',
@@ -101,6 +93,41 @@ List<SeasonalEvent> upcomingSeasonalEvents(
       title: 'New TFSA room opens',
       sub: 'Fresh contribution room for the year',
       date: _nextAnnual(now, 1, 1),
+    ),
+    SeasonalEvent(
+      icon: 'finance',
+      title: 'Self-employed tax filing',
+      sub: 'Filing due Jun 15 (balance owing still due Apr 30)',
+      date: _nextAnnual(now, 6, 15),
+    ),
+    SeasonalEvent(
+      icon: 'family',
+      title: 'RESP contribution cutoff',
+      sub: 'Contribute by Dec 31 for this year’s CESG grant',
+      date: _nextAnnual(now, 12, 31),
+    ),
+    SeasonalEvent(
+      icon: 'home',
+      title: 'FHSA room opens',
+      sub: 'New \$8,000 first-home savings room on Jan 1',
+      date: _nextAnnual(now, 1, 1),
+    ),
+    SeasonalEvent(
+      icon: 'finance',
+      title: 'Charitable donation cutoff',
+      sub: 'Donate by Dec 31 to claim on this year’s return',
+      date: _nextAnnual(now, 12, 31),
+    ),
+    SeasonalEvent(
+      icon: 'finance',
+      title: 'Tax instalment due',
+      sub: 'Quarterly CRA instalment (self-employed / investors)',
+      date: _nextAmong(now, const [
+        [3, 15],
+        [6, 15],
+        [9, 15],
+        [12, 15],
+      ]),
     ),
     SeasonalEvent(
       icon: 'seasonal',
