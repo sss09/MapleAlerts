@@ -294,6 +294,14 @@ Tax brackets are intentionally excluded — they are multi-row tables with many 
 
 **Pending fix:** The fetch mechanism needs to be replaced or bypassed for the github.com runner environment. Options: (1) pre-fetch pages via a scheduled GitHub Pages or CF Worker proxy; (2) use a self-hosted runner on a non-blocked IP; (3) add a step-level `curl` pre-fetch that writes temp files, then have the Dart tool read local files instead of fetching. This is a deployment/ops concern — all application logic is correct and tested.
 
+### Deadline-coverage audit + fixes (329 tests, pushed)
+- [x] **Accuracy bug fixed:** removed the **Canada Carbon Rebate** from the seasonal rail (CCR for individuals ended Apr 2025) — it was surfacing money that no longer exists, the exact error the CCB pivot guarded against.
+- [x] **Added 5 universal deadlines** to the seasonal rail: self-employed tax filing (Jun 15), RESP/CESG contribution cutoff (Dec 31), FHSA room opens (Jan 1), charitable donation cutoff (Dec 31), quarterly tax instalments (Mar/Jun/Sep/Dec 15).
+- [x] Removed stale "max $31,560 for 2024" from the RRSP alert copy → generic (18% of prior-year income up to the CRA max, minus pension adjustment).
+- [ ] **DEFERRED — OAS/CPP/GIS monthly payment dates:** NOT shipped. The "third-to-last business day" rule is **wrong for December** (paid ~Dec 22 pre-holidays, verified vs 2025 schedule); CRA publishes these per year like BoC dates. Needs the verified published schedule — natural fit for the data-pack/watcher. High value for seniors.
+- [ ] **DEFERRED — situation/age-specific hard deadlines (money-engine, needs birthYear/profile):** RRSP→RRIF conversion by Dec 31 of the year you turn 71 (miss = whole RRSP deregistered/taxed — high stakes); HBP annual repayment (tied to RRSP deadline); RDSP contribution (Dec 31, disability grant/bond).
+- [ ] **DEFERRED — province-specific benefit dates:** Ontario Trillium, BC/QC family benefits, Quebec's separate filing. Engine is province-aware for tax only; benefit dates are federal-only for now.
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce

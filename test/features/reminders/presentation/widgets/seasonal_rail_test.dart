@@ -13,15 +13,17 @@ void main() {
   group('SeasonalRail', () {
     testWidgets('shows upcoming seasonal events for the given date',
         (tester) async {
-      // June 1 → GST/HST credit (Jul 5) and Canada Carbon Rebate (Jul 15)
-      // are within the look-ahead window; CRA (Apr 30) is not.
+      // June 1 → tax instalment (Jun 15) and GST/HST credit (Jul 5) are within
+      // the look-ahead window; CRA filing (Apr 30) is not.
       await tester.pumpWidget(wrap(SeasonalRail(now: DateTime(2026, 6, 1))));
       await tester.pump();
 
       expect(find.text('Seasonal — Canada'), findsOneWidget);
-      expect(find.textContaining('Carbon Rebate'), findsOneWidget);
-      // Past-this-year CRA deadline must NOT appear.
-      expect(find.textContaining('CRA'), findsNothing);
+      expect(find.textContaining('GST/HST credit'), findsOneWidget);
+      // The discontinued Carbon Rebate must never appear.
+      expect(find.textContaining('Carbon'), findsNothing);
+      // Past-this-year tax filing deadline (Apr 30) must NOT appear.
+      expect(find.textContaining('tax filing deadline'), findsNothing);
     });
 
     testWidgets('hides entirely when nothing is upcoming in the window',

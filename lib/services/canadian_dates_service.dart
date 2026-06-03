@@ -20,9 +20,9 @@ class CanadianDatesService {
       title: 'RRSP Contribution Deadline',
       description:
           'Last day to contribute to your RRSP for the ${year - 1} tax year and '
-          'claim the deduction on your CRA T1 return. The limit is 18% of your '
-          'prior year earned income (max \$31,560 for 2024). Unused room carries '
-          'forward indefinitely.',
+          'claim the deduction on your CRA T1 return. Your limit is 18% of prior-'
+          'year earned income up to the annual CRA maximum, minus any pension '
+          'adjustment. Unused room carries forward indefinitely.',
       type: AlertType.rrsp,
       deadline: rrspDeadline(year),
       reminderEnabled: true,
