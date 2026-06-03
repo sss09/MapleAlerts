@@ -180,25 +180,34 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                           ),
 
                         // ── Money co-pilot layer, below the alerts ──────────
-                        const SizedBox(height: 12),
+                        // Finance content — shown only where it's relevant
+                        // ('All' and 'Finance'), so picking e.g. Vehicle gives
+                        // a clean, focused view instead of unrelated cards.
+                        if (_activeCategory == 'All' ||
+                            _activeCategory == 'finance') ...[
+                          const SizedBox(height: 12),
 
-                        // Best move right now — the single top recommendation
-                        const BestMoveCard(),
+                          // Best move right now — the single top recommendation
+                          const BestMoveCard(),
 
-                        // Found money — TFSA / RRSP / CCB / OAS / GIC cards
-                        const FoundMoneySection(),
-                        const SizedBox(height: 16),
+                          // Found money — TFSA / RRSP / CCB / OAS / GIC cards
+                          const FoundMoneySection(),
+                          const SizedBox(height: 16),
 
-                        // Live BoC policy rate (hidden until available)
-                        const BocRateCard(),
+                          // Live BoC policy rate (hidden until available)
+                          const BocRateCard(),
 
-                        // Learn the rules — plain-language explainers
-                        const SizedBox(height: 20),
-                        const LearnSection(),
+                          // Learn the rules — plain-language explainers
+                          const SizedBox(height: 20),
+                          const LearnSection(),
+                        ],
 
-                        // Seasonal rail
-                        const SizedBox(height: 24),
-                        const SeasonalRail(),
+                        // Seasonal rail — relevant on 'All' and 'Seasonal'
+                        if (_activeCategory == 'All' ||
+                            _activeCategory == 'seasonal') ...[
+                          const SizedBox(height: 24),
+                          const SeasonalRail(),
+                        ],
                         const SizedBox(height: 24),
 
                         // Footer

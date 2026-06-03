@@ -94,8 +94,9 @@ void main() {
     stub.forceData(sample);
     await t.pump();
 
-    // The finance alert renders under 'All'.
+    // The finance alert renders under 'All', along with the money layer.
     expect(find.text('RRSP deadline'), findsOneWidget);
+    expect(find.text('Found money'), findsOneWidget);
 
     // Vehicle has no reminders — picking it must show a friendly empty state,
     // not silently render nothing (user-reported "chips don't work").
@@ -105,6 +106,17 @@ void main() {
     expect(find.text('RRSP deadline'), findsNothing);
     expect(find.textContaining('No Vehicle reminders yet'), findsOneWidget);
     expect(find.textContaining('tap + to add one'), findsOneWidget);
+    // The money co-pilot layer is finance content — it must not bombard
+    // unrelated category views (user-reported).
+    expect(find.text('Found money'), findsNothing);
+
+    // Finance IS money territory — the layer returns there.
+    // (The chip row scrolls horizontally; bring the chip into view first.)
+    await t.ensureVisible(find.text('Finance'));
+    await t.pump();
+    await t.tap(find.text('Finance'), warnIfMissed: false);
+    await t.pump();
+    expect(find.text('Found money'), findsOneWidget);
   });
 
   testWidgets('reminder_done fires with non-empty category', (t) async {

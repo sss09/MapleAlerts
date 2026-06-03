@@ -58,7 +58,9 @@ void main() {
         'Vehicle',
         'Health',
         'Finance',
-        'Home',
+        // 'Household', not 'Home' — must not collide with the Home nav tab
+        // (user-reported confusion: "No Home reminders yet" on Home).
+        'Household',
         'Family',
         'Seasonal',
       ]) {

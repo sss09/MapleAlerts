@@ -28,7 +28,9 @@ const Map<String, ReminderCategory> kReminderCategories = {
   'vehicle':    ReminderCategory(id: 'vehicle',    label: 'Vehicle',    icon: Icons.directions_car, color: Color(0xFF90B0D2), defaultLeadTimes: [Duration(days: 14), Duration(days: 3)]),
   'health':     ReminderCategory(id: 'health',     label: 'Health',     icon: Icons.favorite_border, color: Color(0xFF78C8AC), defaultLeadTimes: [Duration(days: 7), Duration(days: 1)]),
   'finance':    ReminderCategory(id: 'finance',    label: 'Finance',    icon: Icons.savings,         color: Color(0xFFDCC289), defaultLeadTimes: [Duration(days: 60), Duration(days: 30), Duration(days: 7), Duration(days: 1)]),
-  'home':       ReminderCategory(id: 'home',       label: 'Home',       icon: Icons.home_outlined,   color: Color(0xFFAAB8D4), defaultLeadTimes: [Duration(days: 30), Duration(days: 7)]),
+  // Label 'Household' (not 'Home') so the chip never collides with the Home
+  // nav tab; the id stays 'home' for persisted-data compatibility.
+  'home':       ReminderCategory(id: 'home',       label: 'Household',  icon: Icons.home_outlined,   color: Color(0xFFAAB8D4), defaultLeadTimes: [Duration(days: 30), Duration(days: 7)]),
   'family':     ReminderCategory(id: 'family',     label: 'Family',     icon: Icons.people_outline,  color: Color(0xFFC2AEE0), defaultLeadTimes: [Duration(days: 7), Duration(days: 1)]),
   'seasonal':   ReminderCategory(id: 'seasonal',   label: 'Seasonal',   icon: Icons.ac_unit,         color: Color(0xFF9CCEDC), defaultLeadTimes: [Duration(days: 14), Duration(days: 3)]),
   'custom':     ReminderCategory(id: 'custom',     label: 'Custom',     icon: Icons.notifications_none, color: Color(0xFF8A99AC)),
