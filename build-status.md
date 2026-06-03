@@ -262,6 +262,34 @@ lib/
 - [ ] **POST-LAUNCH: multi-lead-time series.** Each reminder fires ONE notification today. The category registry already defines escalating leads (finance 60/30/7/1, government 30/7/1) — the "calm escalating nudges" intent. Upgrade: `scheduleAlert` schedules one notification per `category.defaultLeadTimes` entry still in the future, unique IDs per lead. ~half-day slice. Not launch-blocking (one well-timed nudge delivers the core value).
 - [ ] POST-LAUNCH: optional batched "morning digest" instead of per-reminder notifications.
 
+### CRA data-source watcher — DONE (327 tests; scheduled Action live on main)
+
+**Mechanism:** A `dart run tool/check_data_sources.dart` script fetches the 5 indexed CRA figures, applies per-source sanity bands (min/max/step), diffs against the current `web/datapack/pack.json`, and exits with a structured code:
+- **exit 0** — all figures match; no action.
+- **exit 10** — an in-band figure changed; rewrites `pack.json` + writes `.data-watch-summary.txt`.
+- **exit 20** — a source could not be parsed (page moved, regex anchor gone); writes `.data-watch-summary.txt`.
+
+The GitHub Action (`.github/workflows/data-watch.yml`) branches on that exit code:
+- **code 10 → `peter-evans/create-pull-request@v6`** — opens a PR on branch `data-watch/update` with the summary as body and `web/datapack/pack.json` as the only changed file. Human merge gate is the PR review.
+- **code 20 → `actions/github-script@v7`** — opens a GitHub issue titled "data-watch: could not parse a CRA source" with the parse-failure detail in the body.
+
+**Schedule:** monthly on the 1st + weekly during indexation windows (Nov–Jan and Jun–Jul, when CRA publishes next-year limits).
+
+**5 figures watched:**
+1. TFSA annual limit (step-$500 band, $5k–$20k)
+2. RRSP dollar maximum ($25k–$60k, step-$10)
+3. OAS recovery threshold ($60k–$200k)
+4. CCB max — children under 6 ($5k–$12k)
+5. CCB max — children 6–17 ($4k–$11k) + CCB phase-out thresholds 1 & 2
+
+Tax brackets are intentionally excluded — they are multi-row tables with many derived figures (not single indexable numbers) and require a manual review pass; they stay in `tax_brackets.dart` with a manual edit cycle.
+
+**Human merge gate:** the PR step only stages `web/datapack/pack.json`; a human must review the diff and merge. The tool never auto-merges.
+
+**Maintenance caveat:** if the "Check CRA sources" step exits 20 in CI, it means CRA moved or restructured a page. The fix is: capture the new HTML into the relevant `test/tool/fixtures/<id>_good.html`, update the parser regex in `tool/data_sources/parsers.dart` to match the new anchor, run `flutter test test/tool/parsers_test.dart` to verify, then push.
+
+**Local dry-run caveat:** Dart VM outbound HTTP is blocked in the dev sandbox (Dart `http.get` to canada.ca times out; `curl` via bash works). The live fetch is therefore verified by the GitHub Action run, not locally. All unit logic (parsers, sanity bands, decision/outcome, pack-merge) is fully tested offline via HTML fixtures (327 tests pass).
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
@@ -292,6 +320,10 @@ lib/
 - Established this build-status doc + hook-backed session memory rule (SessionStart hook in `.claude/settings.json`).
 - Received full product thesis (monetization, onboarding, notifications, MVP, moat, marketing, full alert taxonomy). Categorized into a 7-file product doc suite + architecture spec.
 - Made + documented key recommendations: add Tax-filing alert to MVP (→8); reshape free/paid to gate personalization not public info; **no ads at launch**; content-as-data for the moat.
+
+### 2026-06-03 — Session 4
+- **CRA data-source watcher — DONE (Tasks 1–5 of `2026-06-02-data-source-watcher.md`):** `WatchedSource` + sanity-band evaluation, CRA HTML parsers (TFSA, RRSP, OAS, CCB×4) against captured fixtures, pack-merge helpers, runner with failure-precedence exit codes (0/10/20), I/O glue (`tool/check_data_sources.dart`), GitHub Action (`.github/workflows/data-watch.yml` — cron monthly+weekly indexation windows, PR-on-change, issue-on-failure, human merge gate). `.gitignore` updated (`.data-watch-summary.txt`). `build-status.md` updated with full mechanism + caveats. 327 tests green, analyzer clean (14 pre-existing infos unchanged).
+- Live-fetch verification via the triggered GitHub Action run (local Dart VM outbound blocked in dev sandbox; bash curl works but Dart http.get to canada.ca does not).
 
 ### 2026-06-02 — Session 3
 - **Onboarding first-impression QA (user walkthrough):** fixed the topics-page 122px overflow (ListView + regression test), trimmed onboarding to 3 info pages + topics, replaced the $4.99 pitch with the trust page ("no account, no email — data stays on your phone"). Pushed.

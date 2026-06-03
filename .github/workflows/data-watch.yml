@@ -1,0 +1,61 @@
+name: CRA Data Watch
+
+on:
+  schedule:
+    # Monthly on the 1st, 13:00 UTC; the indexation windows get extra weekly
+    # runs (Nov–Jan, Jun–Jul) via the broader day-of-month list.
+    - cron: '0 13 1 * *'
+    - cron: '0 13 1,8,15,22 11,12,1,6,7 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.0'
+          channel: 'stable'
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Check CRA sources
+        id: check
+        run: |
+          set +e
+          dart run tool/check_data_sources.dart
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: Open PR on change
+        if: steps.check.outputs.code == '10'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: data-watch/update
+          title: 'data: CRA figures changed — review before merge'
+          body-path: .data-watch-summary.txt
+          add-paths: web/datapack/pack.json
+          commit-message: 'data: update pack.json from CRA watch'
+
+      - name: Open issue on parse failure
+        if: steps.check.outputs.code == '20'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('.data-watch-summary.txt', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'data-watch: could not parse a CRA source',
+              body,
+            });
