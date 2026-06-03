@@ -8,6 +8,36 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/alert.dart';
 import '../utils/date_helpers.dart';
 
+/// Decides WHEN a single reminder notification should fire for a [deadline],
+/// relative to [now]. Pure + testable (no plugin, no platform).
+///
+/// Picks the earliest sensible lead time that is still in the future, so a
+/// reminder added close to its deadline still notifies instead of being
+/// silently dropped:
+///   1. 7 days before, 9:00 local — the normal case;
+///   2. else 1 day before, 9:00 — added inside the week;
+///   3. else same-day 9:00 if that's still ahead;
+///   4. else a few minutes from [now] if the deadline itself is still ahead;
+///   5. else null — the deadline has already passed, nothing to schedule.
+DateTime? reminderFireDate(DateTime deadline, DateTime now) {
+  DateTime at9(DateTime d) => DateTime(d.year, d.month, d.day, 9);
+
+  final candidates = <DateTime>[
+    at9(deadline.subtract(const Duration(days: 7))),
+    at9(deadline.subtract(const Duration(days: 1))),
+    at9(deadline),
+  ];
+  for (final c in candidates) {
+    if (c.isAfter(now)) return c;
+  }
+  // All lead times are past but the deadline itself is still ahead — fire soon
+  // so a same-day add isn't lost.
+  if (deadline.isAfter(now)) {
+    return now.add(const Duration(minutes: 5));
+  }
+  return null;
+}
+
 class NotificationService {
   NotificationService._();
   static final NotificationService instance = NotificationService._();
@@ -101,10 +131,8 @@ class NotificationService {
 
   Future<void> scheduleAlert(Alert alert) async {
     if (kIsWeb) return;
-    final reminderDate = alert.deadline.subtract(const Duration(days: 7));
-    final now = DateTime.now();
-
-    if (reminderDate.isBefore(now)) return;
+    final reminderDate = reminderFireDate(alert.deadline, DateTime.now());
+    if (reminderDate == null) return; // deadline already passed
 
     final torontoTz = tz.getLocation('America/Toronto');
     final scheduledTime = tz.TZDateTime(
@@ -112,8 +140,8 @@ class NotificationService {
       reminderDate.year,
       reminderDate.month,
       reminderDate.day,
-      9,
-      0,
+      reminderDate.hour,
+      reminderDate.minute,
     );
 
     await _plugin.zonedSchedule(
