@@ -6,6 +6,11 @@ import 'rrsp_limits.dart';
 import 'tax_brackets.dart';
 import 'tfsa_limits.dart';
 
+/// Overall embedded-pack vintage (ISO date) — directly comparable against a
+/// hosted pack's `packVersion` (ISO dates sort lexicographically). Bump
+/// whenever any embedded table changes.
+const String kEmbeddedPackVersion = '2026-06-02';
+
 /// Read-only source of the changing Canadian numbers the rules depend on
 /// (contribution limits, benefit amounts, rate snapshots…).
 ///
@@ -55,7 +60,7 @@ class EmbeddedDataPack implements DataPack {
   const EmbeddedDataPack();
 
   @override
-  String get packVersion => kTfsaDataPackVersion;
+  String get packVersion => kEmbeddedPackVersion;
 
   @override
   int? tfsaAnnualLimit(int year) => kTfsaAnnualLimits[year];
