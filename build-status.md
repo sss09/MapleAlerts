@@ -257,8 +257,10 @@ lib/
 - [x] **CI fix (found during verification):** `pages.yml` only deployed from a dead dev branch with Flutter 3.32 — the live site had been stale since the branch merge and the pack could never ship. Now deploys from `main` with Flutter 3.44.
 - **Ops loop:** Nov–Dec (CRA 2027 limits — FIRST REAL UPDATE DUE), July (CCB year), budgets → edit pack.json, cite source in commit, bump packVersion, push. Each release: refresh embedded tables + `dart run tool/generate_data_pack.dart` + bump `kEmbeddedPackVersion`.
 
-### ⚠️ Notification gap (found in code review of "how do alerts work")
-- Alerts schedule ONE local notification at deadline−7d 9:00 (exact, fires app-closed; web can't). **If a deadline is <7 days away when added → NO notification at all** (`notification_service.dart:104-107`). Fix proposed (fall back day-before → same-day); user decision pending. Multi-lead-times (60/30/7/1) = post-launch.
+### Notifications — current behaviour + backlog
+- [x] **Within-7-days gap FIXED:** `reminderFireDate()` (pure, TDD 6 tests) picks the earliest sensible lead still in the future — 7d→1d→same-day 9am→~5min from now→null only if the deadline passed. Previously anything <7d out scheduled nothing. Android fires app-closed; web no-ops (browser limitation); iOS unverified.
+- [ ] **POST-LAUNCH: multi-lead-time series.** Each reminder fires ONE notification today. The category registry already defines escalating leads (finance 60/30/7/1, government 30/7/1) — the "calm escalating nudges" intent. Upgrade: `scheduleAlert` schedules one notification per `category.defaultLeadTimes` entry still in the future, unique IDs per lead. ~half-day slice. Not launch-blocking (one well-timed nudge delivers the core value).
+- [ ] POST-LAUNCH: optional batched "morning digest" instead of per-reminder notifications.
 
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
