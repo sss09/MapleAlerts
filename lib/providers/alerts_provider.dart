@@ -16,6 +16,11 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
     _load();
   }
 
+  /// Custom alerts that couldn't be persisted (SQLite is absent on web and in
+  /// tests) — kept in memory so an added reminder still shows for the session
+  /// instead of silently vanishing on the post-add reload.
+  final List<Alert> _unsaved = [];
+
   Future<void> _load() async {
     state = await AsyncValue.guard(() async {
       final db = DatabaseService.instance;
@@ -32,6 +37,9 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
       final savedIds = saved.map((a) => a.id).toSet();
       final merged = [...saved];
       for (final alert in builtIn) {
+        if (!savedIds.contains(alert.id)) merged.add(alert);
+      }
+      for (final alert in _unsaved) {
         if (!savedIds.contains(alert.id)) merged.add(alert);
       }
       merged.sort((a, b) => a.deadline.compareTo(b.deadline));
@@ -76,7 +84,9 @@ class AlertsNotifier extends StateNotifier<AsyncValue<List<Alert>>> {
     try {
       await DatabaseService.instance.insertAlert(alert);
     } catch (_) {
-      // Gracefully degrade on web / test environments where SQLite is absent.
+      // SQLite absent (web / tests) — keep the reminder for this session so
+      // the add flow still visibly works.
+      _unsaved.add(alert);
     }
     // Only schedule a notification when the user has not disabled them.
     bool notifyOn = true;
