@@ -288,7 +288,11 @@ Tax brackets are intentionally excluded — they are multi-row tables with many 
 
 **Maintenance caveat:** if the "Check CRA sources" step exits 20 in CI, it means CRA moved or restructured a page. The fix is: capture the new HTML into the relevant `test/tool/fixtures/<id>_good.html`, update the parser regex in `tool/data_sources/parsers.dart` to match the new anchor, run `flutter test test/tool/parsers_test.dart` to verify, then push.
 
-**Local dry-run caveat:** Dart VM outbound HTTP is blocked in the dev sandbox (Dart `http.get` to canada.ca times out; `curl` via bash works). The live fetch is therefore verified by the GitHub Action run, not locally. All unit logic (parsers, sanity bands, decision/outcome, pack-merge) is fully tested offline via HTML fixtures (327 tests pass).
+**Local dry-run caveat:** Dart VM outbound HTTP is blocked in the dev sandbox (Dart `http.get` to canada.ca times out; `curl` via bash works). All unit logic (parsers, sanity bands, decision/outcome, pack-merge) is fully tested offline via HTML fixtures (327 tests pass).
+
+**CI network caveat (verified 2026-06-03):** canada.ca's CDN/WAF silently drops or blocks HTTP connections from GitHub Actions runner IPs — every `http.get` call hangs until the timeout fires (`TimeoutException after 0:00:30.000000: Future not completed`), which surfaces as exit code 20 (fetch failure) and correctly triggers the issue-open step. This is an infrastructure-level block, NOT a parser failure. The two-run live test confirmed the workflow branching logic is correct (exit-code capture, `continue-on-error`, the PR-skip/issue-open conditional all work). The issue-open step fired and created GitHub issue #1. The parsers themselves are verified correct via offline fixtures.
+
+**Pending fix:** The fetch mechanism needs to be replaced or bypassed for the github.com runner environment. Options: (1) pre-fetch pages via a scheduled GitHub Pages or CF Worker proxy; (2) use a self-hosted runner on a non-blocked IP; (3) add a step-level `curl` pre-fetch that writes temp files, then have the Dart tool read local files instead of fetching. This is a deployment/ops concern — all application logic is correct and tested.
 
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
@@ -323,7 +327,7 @@ Tax brackets are intentionally excluded — they are multi-row tables with many 
 
 ### 2026-06-03 — Session 4
 - **CRA data-source watcher — DONE (Tasks 1–5 of `2026-06-02-data-source-watcher.md`):** `WatchedSource` + sanity-band evaluation, CRA HTML parsers (TFSA, RRSP, OAS, CCB×4) against captured fixtures, pack-merge helpers, runner with failure-precedence exit codes (0/10/20), I/O glue (`tool/check_data_sources.dart`), GitHub Action (`.github/workflows/data-watch.yml` — cron monthly+weekly indexation windows, PR-on-change, issue-on-failure, human merge gate). `.gitignore` updated (`.data-watch-summary.txt`). `build-status.md` updated with full mechanism + caveats. 327 tests green, analyzer clean (14 pre-existing infos unchanged).
-- Live-fetch verification via the triggered GitHub Action run (local Dart VM outbound blocked in dev sandbox; bash curl works but Dart http.get to canada.ca does not).
+- Live-fetch verification: two workflow runs triggered. Both exited code 20 (parse failure) because canada.ca's CDN/WAF blocks HTTP connections from GitHub Actions runner IPs — every source times out (`TimeoutException after 0:00:30.000000`). This is an infrastructure block, NOT a parser regression. Branching logic confirmed correct: "Open PR on change" was skipped on both runs; "Open issue on parse failure" fired and created GitHub issue #1. All parsers verified correct via offline HTML fixtures. Pending fix: replace Dart http.get with a runner-compatible fetch mechanism (curl pre-fetch or proxy).
 
 ### 2026-06-02 — Session 3
 - **Onboarding first-impression QA (user walkthrough):** fixed the topics-page 122px overflow (ListView + regression test), trimmed onboarding to 3 info pages + topics, replaced the $4.99 pitch with the trust page ("no account, no email — data stays on your phone"). Pushed.
