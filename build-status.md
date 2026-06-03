@@ -234,6 +234,13 @@ lib/
 - [x] **New page 3 = trust message:** "Free, private, yours — no account, no email, no sign-up. Your data stays on your phone." (the moat, stated up front). NOTE: this is now a product promise — any future email capture must be visibly optional (value-moment opt-in, never a gate).
 - **Decision (2026-06-02): no email/sign-up at launch.** Distribution for the app chain via push + in-app cross-promo + post-launch opt-in lead magnet (deadline calendar email); accounts arrive naturally with premium sync. **Pre-launch candidate: anonymous aggregate analytics slice** (topic-enable rates, card engagement, retention) — product data needs no PII.
 
+### Anonymous analytics — DONE (Aptabase, pre-launch slice)
+- [x] **Why:** zero visibility into usage; post-launch decisions (next money topic: RESP/CESG vs mortgage renewal vs OSAP RAP; funnel health) should be data-driven. Spec `…/2026-06-02-anonymous-analytics-design.md`, plan `…plans/2026-06-02-anonymous-analytics.md`. Built subagent-driven (fresh implementer + spec review + quality review per task; reviews caught real bugs: page-0 funnel gap, explainer-id inconsistency, de-dupe null-key trap).
+- [x] **Core:** `AnalyticsService` choke point (lib/core/analytics/) — injectable sink, per-call kill switch, session de-dupe (`insight_card_viewed`, `best_move_shown`), debug assert denylisting PII-adjacent prop names; fire-and-forget. `analyticsEnabledProvider` (prefs, default ON) + `analyticsProvider`; `Aptabase.init('A-US-2496453611')` fail-soft in main. aptabase_flutter 0.4.1.
+- [x] **14 events live:** onboarding page_view(0–3 incl. initState page-0)/skip/complete(topics csv); topic_enabled/disabled; topics_sheet_opened; insight_card_viewed/cta_tapped; best_move_shown; explainer_opened (explainer id, both surfaces); reminder_added/done; paywall_viewed; purchase_started. **Never sent:** amounts, income, birth year, province, titles (assert-enforced).
+- [x] **Privacy toggle** in You → Privacy ("Share anonymous usage stats" + caption), wired live. Spy-based widget tests across all surfaces (test/helpers/analytics_spy.dart).
+- [ ] **Launch-day paperwork:** Play Data Safety form → declare anonymous "App interactions", not linked, not shared; privacy-policy line (in spec §Ops).
+
 ### Next up (shipment Days 6–7)
 - [ ] Day 6: app icon (dark maple), screenshots (from device), store listing copy, Android release signing, signed AAB/APK; web build
 - [ ] Day 7: Play closed/internal testing upload; web live; soft-announce
@@ -266,6 +273,10 @@ lib/
 - Made + documented key recommendations: add Tax-filing alert to MVP (→8); reshape free/paid to gate personalization not public info; **no ads at launch**; content-as-data for the moat.
 
 ### 2026-06-02 — Session 3
+- **Onboarding first-impression QA (user walkthrough):** fixed the topics-page 122px overflow (ListView + regression test), trimmed onboarding to 3 info pages + topics, replaced the $4.99 pitch with the trust page ("no account, no email — data stays on your phone"). Pushed.
+- **Decision — no email/sign-ups at launch:** distribution for the app chain = push + in-app cross-promo + post-launch opt-in lead magnet; accounts arrive with premium sync. Product data comes from anonymous analytics instead.
+- **Anonymous analytics slice (brainstorm → spec → plan → subagent-driven build):** Aptabase (key `A-US-2496453611`, user's account created), on-by-default + You→Privacy toggle, 14 events, PII denylist assert, session de-dupe, fail-soft init. Two-stage reviews caught: onboarding page-0 never tracked (fixed via initState), explainer_opened id inconsistency between Home cards and Learn rail (fixed), de-dupe null-key trap (hardened). Full suite green; live first-event smoke vs the Aptabase dashboard pending user confirmation.
+- **Git identity:** repo-local author set to Sohail Syed <sohail09.syed@gmail.com> (work email stays global for Contruent repos). Earlier commits keep the old author unless a history rewrite is requested.
 - Reviewed the uncommitted WIP found at session start (light theme + money formatter — built at the tail of Session 2, not yet documented/committed).
 - Verified the WIP: full suite **248 tests green** (light-theme tests + MapleMoney tests confirmed in the run), `flutter analyze` clean for all new/changed files (14 pre-existing info lints in old V1 screens/tests only).
 - Committed in logical pieces (light theme; MapleMoney CAD formatter; gradle migrator flags; this doc update) and **pushed everything to GitHub** — including the previously unpushed explainers commit (`0de17dd`). origin/main is now fully up to date with all 9 engine slices + best-move cascade + explainers + light theme.
