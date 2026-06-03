@@ -7,6 +7,7 @@ import 'package:maple_alerts/core/design/maple_theme.dart';
 import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/screens/profile_screen_v2.dart';
+import '../../../../helpers/analytics_spy.dart';
 
 void main() {
   setUp(() {
@@ -57,6 +58,40 @@ void main() {
 
     expect(find.text('Notifications'), findsOneWidget);
     expect(find.text('Reminder notifications'), findsOneWidget);
+  });
+
+  testWidgets('Money topics row opens the topics sheet', (t) async {
+    final spy = AnalyticsSpy();
+    final container = ProviderContainer(overrides: [
+      subscriptionProvider.overrideWith(
+        (ref) => _StubSubscription(false),
+      ),
+      spy.override,
+    ]);
+    addTearDown(container.dispose);
+
+    await t.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: mapleThemeData(DesignTheme.fog),
+        home: const Scaffold(body: ProfileScreenV2()),
+      ),
+    ));
+    await t.pump(const Duration(milliseconds: 50));
+
+    final rowFinder = find.text('Choose what we track');
+    await t.ensureVisible(rowFinder);
+    await t.pump();
+    expect(rowFinder, findsOneWidget);
+
+    await t.tap(rowFinder, warnIfMissed: false);
+    // Drive the bottom-sheet slide-in without pumpAndSettle.
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 300));
+
+    // MoneyTopicsSheet content is visible and the open was tracked.
+    expect(find.text('TFSA room'), findsOneWidget);
+    expect(spy.fired('topics_sheet_opened'), isTrue);
   });
 
   testWidgets('Privacy toggle flips analyticsEnabledProvider', (t) async {

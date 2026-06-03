@@ -34,6 +34,11 @@ class MoneyTopicsSheet extends ConsumerWidget {
 
     return SafeArea(
       child: Container(
+        // Scroll within a capped height — six topic rows overflow short
+        // viewports (small phones / landscape) otherwise.
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
         decoration: const BoxDecoration(
           color: sheetBg,
           borderRadius: BorderRadius.only(
@@ -43,7 +48,8 @@ class MoneyTopicsSheet extends ConsumerWidget {
           border: Border(top: BorderSide(color: topBorderColor, width: 1)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -84,6 +90,7 @@ class MoneyTopicsSheet extends ConsumerWidget {
               const SizedBox(height: 8),
             ],
           ],
+          ),
         ),
       ),
     );

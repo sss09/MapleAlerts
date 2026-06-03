@@ -8,6 +8,7 @@ import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/maple_section_header.dart';
 import 'package:maple_alerts/core/design/widgets/maple_surface.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sheet.dart';
 import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/settings_provider.dart';
 import 'package:maple_alerts/providers/subscription_provider.dart';
@@ -140,7 +141,52 @@ class ProfileScreenV2 extends ConsumerWidget {
           ),
           const SizedBox(height: 28),
 
-          // ── 5. Privacy section ───────────────────────────────────────────
+          // ── 5. Money topics ─────────────────────────────────────────────
+          const MapleSectionHeader(label: 'Money topics'),
+          const SizedBox(height: 12),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              ref.read(analyticsProvider).track('topics_sheet_opened');
+              showMoneyTopicsSheet(context);
+            },
+            child: MapleSurface(
+              level: MapleSurfaceLevel.minimal,
+              radius: 18,
+              padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+              child: Row(
+                children: [
+                  StrokeIcon(name: 'wallet', size: 18, color: colors.accent),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Choose what we track',
+                          style: TextStyle(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w600,
+                            color: colors.text,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'TFSA, RRSP, FHSA, child benefit, OAS, GIC',
+                          style:
+                              TextStyle(fontSize: 12, color: colors.muted),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, size: 20, color: colors.faint),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 28),
+
+          // ── 6. Privacy section ───────────────────────────────────────────
           const MapleSectionHeader(label: 'Privacy'),
           const SizedBox(height: 12),
           MapleSurface(

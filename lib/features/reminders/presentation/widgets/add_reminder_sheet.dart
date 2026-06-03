@@ -118,17 +118,22 @@ class _AddReminderSheetContentState extends State<AddReminderSheetContent> {
     if (trimmed.isEmpty) return;
 
     final id = DateTime.now().millisecondsSinceEpoch.toString();
+    // Persist the detected category so the reminder lands under the right
+    // filter chip on Home (read back by AlertPresentation.map).
+    final rule = _detect(trimmed);
+    final categoryId = rule == null ? null : _kCatToRegistryId[rule.cat];
     final alert = Alert(
       id: id,
       title: trimmed,
       description: '',
       type: AlertType.custom,
       deadline: DateTime(_due.year, _due.month, _due.day, 9),
+      metadata: {if (categoryId != null) 'category': categoryId},
     );
 
     widget.ref
         .read(analyticsProvider)
-        .track('reminder_added', {'category': alert.type.name});
+        .track('reminder_added', {'category': categoryId ?? alert.type.name});
     await widget.ref.read(alertsProvider.notifier).addCustom(alert);
 
     if (mounted) Navigator.of(context).pop();

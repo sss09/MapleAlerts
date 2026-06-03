@@ -4,7 +4,11 @@ import 'package:maple_alerts/features/reminders/presentation/reminder_view.dart'
 abstract class AlertPresentation {
   static ReminderView map(Alert a, DateTime now) {
     // --- category ---
-    final categoryId = _categoryId(a.type);
+    // Custom alerts carry the add-sheet's detected category in metadata so
+    // they land under the right filter chip; built-ins map from their type.
+    final categoryId = a.type == AlertType.custom
+        ? (a.metadata['category'] as String? ?? 'custom')
+        : _categoryId(a.type);
 
     // --- days (date-only diff, no time component) ---
     final deadlineDate = DateTime(a.deadline.year, a.deadline.month, a.deadline.day);

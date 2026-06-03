@@ -31,6 +31,10 @@ void main() {
       expect(near, inInclusiveRange(0, 1));
       expect(near, greaterThan(far));
     });
+    test('custom alert reads its category from metadata', () {
+      final a = Alert(id:'x', title:'T', description:'D', type: AlertType.custom, deadline: DateTime(2026,3,1), metadata: const {'category': 'vehicle'});
+      expect(AlertPresentation.map(a, now).categoryId, 'vehicle');
+    });
     test('amount comes from metadata when present', () {
       final a = Alert(id:'x', title:'T', description:'D', type: AlertType.gic, deadline: DateTime(2026,3,1), metadata: const {'amount': '\$3,200 room'});
       expect(AlertPresentation.map(a, now).amount, '\$3,200 room');

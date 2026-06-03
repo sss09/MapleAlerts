@@ -147,7 +147,63 @@ void main() {
 
     expect(stub.addCustomCalls, 1);
     expect(stub.lastAlert?.title, 'Pay my rent');
-    expect(spy.propsOf('reminder_added')!['category'], isNotEmpty);
+    // 'rent' matches the Bills rule — detected category persists + is tracked.
+    expect(stub.lastAlert?.metadata['category'], 'bills');
+    expect(spy.propsOf('reminder_added'), {'category': 'bills'});
+  });
+
+  testWidgets('detected category is persisted in the alert metadata',
+      (tester) async {
+    final stub = _StubAlerts();
+    final spy = AnalyticsSpy();
+    late WidgetRef capturedRef;
+
+    await tester.pumpWidget(
+      _wrap(
+        stub: stub,
+        spy: spy,
+        builder: (ref) {
+          capturedRef = ref;
+          return AddReminderSheetContent(ref: capturedRef);
+        },
+      ),
+    );
+    await tester.pump();
+
+    await tester.enterText(
+        find.byType(TextField), 'Renew my passport in September');
+    await tester.pump();
+    await tester.tap(find.text('Add reminder'));
+    await tester.pump();
+
+    expect(stub.lastAlert?.metadata['category'], 'government');
+  });
+
+  testWidgets('no rule match -> no category metadata', (tester) async {
+    final stub = _StubAlerts();
+    final spy = AnalyticsSpy();
+    late WidgetRef capturedRef;
+
+    await tester.pumpWidget(
+      _wrap(
+        stub: stub,
+        spy: spy,
+        builder: (ref) {
+          capturedRef = ref;
+          return AddReminderSheetContent(ref: capturedRef);
+        },
+      ),
+    );
+    await tester.pump();
+
+    await tester.enterText(find.byType(TextField), 'water the plants');
+    await tester.pump();
+    await tester.tap(find.text('Add reminder'));
+    await tester.pump();
+
+    expect(stub.addCustomCalls, 1);
+    expect(stub.lastAlert?.metadata.containsKey('category'), isFalse);
+    expect(spy.propsOf('reminder_added'), {'category': 'custom'});
   });
 }
 

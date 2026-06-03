@@ -60,6 +60,53 @@ void main() {
     expect(find.text('RRSP deadline'), findsOneWidget);
   });
 
+  testWidgets('empty category shows an empty state instead of nothing',
+      (t) async {
+    final spy = AnalyticsSpy();
+    final sample = [
+      Alert(
+        id: 'rrsp',
+        title: 'RRSP deadline',
+        description: 'Contribute before March 1',
+        type: AlertType.rrsp,
+        deadline: DateTime.now().add(const Duration(days: 5)),
+      ),
+    ];
+
+    late _StubAlerts stub;
+    final container = ProviderContainer(overrides: [
+      alertsProvider.overrideWith((ref) {
+        stub = _StubAlerts(sample);
+        return stub;
+      }),
+      spy.override,
+    ]);
+    addTearDown(container.dispose);
+
+    await t.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: mapleThemeData(DesignTheme.fog),
+        home: const Scaffold(body: HomeScreenV2()),
+      ),
+    ));
+    await t.pump();
+    stub.forceData(sample);
+    await t.pump();
+
+    // The finance alert renders under 'All'.
+    expect(find.text('RRSP deadline'), findsOneWidget);
+
+    // Vehicle has no reminders — picking it must show a friendly empty state,
+    // not silently render nothing (user-reported "chips don't work").
+    await t.tap(find.text('Vehicle'));
+    await t.pump();
+
+    expect(find.text('RRSP deadline'), findsNothing);
+    expect(find.textContaining('No Vehicle reminders yet'), findsOneWidget);
+    expect(find.textContaining('tap + to add one'), findsOneWidget);
+  });
+
   testWidgets('reminder_done fires with non-empty category', (t) async {
     final spy = AnalyticsSpy();
 

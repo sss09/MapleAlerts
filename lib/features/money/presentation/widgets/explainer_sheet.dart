@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:maple_alerts/core/design/tokens/maple_colors.dart';
 import 'package:maple_alerts/core/design/widgets/stroke_icon.dart';
 import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
+import 'package:maple_alerts/features/money/presentation/money_topic.dart';
+import 'package:maple_alerts/providers/enabled_topics_provider.dart';
 
 /// Shows a plain-language explainer in a bottom sheet.
 Future<void> showExplainerSheet(BuildContext context, Explainer explainer) {
@@ -15,14 +18,20 @@ Future<void> showExplainerSheet(BuildContext context, Explainer explainer) {
   );
 }
 
-class ExplainerSheet extends StatelessWidget {
+class ExplainerSheet extends ConsumerWidget {
   const ExplainerSheet({required this.explainer, super.key});
 
   final Explainer explainer;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).extension<MapleColors>()!;
+
+    // Account explainers link to a money topic; offer to start tracking it
+    // right from the sheet when the user isn't tracking it yet.
+    final topic = MoneyTopic.fromInsightId(explainer.topicInsightId ?? '');
+    final untracked = topic != null &&
+        !ref.watch(enabledTopicsProvider).contains(topic);
     const sheetBg = Color(0xF00D161F);
     const handleColor = Color(0x3D9CB2C8);
     const topBorderColor = Color(0x249CB2C8);
@@ -100,6 +109,54 @@ class ExplainerSheet extends StatelessWidget {
                   explainer.provinceNote!,
                   style: TextStyle(
                       fontSize: 12.5, height: 1.4, color: colors.muted),
+                ),
+              ],
+              if (untracked) ...[
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF62D2A8), Color(0xFF3CA07E)],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ref
+                            .read(enabledTopicsProvider.notifier)
+                            .setEnabled(topic, true);
+                        // Capture before pop — the sheet's context is going away.
+                        final messenger = ScaffoldMessenger.maybeOf(context);
+                        Navigator.of(context).maybePop();
+                        messenger?.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                '${topic.label} added — set it up under '
+                                'Found money on Home.'),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        foregroundColor: const Color(0xFF06231C),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: Text(
+                        'Track ${topic.label} on Home',
+                        style: const TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF06231C),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
               const SizedBox(height: 14),

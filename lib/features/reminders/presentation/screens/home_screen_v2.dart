@@ -19,6 +19,7 @@ import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/reminder_collation.dart';
+import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
 
 /// The scrollable Home screen content.
 ///
@@ -162,13 +163,21 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         ] else
                           const SizedBox(height: 8),
 
-                        ..._buildSections(
-                          filtered,
-                          colors: colors,
-                          notifier: ref.read(
-                            hiddenRemindersProvider.notifier,
+                        // A silently-empty category reads as "the chips are
+                        // broken" — show a friendly empty state instead.
+                        if (filtered.isEmpty)
+                          _EmptyCategoryState(
+                            activeCategory: _activeCategory,
+                            colors: colors,
+                          )
+                        else
+                          ..._buildSections(
+                            filtered,
+                            colors: colors,
+                            notifier: ref.read(
+                              hiddenRemindersProvider.notifier,
+                            ),
                           ),
-                        ),
 
                         // ── Money co-pilot layer, below the alerts ──────────
                         const SizedBox(height: 12),
@@ -269,5 +278,49 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
     if (hour < 12) return 'Good morning';
     if (hour < 17) return 'Good afternoon';
     return 'Good evening';
+  }
+}
+
+/// Friendly empty state for a category filter with no upcoming reminders.
+class _EmptyCategoryState extends StatelessWidget {
+  const _EmptyCategoryState({
+    required this.activeCategory,
+    required this.colors,
+  });
+
+  final String activeCategory;
+  final MapleColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = activeCategory == 'All'
+        ? null
+        : kReminderCategories[activeCategory]?.label ?? activeCategory;
+    final title = label == null
+        ? 'Nothing here yet'
+        : 'No $label reminders yet';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 22),
+      child: Column(
+        children: [
+          Icon(Icons.event_available_outlined, size: 28, color: colors.faint),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: colors.muted,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'tap + to add one — we\'ll keep you ahead of the date',
+            style: TextStyle(fontSize: 12.5, color: colors.faint),
+          ),
+        ],
+      ),
+    );
   }
 }
