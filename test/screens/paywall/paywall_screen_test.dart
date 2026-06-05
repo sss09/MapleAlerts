@@ -36,14 +36,14 @@ void main() {
     // of pumpAndSettle to avoid a test hang.
     await tester.pump(const Duration(milliseconds: 50));
 
-    // Pricing is visible
-    expect(find.textContaining('4.99'), findsWidgets);
+    // Pricing is visible (appears in both plan card and CTA)
+    expect(find.textContaining('2.99'), findsWidgets);
 
     // Restore purchases button is present
     expect(find.text('Restore purchases'), findsOneWidget);
 
-    // Primary trial CTA is rendered
-    expect(find.text('Start 14-day free trial'), findsOneWidget);
+    // Primary CTA is rendered with correct no-trial copy
+    expect(find.textContaining('Go Pro'), findsOneWidget);
 
     // MAPLEALERTS+ badge is visible
     expect(find.text('MAPLEALERTS+'), findsOneWidget);

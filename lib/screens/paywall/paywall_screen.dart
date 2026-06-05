@@ -315,7 +315,7 @@ class _PlanSelector extends StatelessWidget {
           child: _PlanCard(
             plan: _Plan.monthly,
             label: 'Monthly',
-            price: r'$4.99',
+            price: r'$2.99',
             unit: '/mo',
             tag: null,
             selected: selected == _Plan.monthly,
@@ -328,9 +328,9 @@ class _PlanSelector extends StatelessWidget {
           child: _PlanCard(
             plan: _Plan.yearly,
             label: 'Yearly',
-            price: r'$34.99',
+            price: r'$19.99',
             unit: '/yr',
-            tag: 'Save 40%',
+            tag: 'Save 44%',
             selected: selected == _Plan.yearly,
             colors: colors,
             onTap: () => onSelect(_Plan.yearly),
@@ -487,7 +487,7 @@ class _TrialButton extends StatelessWidget {
         ),
         child: const Center(
           child: Text(
-            'Start 14-day free trial',
+            'Go Pro — \$2.99/mo',
             style: TextStyle(
               fontSize: 15.5,
               fontWeight: FontWeight.w700,
