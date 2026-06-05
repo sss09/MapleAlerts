@@ -71,7 +71,7 @@ lib/
 |----------|--------|
 | **MVP alerts** | 8 — original 7 (RRSP, TFSA room, GIC, OSAP, mortgage, BoC, CCB) **+ Tax filing deadline** (added: top seasonal keyword, hardcoded-simple) |
 | **Free tier** | Broad date-based alerts everyone Googles (RRSP, TFSA, Tax, BoC, benefit dates) — drives SEO/retention flywheel |
-| **Premium ($4.99/mo, $34.99/yr)** | Personalization + trackers + calculators (GIC/mortgage/OSAP, room math, HBP/FHSA, life events, export, widget, no ads) |
+| **Premium ($2.99/mo, $19.99/yr)** | Personalization + trackers + calculators (GIC/mortgage/OSAP, room math, HBP/FHSA, life events, export, widget, no ads). *(Repriced 2026-06-05 from $4.99/$34.99; no free trial — CTA "Go Pro".)* |
 | **Family ($8.99/mo)** | Later — shared RESP, spousal RRSP, joint mortgage |
 | **Ads** | ❌ NOT at launch — trust is the moat; lead with affiliate + subscription |
 | **Monetization priority** | Affiliate → subscription → B2B → courses → (ads optional/deferred) |

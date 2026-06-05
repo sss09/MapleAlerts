@@ -28,7 +28,7 @@ The source brief contradicted itself ("5 free categories" vs "RRSP+TFSA only"). 
 - Basic notifications
 - *Drives habit, retention, and keyword ranking — the SEO flywheel*
 
-**Premium — $4.99/mo or $34.99/yr**
+**Premium — $2.99/mo or $19.99/yr**
 - Personal trackers: GIC maturity, mortgage renewal, OSAP repayment
 - Contribution-room calculators (RRSP/TFSA), HBP/FHSA tracking
 - Life-events setup, historical alerts, personalized lead-times

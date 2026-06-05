@@ -37,7 +37,7 @@ Supporting layers: **live rates** (BoC/prime via free Valet API, GIC/HISA list),
 
 ## Free vs Premium
 - **Free (all deterministic):** deadlines, found money, guardrails, best-move, live rates, explainers, province personalization. Generous by design → word-of-mouth + SEO.
-- **Premium ($4.99/mo, AI-justified):** scan/explain CRA letters, personalized "RRSP vs TFSA for me" deep analysis, draft response letters, family/multi-account, export, no ads.
+- **Premium ($2.99/mo · $19.99/yr, AI-justified):** scan/explain CRA letters, personalized "RRSP vs TFSA for me" deep analysis, draft response letters, family/multi-account, export, no ads. *(Repriced 2026-06-05; no free trial.)*
 - **Principle:** never gate protective features (guardrails, deadlines).
 
 ## Ecosystem foundation

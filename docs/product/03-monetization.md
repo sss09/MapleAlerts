@@ -1,6 +1,6 @@
 # 03 — Monetization
 
-> **⚑ 2026-06-01 reframe — free/premium line.** Per the [money co-pilot strategy](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md): **Free = everything deterministic** (deadlines, found money, penalty guardrails, "best move", live rates, explainers, province personalization) — generous by design to drive trust + word-of-mouth + SEO, at ~$0 marginal cost. **Premium ($4.99/mo) = AI-justified only** (scan/explain CRA letters, personalized "RRSP vs TFSA for me", draft letters, family/multi-account, export, no ads). **Never gate protective features** (guardrails, deadlines). Affiliate remains a strong day-1 stream.
+> **⚑ 2026-06-01 reframe — free/premium line.** Per the [money co-pilot strategy](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md): **Free = everything deterministic** (deadlines, found money, penalty guardrails, "best move", live rates, explainers, province personalization) — generous by design to drive trust + word-of-mouth + SEO, at ~$0 marginal cost. **Premium ($2.99/mo, $19.99/yr) = AI-justified only** (scan/explain CRA letters, personalized "RRSP vs TFSA for me", draft letters, family/multi-account, export, no ads). **Never gate protective features** (guardrails, deadlines). Affiliate remains a strong day-1 stream.
 
 The app can earn through several streams simultaneously. **Recommended sequencing matters** — lead with the streams that protect trust and compound the moat.
 
@@ -15,7 +15,7 @@ The app can earn through several streams simultaneously. **Recommended sequencin
 
 ## Stream 1 — Freemium subscription
 - **Free:** broad date-based alerts (RRSP, TFSA, tax, BoC, benefit dates), basic notifications.
-- **Premium ($4.99/mo or $34.99/yr):** all categories, personalization, life events, historical alerts, calendar export, home-screen widget, no ads.
+- **Premium ($2.99/mo or $19.99/yr):** all categories, personalization, life events, historical alerts, calendar export, home-screen widget, no ads.
 - **Family ($8.99/mo):** 2–5 members; shared RESP, spousal RRSP, joint mortgage renewal.
 - Handled by **RevenueCat** (App Store + Google Play; ~1% vs building own billing).
 - *Illustrative:* 10,000 subscribers × $5 ≈ $50,000/mo.
