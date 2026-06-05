@@ -44,6 +44,11 @@ class MoneyProfile {
   /// Total contributed to the user's FHSA(s) to date, in dollars.
   final double? fhsaContributed;
 
+  /// Current savings balance held in a HISA or chequing account, in dollars.
+  /// Used by the rate-gap card to calculate the annual gain from switching
+  /// to a higher-rate institution.
+  final double? savingsBalance;
+
   const MoneyProfile({
     this.birthYear,
     this.tfsaContributed,
@@ -57,6 +62,7 @@ class MoneyProfile {
     this.gicAmount,
     this.gicMaturityDate,
     this.fhsaContributed,
+    this.savingsBalance,
   });
 
   static const empty = MoneyProfile();
@@ -74,6 +80,7 @@ class MoneyProfile {
     double? gicAmount,
     DateTime? gicMaturityDate,
     double? fhsaContributed,
+    double? savingsBalance,
     bool clearBirthYear = false,
     bool clearTfsaContributed = false,
     bool clearProvince = false,
@@ -86,6 +93,7 @@ class MoneyProfile {
     bool clearGicAmount = false,
     bool clearGicMaturityDate = false,
     bool clearFhsaContributed = false,
+    bool clearSavingsBalance = false,
   }) {
     return MoneyProfile(
       birthYear: clearBirthYear ? null : (birthYear ?? this.birthYear),
@@ -112,6 +120,9 @@ class MoneyProfile {
       fhsaContributed: clearFhsaContributed
           ? null
           : (fhsaContributed ?? this.fhsaContributed),
+      savingsBalance: clearSavingsBalance
+          ? null
+          : (savingsBalance ?? this.savingsBalance),
     );
   }
 
@@ -129,6 +140,7 @@ class MoneyProfile {
         if (gicMaturityDate != null)
           'gicMaturityDate': gicMaturityDate!.toIso8601String(),
         if (fhsaContributed != null) 'fhsaContributed': fhsaContributed,
+        if (savingsBalance != null) 'savingsBalance': savingsBalance,
       };
 
   factory MoneyProfile.fromJson(Map<String, dynamic> json) {
@@ -149,6 +161,7 @@ class MoneyProfile {
       gicAmount: asDouble(json['gicAmount']),
       gicMaturityDate: gicDate is String ? DateTime.tryParse(gicDate) : null,
       fhsaContributed: asDouble(json['fhsaContributed']),
+      savingsBalance: asDouble(json['savingsBalance']),
     );
   }
 
@@ -166,7 +179,8 @@ class MoneyProfile {
       other.familyNetIncome == familyNetIncome &&
       other.gicAmount == gicAmount &&
       other.gicMaturityDate == gicMaturityDate &&
-      other.fhsaContributed == fhsaContributed;
+      other.fhsaContributed == fhsaContributed &&
+      other.savingsBalance == savingsBalance;
 
   @override
   int get hashCode => Object.hashAll([
@@ -182,5 +196,6 @@ class MoneyProfile {
         gicAmount,
         gicMaturityDate,
         fhsaContributed,
+        savingsBalance,
       ]);
 }
