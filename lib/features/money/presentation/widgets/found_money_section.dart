@@ -9,6 +9,7 @@ import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.da
 import 'package:maple_alerts/features/money/presentation/money_insight.dart';
 import 'package:maple_alerts/features/money/presentation/money_topic.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/rate_gap_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/fhsa_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/gic_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/explainer_sheet.dart';
@@ -71,6 +72,11 @@ class FoundMoneySection extends ConsumerWidget {
       ));
       children.add(const SizedBox(height: 10));
     }
+
+    // Rate gap card — always rendered at the bottom, before the track footer.
+    children.add(const SizedBox(height: 10));
+    children.add(const RateGapCard());
+    children.add(const SizedBox(height: 10));
 
     void openTopics() {
       ref.read(analyticsProvider).track('topics_sheet_opened');
