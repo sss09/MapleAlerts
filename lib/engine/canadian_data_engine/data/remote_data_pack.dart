@@ -2,6 +2,7 @@ import '../domain/province.dart';
 import 'ccb_amounts.dart';
 import 'data_pack.dart';
 import 'oas_amounts.dart';
+import 'rates_data.dart';
 import 'tax_brackets.dart';
 
 /// The pack JSON schema this build understands. A pack with any other value
@@ -29,6 +30,7 @@ class RemoteDataPack implements DataPack {
     OasParams? oas,
     List<TaxBracket>? federal,
     Map<Province, List<TaxBracket>>? provincial,
+    RatesData? rates,
   })  : _fallback = fallback,
         _tfsaLimits = tfsaLimits,
         _rrspMax = rrspMax,
@@ -38,7 +40,8 @@ class RemoteDataPack implements DataPack {
         _ccb = ccb,
         _oas = oas,
         _federal = federal,
-        _provincial = provincial;
+        _provincial = provincial,
+        _rates = rates;
 
   factory RemoteDataPack.fromJson(
     Map<String, dynamic> json, {
@@ -67,6 +70,7 @@ class RemoteDataPack implements DataPack {
       oas: _oasParams(json['oas']),
       federal: _brackets(tax is Map ? tax['federal'] : null),
       provincial: _provincialBrackets(tax is Map ? tax['provincial'] : null),
+      rates: _ratesData(json['rates']),
     );
   }
 
@@ -82,6 +86,7 @@ class RemoteDataPack implements DataPack {
   final OasParams? _oas;
   final List<TaxBracket>? _federal;
   final Map<Province, List<TaxBracket>>? _provincial;
+  final RatesData? _rates;
 
   // ── Defensive section parsers: any malformed shape → null (fallback) ──────
 
@@ -168,6 +173,15 @@ class RemoteDataPack implements DataPack {
     }
   }
 
+  static RatesData? _ratesData(dynamic raw) {
+    if (raw is! Map) return null;
+    try {
+      return RatesData.fromJson(raw as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ── DataPack members: remote value, else fallback ─────────────────────────
 
   @override
@@ -211,4 +225,7 @@ class RemoteDataPack implements DataPack {
 
   @override
   double get fhsaLifetimeLimit => _fhsaLifetime ?? _fallback.fhsaLifetimeLimit;
+
+  @override
+  RatesData get rates => _rates ?? _fallback.rates;
 }

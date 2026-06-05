@@ -358,5 +358,27 @@
         ]
       ]
     }
+  },
+  "rates": {
+    "asOf": "2026-06-05",
+    "disclaimer": "Rates approximate and change frequently. Verify with institution before opening an account.",
+    "hisa": [
+      {"id":"eq_bank",     "name":"EQ Bank",           "rate":4.75,"insurance":"CDIC",                  "tier":1,"hasAffiliate":true},
+      {"id":"wealthsimple","name":"Wealthsimple Cash",  "rate":4.50,"insurance":"CIPF",                  "tier":1,"hasAffiliate":true,"note":"CIPF — not CDIC"},
+      {"id":"neo",         "name":"Neo Financial",      "rate":4.65,"insurance":"CDIC via ATB",           "tier":1,"hasAffiliate":true},
+      {"id":"simplii",     "name":"Simplii Financial",  "rate":4.60,"insurance":"CDIC",                  "tier":1,"hasAffiliate":true},
+      {"id":"tangerine",   "name":"Tangerine",          "rate":4.00,"insurance":"CDIC",                  "tier":2,"hasAffiliate":true,"note":"Promotional rates available — verify current"},
+      {"id":"koho",        "name":"KOHO",               "rate":4.25,"insurance":"CDIC via Peoples Bank", "tier":2,"hasAffiliate":true,"note":"Prepaid Visa with savings"},
+      {"id":"motive",      "name":"Motive Financial",   "rate":4.55,"insurance":"CDIC",                  "tier":2,"hasAffiliate":false},
+      {"id":"achieva",     "name":"Achieva Financial",  "rate":4.60,"insurance":"DGCM",                  "tier":2,"hasAffiliate":false,"note":"DGCM — not CDIC"},
+      {"id":"big_bank",    "name":"Typical big bank",   "rate":0.05,"insurance":"CDIC",                  "tier":3,"hasAffiliate":false,"note":"Comparison baseline only"}
+    ],
+    "gic_1yr": [
+      {"id":"oaken",       "name":"Oaken Financial",    "rate":4.90,"insurance":"CDIC",  "hasAffiliate":false},
+      {"id":"eq_bank",     "name":"EQ Bank",             "rate":4.85,"insurance":"CDIC",  "hasAffiliate":true},
+      {"id":"achieva",     "name":"Achieva Financial",   "rate":4.85,"insurance":"DGCM",  "hasAffiliate":false,"note":"DGCM — not CDIC"},
+      {"id":"motive",      "name":"Motive Financial",    "rate":4.80,"insurance":"CDIC",  "hasAffiliate":false},
+      {"id":"tangerine",   "name":"Tangerine",           "rate":4.50,"insurance":"CDIC",  "hasAffiliate":true,"note":"Verify current — may be promotional"}
+    ]
   }
 }

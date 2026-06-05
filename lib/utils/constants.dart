@@ -11,6 +11,32 @@ const String kEqBankUrl = 'https://www.eqbank.ca';
 const String kWealthsimpleUrl = 'https://www.wealthsimple.com';
 const String kRatehubUrl = 'https://www.ratehub.ca';
 
+// HISA affiliate URLs (UTM-tagged for conversion tracking)
+const String kEqBankHisaUrl =
+    'https://www.eqbank.ca/personal-banking/savings-accounts/savings?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kWealthsimpleCashUrl =
+    'https://www.wealthsimple.com/en-ca/accounts/cash?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kNeoFinancialUrl =
+    'https://www.neo.ca/savings?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kSimpliiHisaUrl =
+    'https://www.simplii.com/en/bank-accounts/high-interest-savings-account.html?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kTangerineUrl =
+    'https://www.tangerine.ca/en/products/banking/savings?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kKohoUrl =
+    'https://www.koho.ca/earn-interest/?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kMotiveUrl =
+    'https://www.motivefinancial.com/savings?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+const String kAchievaUrl =
+    'https://www.achieva.mb.ca/savings?utm_source=maplealerts&utm_medium=app&utm_campaign=hisa';
+// GIC affiliate URLs
+const String kOakenGicUrl =
+    'https://www.oaken.com/gics/?utm_source=maplealerts&utm_medium=app&utm_campaign=gic';
+const String kEqBankGicUrl =
+    'https://www.eqbank.ca/personal-banking/gics?utm_source=maplealerts&utm_medium=app&utm_campaign=gic';
+// Mortgage comparison
+const String kRatehubMortgageUrl =
+    'https://www.ratehub.ca/best-mortgage-rates?utm_source=maplealerts&utm_medium=app&utm_campaign=mortgage';
+
 const Map<int, int> kTfsaAnnualLimits = {
   2009: 5000,
   2010: 5000,

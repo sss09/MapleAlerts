@@ -9,6 +9,7 @@ export 'content/explainers.dart';
 export 'data/ccb_amounts.dart';
 export 'data/data_pack.dart';
 export 'data/fhsa_limits.dart';
+export 'data/rates_data.dart';
 export 'data/remote_data_pack.dart';
 export 'data/oas_amounts.dart';
 export 'data/rrsp_limits.dart';

@@ -2,6 +2,7 @@ import '../domain/province.dart';
 import 'ccb_amounts.dart';
 import 'fhsa_limits.dart';
 import 'oas_amounts.dart';
+import 'rates_data.dart';
 import 'rrsp_limits.dart';
 import 'tax_brackets.dart';
 import 'tfsa_limits.dart';
@@ -53,6 +54,10 @@ abstract class DataPack {
 
   /// FHSA lifetime contribution limit (dollars).
   double get fhsaLifetimeLimit;
+
+  /// Institution rate snapshot (HISA + 1-yr GIC). Returns [RatesData.empty]
+  /// when the pack carries no rates section.
+  RatesData get rates;
 }
 
 /// The default pack: numbers compiled into the app from [kTfsaAnnualLimits].
@@ -97,4 +102,9 @@ class EmbeddedDataPack implements DataPack {
 
   @override
   double get fhsaLifetimeLimit => kFhsaLifetimeLimit;
+
+  /// The embedded pack carries no institution rates — callers receive the empty
+  /// sentinel and must handle the missing-data case gracefully.
+  @override
+  RatesData get rates => RatesData.empty;
 }
