@@ -31,6 +31,8 @@ class AlertCard extends StatelessWidget {
         return Icons.family_restroom;
       case AlertType.osap:
         return Icons.school;
+      case AlertType.tax:
+        return Icons.receipt_long;
       case AlertType.custom:
         return Icons.star;
     }

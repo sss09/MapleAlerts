@@ -66,6 +66,7 @@ abstract class AlertPresentation {
       case AlertType.mortgage:
       case AlertType.boc:
       case AlertType.osap:
+      case AlertType.tax:
         return 'finance';
       case AlertType.ccb:
         return 'family';

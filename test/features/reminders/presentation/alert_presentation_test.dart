@@ -12,6 +12,9 @@ void main() {
       expect(AlertPresentation.map(_a(AlertType.ccb, DateTime(2026, 3, 1)), now).categoryId, 'family');
       expect(AlertPresentation.map(_a(AlertType.custom, DateTime(2026, 3, 1)), now).categoryId, 'custom');
     });
+    test('maps tax to finance', () {
+      expect(AlertPresentation.map(_a(AlertType.tax, DateTime(2026, 4, 30)), now).categoryId, 'finance');
+    });
     test('section: today / this week / upcoming', () {
       expect(AlertPresentation.map(_a(AlertType.tfsa, DateTime(2026, 2, 24)), now).section, 'Today');
       expect(AlertPresentation.map(_a(AlertType.tfsa, DateTime(2026, 2, 28)), now).section, 'This Week');

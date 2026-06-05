@@ -105,6 +105,102 @@ class CanadianDatesService {
       metadata: {'year': year},
     ));
 
+    // ── Personal Tax Filing Deadline ─────────────────────────────────────────
+    alerts.add(Alert(
+      id: 'tax_filing_$year',
+      title: 'Personal Tax Return Deadline',
+      description:
+          'Deadline to file your T1 personal income tax return with CRA. Late '
+          'filing triggers a 5% penalty on any balance owing, plus 1% per '
+          'additional month. Filing on time is required even if you can\'t pay '
+          'in full.',
+      type: AlertType.tax,
+      deadline: DateTime(year, 4, 30),
+      reminderEnabled: true,
+      isPremium: false,
+    ));
+
+    // ── Tax Balance Owing Payment Deadline ───────────────────────────────────
+    alerts.add(Alert(
+      id: 'tax_payment_$year',
+      title: 'Tax Balance Owing — Payment Deadline',
+      description:
+          'Any balance owing to CRA must be paid by April 30 to avoid daily '
+          'compound interest. Applies even if you file by the June 15 '
+          'self-employed extension.',
+      type: AlertType.tax,
+      deadline: DateTime(year, 4, 30),
+      reminderEnabled: true,
+      isPremium: false,
+    ));
+
+    // ── Self-Employed Tax Filing Deadline ────────────────────────────────────
+    alerts.add(Alert(
+      id: 'tax_selfemployed_$year',
+      title: 'Self-Employed Tax Filing Deadline',
+      description:
+          'If you or your spouse/partner had self-employment income, your T1 '
+          'return is due June 15. Note: any balance owing is still due April '
+          '30 — late payment triggers interest from May 1 even if you file by '
+          'June 15.',
+      type: AlertType.tax,
+      deadline: DateTime(year, 6, 15),
+      reminderEnabled: true,
+      isPremium: false,
+    ));
+
+    // ── FHSA Annual Contribution Deadline ────────────────────────────────────
+    alerts.add(Alert(
+      id: 'fhsa_deadline_$year',
+      title: 'FHSA Annual Contribution Deadline',
+      description:
+          r'Last day to make FHSA contributions for this tax year — up to '
+          r'$8,000/year, $40,000 lifetime. Unused FHSA room only carries '
+          'forward one year.',
+      type: AlertType.tax,
+      deadline: DateTime(year, 12, 31),
+      reminderEnabled: true,
+      isPremium: false,
+    ));
+
+    // ── Home Buyers' Plan RRSP Repayment ─────────────────────────────────────
+    alerts.add(Alert(
+      id: 'hbp_repayment_$year',
+      title: "Home Buyers' Plan Repayment",
+      description:
+          'If you withdrew from your RRSP under the Home Buyers\' Plan, your '
+          'annual repayment is due by March 1 (if applicable). Miss it and '
+          'CRA adds the required amount to your taxable income. Check CRA My '
+          'Account for your schedule.',
+      type: AlertType.rrsp,
+      deadline: DateTime(year, 3, 1),
+      reminderEnabled: true,
+      isPremium: false,
+    ));
+
+    // ── GST/HST Instalments (Quarterly) ──────────────────────────────────────
+    final gstDates = [
+      DateTime(year, 3, 31),
+      DateTime(year, 6, 15),
+      DateTime(year, 9, 15),
+      DateTime(year, 12, 15),
+    ];
+    for (int n = 1; n <= 4; n++) {
+      alerts.add(Alert(
+        id: 'gst_instalment_${year}_q$n',
+        title: 'GST/HST Instalment Due — Q$n',
+        description:
+            'Quarterly GST/HST instalment for self-employed individuals/'
+            'businesses who collected more than \$3,000 in net tax last year '
+            '(if applicable). Missing instalments triggers daily compound '
+            'interest.',
+        type: AlertType.tax,
+        deadline: gstDates[n - 1],
+        reminderEnabled: true,
+        isPremium: false,
+      ));
+    }
+
     // ── Custom alert example slot ─────────────────────────────────────────────
     // (Users add their own custom alerts via the UI; none generated here.)
 

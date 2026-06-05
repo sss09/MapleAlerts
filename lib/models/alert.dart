@@ -1,4 +1,4 @@
-enum AlertType { rrsp, tfsa, gic, mortgage, boc, ccb, osap, custom }
+enum AlertType { rrsp, tfsa, gic, mortgage, boc, ccb, osap, tax, custom }
 
 extension AlertTypeExtension on AlertType {
   String get name {
@@ -17,6 +17,8 @@ extension AlertTypeExtension on AlertType {
         return 'ccb';
       case AlertType.osap:
         return 'osap';
+      case AlertType.tax:
+        return 'tax';
       case AlertType.custom:
         return 'custom';
     }
@@ -38,6 +40,8 @@ extension AlertTypeExtension on AlertType {
         return AlertType.ccb;
       case 'osap':
         return AlertType.osap;
+      case 'tax':
+        return AlertType.tax;
       default:
         return AlertType.custom;
     }

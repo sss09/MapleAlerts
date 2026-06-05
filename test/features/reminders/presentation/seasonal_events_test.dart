@@ -49,8 +49,9 @@ void main() {
           seen.add(e.title);
         }
       }
+      // 'CRA tax filing deadline' (Apr 30) and 'Self-employed tax filing'
+      // (Jun 15) are now built-in AlertType.tax alerts; removed from rail.
       expect(seen, containsAll(<String>[
-        'Self-employed tax filing',
         'RESP contribution cutoff',
         'FHSA room opens',
         'Charitable donation cutoff',

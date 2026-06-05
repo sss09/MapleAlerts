@@ -192,6 +192,8 @@ class _AlertsList extends ConsumerWidget {
         return 'Canada Child Benefit';
       case AlertType.osap:
         return 'OSAP';
+      case AlertType.tax:
+        return 'Tax & Filing';
       case AlertType.custom:
         return 'Custom';
     }
