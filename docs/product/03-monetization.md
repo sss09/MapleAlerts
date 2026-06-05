@@ -1,6 +1,13 @@
 # 03 — Monetization
 
-> **⚑ 2026-06-01 reframe — free/premium line.** Per the [money co-pilot strategy](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md): **Free = everything deterministic** (deadlines, found money, penalty guardrails, "best move", live rates, explainers, province personalization) — generous by design to drive trust + word-of-mouth + SEO, at ~$0 marginal cost. **Premium ($2.99/mo, $19.99/yr) = AI-justified only** (scan/explain CRA letters, personalized "RRSP vs TFSA for me", draft letters, family/multi-account, export, no ads). **Never gate protective features** (guardrails, deadlines). Affiliate remains a strong day-1 stream.
+> **⚑ 2026-06-05 sharpened — governing rule (from `free_vs_pro_revenue_map.html`):**
+> - **If a feature drives affiliate clicks → Free.** You want every user to see it.
+> - **If a feature deepens the user's personal picture → Pro.** Only engaged users need it.
+> - **If a feature prevents a CRA penalty → Free.** Always. No exceptions.
+> - **Rate intelligence is an affiliate driver, not a depth feature.** Gating it kills affiliate revenue.
+>
+> **Free:** deadlines · found money · guardrails · best-move · live rates · rate gap card ("you're losing $X/yr") · HISA/GIC rates sheet · contextual affiliate CTAs · BoC rate-impact card · Maple Wrapped · all province/profile personalization.
+> **Pro ($2.99/mo · $19.99/yr):** year-end optimizer · RRSP-vs-TFSA deep comparison · partner account tracking · net-worth history + chart · contribution pace tracker · PDF year summary · personalised paywall (shows their actual numbers) · no ads.
 
 The app can earn through several streams simultaneously. **Recommended sequencing matters** — lead with the streams that protect trust and compound the moat.
 

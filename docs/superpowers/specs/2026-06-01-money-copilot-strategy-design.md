@@ -35,10 +35,13 @@ Supporting layers: **live rates** (BoC/prime via free Valet API, GIC/HISA list),
 - The "Your day, handled" hero evolves to summarize **deadlines + found money + the one best move**.
 - **Trust mechanics (critical):** every figure labeled an **estimate** with a **"How we got this"** expansion (formula + rule/source, e.g. "2025 TFSA limit $7,000 · CRA"); province + year stamped; **"informational, not financial advice"** footer; conservative math.
 
-## Free vs Premium
-- **Free (all deterministic):** deadlines, found money, guardrails, best-move, live rates, explainers, province personalization. Generous by design → word-of-mouth + SEO.
-- **Premium ($2.99/mo · $19.99/yr, AI-justified):** scan/explain CRA letters, personalized "RRSP vs TFSA for me" deep analysis, draft response letters, family/multi-account, export, no ads. *(Repriced 2026-06-05; no free trial.)*
-- **Principle:** never gate protective features (guardrails, deadlines).
+## Free vs Pro (governing rule, sharpened 2026-06-05)
+> **If a feature drives affiliate clicks → Free.** If it deepens the personal picture → Pro. If it prevents a CRA penalty → Free, always. Rate intelligence is an affiliate driver — never gate it.
+
+- **Free:** deadlines · found money · guardrails · "best move" · live rates · **rate gap card** ("you're losing $X/yr at your bank") · HISA/GIC **rates sheet** · contextual affiliate CTAs in insight cards · BoC rate-impact card · Maple Wrapped · all province/profile personalization. Generous → affiliate conversions + word-of-mouth + SEO.
+- **Pro ($2.99/mo · $19.99/yr):** year-end optimizer · RRSP-vs-TFSA deep comparison (side-by-side with their numbers) · partner/spouse account tracking · net-worth history + chart · contribution pace tracker · PDF year summary · **personalised paywall** (surfaces their actual numbers — high conversion) · no ads.
+- **AI (within Pro):** CRA-letter explainer, deep personalized advice, draft response letters.
+- **Principle:** never gate guardrails or deadlines. *(Repriced 2026-06-05 from $4.99; no free trial.)*
 
 ## Ecosystem foundation
 MapleAlerts is app #1 of a Canadian chain (CanDoc thesis — directional, not literal). The shared **data engine + design system + brand** are built once here and lifted into siblings (CRA-letter explainer, HST invoicing, tenant rights, mortgage-renewal coach). Audience flywheel: acquire free on MapleAlerts → in-app cross-promo → each app markets the others. SEO clusters per app aggregate under one brand. **Action:** keep the data engine a standalone module from day one.

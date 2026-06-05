@@ -1,6 +1,30 @@
-# 02 — Alert Catalog (Full Taxonomy)
+# 02 — Alert Catalog + Feature Backlog
 
-This is the **long-term content/feature backlog** — the universe of Canadian financial alerts. It is *not* the build order (see [01 MVP](01-mvp.md) and [06 Roadmap](06-roadmap.md)). Getting this catalog accurate, province-by-province and updated annually, **is the moat.**
+This is the **long-term content/feature backlog** (alerts + money-co-pilot features). It is *not* the build order. Getting Canadian rules right, province-by-province and annually updated, **is the moat.**
+
+## Revenue map features (from `free_vs_pro_revenue_map.html`, 2026-06-05)
+*The governing rule: affiliate driver → Free; personal depth → Pro; penalty protection → Free always.*
+
+### Free (affiliate-driven) — build in order
+| Feature | Status | Revenue mechanism |
+|---|---|---|
+| Rate gap card — "you're losing $X/yr at your bank" (calculates best HISA vs user balance × rate diff) | ❌ not built | Highest-conversion affiliate trigger |
+| Rates sheet — top HISA + GIC rates with affiliate links | ❌ not built | Affiliate revenue |
+| Contextual CTAs in insight cards (TFSA → EQ Bank HISA, RRSP → Wealthsimple, GIC → rate compare) | ⚠️ partial (reminder cards only, not insight cards) | Affiliate revenue |
+| GIC maturity → live rate comparison (EQ Bank 4.85% vs your 3.20%) | ⚠️ partial (no live rate shown) | Affiliate revenue |
+| BoC decision → rate-impact card ("rates dropped — lock in a GIC now") | ⚠️ partial (rate card exists, not this framing) | Affiliate trigger |
+| Maple Wrapped — shareable year summary card (free; every share = acquisition) | ❌ not built | Growth engine |
+
+### Pro ($2.99/mo) — post-launch v1.1
+| Feature | Status | Value |
+|---|---|---|
+| Personalised paywall — shows user's actual TFSA room / deadline / found money | ❌ not built | Highest conversion driver |
+| Year-end optimizer — personalised Dec 31 checklist | ❌ not built | Anchor Pro feature |
+| RRSP vs TFSA deep comparison — side-by-side with their numbers | ⚠️ engine only, no UI | High perceived value |
+| Partner / spouse account tracking | ❌ not built | Household value |
+| Net worth history + chart (fl_chart) | ❌ not built | Progress tracking |
+| Contribution pace tracker (on track to max TFSA?) | ❌ not built | Engagement |
+| PDF year summary (share_plus, pdf package) | ❌ not built | Tax-season value |
 
 **Phase legend:** `P1` = MVP · `P2` = post-launch benefits/trackers · `P3` = life events & advanced · `Pn` = later/expansion.
 
