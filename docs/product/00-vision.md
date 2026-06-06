@@ -1,6 +1,6 @@
 # 00 — Vision & Strategy
 
-> **⚑ 2026-06-01 REFRAME — read first.** MapleAlerts is repositioned from "alert app" to a **Canadian money co-pilot** and the **foundation of a chain** of Canadian apps. Reminders are now *one pillar*. The differentiators are **penalty guardrails**, **"best move right now"** recommendations, and **found money** — all deterministic/free (no AI; AI is premium-only). See the full strategy: [`2026-06-01-money-copilot-strategy-design.md`](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md). The sections below remain the deadline-hub base this builds on.
+> **⚑ 2026-06-01 REFRAME (naming updated 2026-06-05) — read first.** MapleAlerts is repositioned from "alert app" to a **Canadian money co-pilot** and **app #1 of the Maple chain** — siblings: **MapleDoc**, **MapleInvoice**, **MapleRates**, **MapleRenter**. Bundle = **Maple Pro** $6.99/mo. **Built in Flutter** (strategy doc says RN/Expo — that's superseded). Reminders are now *one pillar*. The differentiators are **penalty guardrails**, **"best move right now"** recommendations, and **found money** — all deterministic/free (no AI; AI is premium-only). See the full strategy: [`2026-06-01-money-copilot-strategy-design.md`](../superpowers/specs/2026-06-01-money-copilot-strategy-design.md). The sections below remain the deadline-hub base this builds on.
 
 ## The one-line pitch
 > *Your Canadian money, handled — deadlines, the money you're owed, and what to actually do, in plain language.*

@@ -1,5 +1,9 @@
 # 06 — Roadmap
 
+> **⚑ Ecosystem naming (2026-06-05):** Sibling apps are **MapleDoc** (CRA-letter explainer), **MapleInvoice** (HST invoicing), **MapleRates** (GIC/HISA rate tracker), **MapleRenter** (tenant rights). Bundle = **Maple Pro** at $6.99/mo. Old names (CanDoc, InvoiceEH) are superseded.
+>
+> **Target user:** 28 years old, renting in Toronto, has a TFSA they opened but don't manage, files taxes with TurboTax, vaguely anxious about money, Googles "RRSP deadline" every February. Write every App Store listing, Reddit post, and screenshot for this person.
+
 ## Phased build
 
 ### V1 (≈4 weeks) — Ship the date-based core

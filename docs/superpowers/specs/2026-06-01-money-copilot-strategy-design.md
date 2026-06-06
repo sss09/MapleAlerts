@@ -2,7 +2,11 @@
 
 **Date:** 2026-06-01
 **Status:** Approved (strategy brainstorm)
-**Supersedes/extends:** the deadline-hub framing in [00-vision](../../product/00-vision.md). MapleAlerts is the **foundation of a chain** of Canadian apps (see [CanDoc thesis](#ecosystem-foundation)).
+**Supersedes/extends:** the deadline-hub framing in [00-vision](../../product/00-vision.md). MapleAlerts is the **foundation of a chain** of Canadian apps — MapleDoc, MapleInvoice, MapleRates, MapleRenter — under the **Maple** brand.
+
+> **⚑ Tech stack note (2026-06-05):** The strategy doc (`MapleAlerts_Strategy_V2.docx`) lists React Native + Expo. The **actual codebase is Flutter** (Dart) — chosen for better performance, a single codebase for iOS/Android/Web, and the Aurora design system already built on it. All future apps in the chain will also use Flutter. The RN references in the Word doc are from an earlier plan and are superseded.
+
+> **⚑ Analytics note (2026-06-05):** The strategy doc lists PostHog (1M events free, feature flags, session replay). We shipped **Aptabase** (simpler, less capability). PostHog is the better long-term choice for funnel analysis and feature flags — consider migrating post-launch when real user data justifies it. Current Aptabase setup is fine for launch.
 
 ## Problem
 A generic reminder app makes the *user* do the work and is undifferentiated. Reminders alone won't win attention or trust. Our unfair advantage: **we know the Canadian rules**, so we can do the work *for* the user — compute, surface money they're owed, prevent costly mistakes, and explain the jargon — all from **free, deterministic data with zero AI token cost**. AI is reserved for premium.
@@ -44,7 +48,7 @@ Supporting layers: **live rates** (BoC/prime via free Valet API, GIC/HISA list),
 - **Principle:** never gate guardrails or deadlines. *(Repriced 2026-06-05 from $4.99; no free trial.)*
 
 ## Ecosystem foundation
-MapleAlerts is app #1 of a Canadian chain (CanDoc thesis — directional, not literal). The shared **data engine + design system + brand** are built once here and lifted into siblings (CRA-letter explainer, HST invoicing, tenant rights, mortgage-renewal coach). Audience flywheel: acquire free on MapleAlerts → in-app cross-promo → each app markets the others. SEO clusters per app aggregate under one brand. **Action:** keep the data engine a standalone module from day one.
+MapleAlerts is app #1 of the **Maple** brand chain. Siblings: **MapleDoc** (CRA-letter explainer, 5 free scans → $3.99/mo), **MapleInvoice** (HST invoicing for freelancers → $7.99/mo), **MapleRates** (GIC/HISA rate tracker with push alerts, free + affiliate), **MapleRenter** (tenant rights + rent-increase calc, free + $2.99 lease scan). Bundle: **Maple Pro** at $6.99/mo covers all apps — value grows with each launch, price stays fixed. The shared **data engine + design system + brand** are built once here and lifted into siblings. Audience flywheel: acquire free on MapleAlerts → in-app cross-promo → each app markets the others. **Action:** keep the data engine a standalone module from day one.
 
 ## Phased build (additive to what's shipped: Aurora UI, reminders, profile)
 1. **Canadian Data Engine** — embedded rules + math + hosted JSON pack loader + BoC Valet client.
