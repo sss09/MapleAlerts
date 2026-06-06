@@ -67,7 +67,11 @@ final gicInsightsProvider = Provider<List<MoneyInsight>>((ref) {
       profile.gicAmount! > 0 &&
       profile.gicMaturityDate != null;
 
-  return gicInsights(result, hasRequiredInput: hasRequiredInput);
+  return gicInsights(
+    result,
+    hasRequiredInput: hasRequiredInput,
+    rates: ref.watch(dataPackProvider).rates,
+  );
 });
 
 /// FHSA room + deduction-savings insight from the current profile.

@@ -366,11 +366,23 @@ List<MoneyInsight> oasInsights(
   }
 }
 
+String _gicSubline(GicResult result, RatesData? rates) {
+  final best = rates?.bestGic1yr;
+  if (best != null) {
+    return "Don't let it auto-renew at a lower rate. Best 1-yr GIC now: ${best.name} at ${best.rate}%.";
+  }
+  return "Don't let it auto-renew at a lower rate. Compare current GIC rates.";
+}
+
 /// Projects a [GicResult] onto presentation insights. [hasRequiredInput] is true
 /// only when a GIC amount and maturity date are set.
+///
+/// Pass [rates] (from `dataPackProvider`) to enrich the `maturingSoon` and
+/// `matured` sublines with the live best 1-yr GIC rate.
 List<MoneyInsight> gicInsights(
   GicResult result, {
   required bool hasRequiredInput,
+  RatesData? rates,
 }) {
   const id = 'gic';
 
@@ -404,13 +416,15 @@ List<MoneyInsight> gicInsights(
       ];
 
     case GicStatus.matured:
+      final best = rates?.bestGic1yr;
+      final rateInfo = best != null ? ' Best 1-yr GIC: ${best.name} at ${best.rate}%.' : '';
       return [
         MoneyInsight(
           id: id,
           kind: InsightKind.info,
           severity: InsightSeverity.info,
           headline: 'Your ${formatDollars(result.amount)} GIC has matured',
-          subline: 'Reinvest or shelter the cash so it keeps working.',
+          subline: 'Your GIC has matured — act before it auto-renews.$rateInfo',
           sources: result.sources,
           isEstimate: false,
           cta: const InsightCta('Update', InsightAction.editGicProfile),
@@ -425,7 +439,7 @@ List<MoneyInsight> gicInsights(
           severity: InsightSeverity.positive,
           headline:
               'Your ${formatDollars(result.amount)} GIC matures in ${result.daysToMaturity} days',
-          subline: 'We’ll suggest the best place to move it (see your best move).',
+          subline: _gicSubline(result, rates),
           amount: result.amount,
           sources: result.sources,
           isEstimate: false,
