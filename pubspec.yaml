@@ -1,7 +1,7 @@
 name: maple_alerts
-description: "Canadian financial deadlines — RRSP, TFSA, GIC, mortgage reminders"
+description: "Your Canadian money co-pilot — RRSP, TFSA, found money, penalty guardrails"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.8.1
