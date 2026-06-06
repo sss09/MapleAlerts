@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#0D2018"/>
+      <stop offset="100%" stop-color="#070D15"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="40%">
+      <stop offset="0%" stop-color="#5BC6A0" stop-opacity="0.50"/>
+      <stop offset="65%" stop-color="#3A8F70" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#070D15" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="leaf" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#78E0BE"/>
+      <stop offset="40%" stop-color="#5BC6A0"/>
+      <stop offset="100%" stop-color="#318A68"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="url(#bg)"/>
+  <ellipse cx="50" cy="43" rx="36" ry="32" fill="url(#glow)"/>
+  <path d="M 50 12
+  L 47.5 22 L 42 18 L 44 26 L 35 20 L 38 29
+  L 26 25 L 31 34 L 19 34 L 26 41
+  L 14 44 L 25 46 L 20 54 L 32 51
+  L 30 58 L 38 55 L 37 62 L 47 60
+  L 47 73 L 53 73 L 53 60 L 63 62
+  L 62 55 L 70 58 L 68 51 L 80 54
+  L 75 46 L 86 44 L 74 41 L 81 34
+  L 69 34 L 74 25 L 62 29 L 65 20
+  L 56 26 L 58 18 L 52.5 22 Z" fill="url(#leaf)"/>
+</svg>
