@@ -8,22 +8,10 @@ import 'package:maple_alerts/core/format/maple_money.dart';
 import 'package:maple_alerts/providers/analytics_provider.dart';
 import 'package:maple_alerts/providers/data_pack_provider.dart';
 import 'package:maple_alerts/providers/money_profile_provider.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/rates_sheet.dart';
 
-/// Shows a "rate gap" summary — how much the user could earn by moving their
-/// savings to the best available HISA versus their current big-bank account.
-///
-/// State A (no balance set): capture form.
-/// State B (balance set + rates available): annual gap figure + CTAs.
-/// State C (balance set + no rate data): gentle fallback, no crash.
-///
-/// [showRatesSheet] is a top-level helper that will be replaced in A4.
-Future<void> showRatesSheet(BuildContext context, WidgetRef ref) async {
-  // Stub: A4 will replace this with the full HISA/GIC rates bottom sheet.
-  if (!context.mounted) return;
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Rates sheet coming soon')),
-  );
-}
+export 'package:maple_alerts/features/money/presentation/widgets/rates_sheet.dart'
+    show showRatesSheet;
 
 class RateGapCard extends ConsumerStatefulWidget {
   const RateGapCard({super.key});
