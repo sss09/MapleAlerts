@@ -83,6 +83,13 @@ void main() {
 
     expect(find.text(r'You have $14,000 in TFSA room'), findsOneWidget);
     expect(find.text('FOUND MONEY'), findsOneWidget);
+
+    // "How we got this" is inside the expanded detail section — tap the card
+    // headline first to expand it, then tap "How we got this" to reveal sources.
+    expect(find.text('How we got this'), findsNothing);
+    await tester.tap(find.text(r'You have $14,000 in TFSA room'));
+    await tester.pump();
+
     expect(find.text('2026 TFSA limit'), findsNothing);
     await tester.tap(find.text('How we got this'));
     await tester.pumpAndSettle();
@@ -134,8 +141,11 @@ void main() {
     ], spy: spy));
     await tester.pump();
 
-    // The CTA button is always visible on a foundMoney card (not hidden behind
-    // an expand gesture) — tap its label text directly.
+    // The CTA button is inside the expanded detail section — tap the card
+    // headline to expand it first, then tap the CTA.
+    await tester.tap(find.text(r'You have $14,000 in TFSA room'));
+    await tester.pump();
+
     expect(find.text('Update my number'), findsOneWidget);
     await tester.tap(find.text('Update my number'));
     await tester.pump();
