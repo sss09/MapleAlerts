@@ -42,7 +42,7 @@ const List<_PageData> _kPages = [
         'what to do, never panic.',
   ),
   _PageData(
-    icon: 'sparkle',
+    icon: 'leaf',
     title: 'Free, private, yours',
     description:
         'No account, no email, no sign-up. Your data stays on your phone.',
