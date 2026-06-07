@@ -34,7 +34,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
 
     // First-page title is visible.
-    expect(find.text('Welcome to MapleAlerts'), findsOneWidget);
+    expect(find.text('Welcome to Maple Alerts'), findsOneWidget);
 
     // 'Skip' TextButton is visible on page 0 (not the last page).
     expect(find.text('Skip'), findsOneWidget);

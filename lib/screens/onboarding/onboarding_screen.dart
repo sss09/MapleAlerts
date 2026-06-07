@@ -28,9 +28,11 @@ class _PageData {
 
 const List<_PageData> _kPages = [
   _PageData(
-    icon: 'sparkle',
-    title: 'Welcome to MapleAlerts',
-    description: 'Never miss a Canadian financial deadline again.',
+    icon: 'leaf',
+    title: 'Welcome to Maple Alerts',
+    description:
+        'Know your deadlines. Find your money. The Canadian-specific stuff '
+        'no other app gets.',
   ),
   _PageData(
     icon: 'calendar',
@@ -40,7 +42,7 @@ const List<_PageData> _kPages = [
         'what to do, never panic.',
   ),
   _PageData(
-    icon: 'leaf',
+    icon: 'sparkle',
     title: 'Free, private, yours',
     description:
         'No account, no email, no sign-up. Your data stays on your phone.',
@@ -254,35 +256,61 @@ class _OnboardingPageView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon inside a soft glowing circle
-          Container(
-            width: 112,
-            height: 112,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  colors.accent.withValues(alpha: 0.22),
-                  colors.accent.withValues(alpha: 0.0),
+          // Icon: use the real app icon on the first page, stroke icon elsewhere
+          if (page.icon == 'leaf') ...[
+            // Page 1 — show the real maple leaf app icon for brand impact
+            Container(
+              width: 128,
+              height: 128,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.accent.withValues(alpha: 0.35),
+                    blurRadius: 40,
+                    spreadRadius: 6,
+                  ),
                 ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.accent.withValues(alpha: 0.30),
-                  blurRadius: 32,
-                  spreadRadius: 4,
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/icon/icon.png',
+                  width: 128,
+                  height: 128,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-            child: Center(
-              child: StrokeIcon(
-                name: page.icon,
-                size: 64,
-                color: colors.accent,
-                strokeWidth: 1.4,
               ),
             ),
-          ),
+          ] else ...[
+            Container(
+              width: 112,
+              height: 112,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    colors.accent.withValues(alpha: 0.22),
+                    colors.accent.withValues(alpha: 0.0),
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.accent.withValues(alpha: 0.30),
+                    blurRadius: 32,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: StrokeIcon(
+                  name: page.icon,
+                  size: 64,
+                  color: colors.accent,
+                  strokeWidth: 1.4,
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 36),
           Text(
             page.title,
