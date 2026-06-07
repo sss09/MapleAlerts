@@ -55,6 +55,12 @@ class _BestMoveCardState extends ConsumerState<BestMoveCard> {
         showGicSetupSheet(context);
       case InsightAction.editFhsaProfile:
         showFhsaSetupSheet(context);
+      case InsightAction.editMortgageProfile:
+      case InsightAction.editRespProfile:
+      case InsightAction.editSavingsProfile:
+      case InsightAction.editTaxInstalments:
+        // No dedicated setup sheet yet — handled via reminders
+        break;
       case null:
         break;
     }

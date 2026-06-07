@@ -106,6 +106,19 @@ class FoundMoneySection extends ConsumerWidget {
         showGicSetupSheet(context);
       case InsightAction.editFhsaProfile:
         showFhsaSetupSheet(context);
+      // New topics — open add-reminder sheet so user can set a custom reminder
+      case InsightAction.editMortgageProfile:
+      case InsightAction.editRespProfile:
+      case InsightAction.editSavingsProfile:
+      case InsightAction.editTaxInstalments:
+        // These topics surface via built-in alerts + the rate gap card.
+        // No separate setup sheet needed — dismiss gracefully.
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Set up via the + button to add a custom reminder'),
+            duration: Duration(seconds: 2),
+          ),
+        );
     }
   }
 }

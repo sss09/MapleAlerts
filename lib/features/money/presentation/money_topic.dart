@@ -44,6 +44,34 @@ enum MoneyTopic {
     blurb: 'First-home savings room — deductible and tax-free',
     icon: 'home',
     setupAction: InsightAction.editFhsaProfile,
+  ),
+  mortgage(
+    insightId: 'mortgage_renewal',
+    label: 'Mortgage renewal',
+    blurb: 'Track your renewal date and compare rates in time',
+    icon: 'home',
+    setupAction: InsightAction.editMortgageProfile,
+  ),
+  resp(
+    insightId: 'resp',
+    label: 'RESP (education)',
+    blurb: "CESG grant deadline — contribute by Dec 31 for this year's free \$500",
+    icon: 'family',
+    setupAction: InsightAction.editRespProfile,
+  ),
+  savingsRate(
+    insightId: 'savings_rate',
+    label: 'Savings rate gap',
+    blurb: 'See how much more your savings could earn at a high-interest account',
+    icon: 'finance',
+    setupAction: InsightAction.editSavingsProfile,
+  ),
+  taxInstalments(
+    insightId: 'tax_instalments',
+    label: 'Tax instalments',
+    blurb: 'Quarterly CRA payments for self-employed and investors',
+    icon: 'bill',
+    setupAction: InsightAction.editTaxInstalments,
   );
 
   const MoneyTopic({

@@ -15,6 +15,10 @@ enum InsightAction {
   editOasProfile,
   editGicProfile,
   editFhsaProfile,
+  editMortgageProfile,
+  editRespProfile,
+  editSavingsProfile,
+  editTaxInstalments,
 }
 
 class InsightCta {
