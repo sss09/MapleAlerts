@@ -304,6 +304,14 @@ class _InsightCardState extends ConsumerState<InsightCard> {
             ),
           ],
         ),
+      'mortgage_renewal' when insight.severity != InsightSeverity.info =>
+        _AffiliateCtaRow(
+          label: 'Compare mortgage rates at Ratehub →',
+          url: kRatehubMortgageUrl,
+          partner: 'ratehub',
+          insightId: insight.id,
+          colors: colors,
+        ),
       _ => null,
     };
   }

@@ -49,6 +49,9 @@ class MoneyProfile {
   /// to a higher-rate institution.
   final double? savingsBalance;
 
+  /// Renewal date of the user's mortgage.
+  final DateTime? mortgageRenewalDate;
+
   const MoneyProfile({
     this.birthYear,
     this.tfsaContributed,
@@ -63,6 +66,7 @@ class MoneyProfile {
     this.gicMaturityDate,
     this.fhsaContributed,
     this.savingsBalance,
+    this.mortgageRenewalDate,
   });
 
   static const empty = MoneyProfile();
@@ -81,6 +85,7 @@ class MoneyProfile {
     DateTime? gicMaturityDate,
     double? fhsaContributed,
     double? savingsBalance,
+    DateTime? mortgageRenewalDate,
     bool clearBirthYear = false,
     bool clearTfsaContributed = false,
     bool clearProvince = false,
@@ -94,6 +99,7 @@ class MoneyProfile {
     bool clearGicMaturityDate = false,
     bool clearFhsaContributed = false,
     bool clearSavingsBalance = false,
+    bool clearMortgageRenewalDate = false,
   }) {
     return MoneyProfile(
       birthYear: clearBirthYear ? null : (birthYear ?? this.birthYear),
@@ -123,6 +129,9 @@ class MoneyProfile {
       savingsBalance: clearSavingsBalance
           ? null
           : (savingsBalance ?? this.savingsBalance),
+      mortgageRenewalDate: clearMortgageRenewalDate
+          ? null
+          : (mortgageRenewalDate ?? this.mortgageRenewalDate),
     );
   }
 
@@ -141,6 +150,8 @@ class MoneyProfile {
           'gicMaturityDate': gicMaturityDate!.toIso8601String(),
         if (fhsaContributed != null) 'fhsaContributed': fhsaContributed,
         if (savingsBalance != null) 'savingsBalance': savingsBalance,
+        if (mortgageRenewalDate != null)
+          'mortgageRenewalDate': mortgageRenewalDate!.toIso8601String(),
       };
 
   factory MoneyProfile.fromJson(Map<String, dynamic> json) {
@@ -148,6 +159,7 @@ class MoneyProfile {
     int? asInt(Object? v) => v is num ? v.toInt() : null;
     final by = json['birthYear'];
     final gicDate = json['gicMaturityDate'];
+    final mortgageDate = json['mortgageRenewalDate'];
     return MoneyProfile(
       birthYear: by is num ? by.toInt() : null,
       tfsaContributed: asDouble(json['tfsaContributed']),
@@ -162,6 +174,8 @@ class MoneyProfile {
       gicMaturityDate: gicDate is String ? DateTime.tryParse(gicDate) : null,
       fhsaContributed: asDouble(json['fhsaContributed']),
       savingsBalance: asDouble(json['savingsBalance']),
+      mortgageRenewalDate:
+          mortgageDate is String ? DateTime.tryParse(mortgageDate) : null,
     );
   }
 
@@ -180,7 +194,8 @@ class MoneyProfile {
       other.gicAmount == gicAmount &&
       other.gicMaturityDate == gicMaturityDate &&
       other.fhsaContributed == fhsaContributed &&
-      other.savingsBalance == savingsBalance;
+      other.savingsBalance == savingsBalance &&
+      other.mortgageRenewalDate == mortgageRenewalDate;
 
   @override
   int get hashCode => Object.hashAll([
@@ -197,5 +212,6 @@ class MoneyProfile {
         gicMaturityDate,
         fhsaContributed,
         savingsBalance,
+        mortgageRenewalDate,
       ]);
 }

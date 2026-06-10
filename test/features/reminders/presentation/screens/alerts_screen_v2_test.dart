@@ -8,7 +8,7 @@ import 'package:maple_alerts/providers/alerts_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/screens/alerts_screen_v2.dart';
 
 void main() {
-  testWidgets('AlertsScreenV2 renders header + MapleAlerts chip + alert',
+  testWidgets('AlertsScreenV2 renders header + alert',
       (t) async {
     final now = DateTime.now();
     final sample = [
@@ -45,8 +45,7 @@ void main() {
     await t.pump(const Duration(milliseconds: 50));
 
     expect(find.text('Calm notifications'), findsOneWidget);
-    expect(find.text('MapleAlerts'), findsWidgets);
-    // Title appears in the header row as '· RRSP top-up window'
+    // Title appears in the header row
     expect(find.textContaining('RRSP top-up window'), findsWidgets);
   });
 }

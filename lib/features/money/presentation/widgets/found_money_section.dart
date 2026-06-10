@@ -12,6 +12,7 @@ import 'package:maple_alerts/features/money/presentation/widgets/ccb_setup_sheet
 import 'package:maple_alerts/features/money/presentation/widgets/rate_gap_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/fhsa_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/gic_setup_sheet.dart';
+import 'package:maple_alerts/features/money/presentation/widgets/mortgage_setup_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/explainer_sheet.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/insight_card.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/money_topics_sheet.dart';
@@ -106,8 +107,9 @@ class FoundMoneySection extends ConsumerWidget {
         showGicSetupSheet(context);
       case InsightAction.editFhsaProfile:
         showFhsaSetupSheet(context);
-      // New topics — open add-reminder sheet so user can set a custom reminder
       case InsightAction.editMortgageProfile:
+        showMortgageSetupSheet(context);
+      // New topics — open add-reminder sheet so user can set a custom reminder
       case InsightAction.editRespProfile:
       case InsightAction.editSavingsProfile:
       case InsightAction.editTaxInstalments:

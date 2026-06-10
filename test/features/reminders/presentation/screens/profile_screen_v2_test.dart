@@ -36,7 +36,8 @@ void main() {
     await t.pump(const Duration(milliseconds: 50));
 
     expect(find.text('Appearance'), findsOneWidget);
-    expect(find.textContaining('Teal Frost'), findsOneWidget); // aurora label
+    // aurora grid shows Arctic Steel + Northern Lights swatches
+    expect(find.textContaining('Arctic Steel'), findsOneWidget);
     expect(find.textContaining('14 days'), findsOneWidget);    // premium CTA (free state)
   });
 

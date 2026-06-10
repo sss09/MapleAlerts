@@ -125,7 +125,7 @@ void main() {
     });
 
     testWidgets(
-        'State C — balance set but empty rates: shows fallback, no crash',
+        'State C — balance set but empty rates: collapses silently, no crash',
         (tester) async {
       const profile = MoneyProfile(savingsBalance: 5000);
       await tester.pumpWidget(
@@ -133,12 +133,9 @@ void main() {
       );
       await tester.pump();
 
-      expect(
-        find.textContaining('Rate comparison unavailable'),
-        findsOneWidget,
-      );
-      // No crash and none of the gap texts are present.
+      // No rates available → card collapses to SizedBox.shrink() with no text.
       expect(find.textContaining('/yr'), findsNothing);
+      expect(find.textContaining('See best rates'), findsNothing);
     });
 
     testWidgets('State A calculate button transitions to State B on valid input',

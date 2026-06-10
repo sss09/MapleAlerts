@@ -29,6 +29,7 @@ export 'rules/best_move_rule.dart';
 export 'rules/ccb_rule.dart';
 export 'rules/fhsa_rule.dart';
 export 'rules/gic_rule.dart';
+export 'rules/mortgage_rule.dart';
 export 'rules/oas_rule.dart';
 export 'rules/rrsp_rule.dart';
 export 'rules/tax_rule.dart';

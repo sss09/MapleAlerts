@@ -468,6 +468,73 @@ List<MoneyInsight> gicInsights(
   }
 }
 
+/// Projects a [MortgageResult] onto presentation insights. [hasRequiredInput] is
+/// true only when a mortgage renewal date is set.
+List<MoneyInsight> mortgageInsights(
+  MortgageResult result, {
+  required bool hasRequiredInput,
+}) {
+  const id = 'mortgage_renewal';
+  if (!hasRequiredInput || result.status == MortgageStatus.none) {
+    return const [
+      MoneyInsight(
+        id: id,
+        kind: InsightKind.setup,
+        severity: InsightSeverity.info,
+        headline: 'Track your mortgage renewal',
+        subline:
+            "Enter your renewal date — we'll warn you when to start shopping rates.",
+        cta: InsightCta('Set up', InsightAction.editMortgageProfile),
+      ),
+    ];
+  }
+  final days = result.daysToRenewal;
+  return switch (result.status) {
+    MortgageStatus.renewalUrgent => [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.guardrail,
+          severity: InsightSeverity.alert,
+          headline: days <= 0
+              ? 'Mortgage renewal overdue'
+              : 'Mortgage renews in $days days',
+          subline:
+              'Start comparing rates now — lenders can hold a rate for 90–120 days.',
+          sources: result.sources,
+          isEstimate: false,
+          cta: const InsightCta(
+              'Compare rates', InsightAction.editMortgageProfile),
+        ),
+      ],
+    MortgageStatus.renewalSoon => [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.foundMoney,
+          severity: InsightSeverity.caution,
+          headline: 'Mortgage renewal in $days days',
+          subline:
+              'Good time to start rate shopping — most lenders hold for 90–120 days.',
+          sources: result.sources,
+          isEstimate: false,
+          cta: const InsightCta(
+              'Compare rates', InsightAction.editMortgageProfile),
+        ),
+      ],
+    MortgageStatus.renewalFar => [
+        MoneyInsight(
+          id: id,
+          kind: InsightKind.info,
+          severity: InsightSeverity.info,
+          headline: 'Mortgage renews in $days days',
+          subline: "We'll alert you when it's time to start comparing rates.",
+          sources: result.sources,
+          isEstimate: false,
+        ),
+      ],
+    MortgageStatus.none => [],
+  };
+}
+
 /// Projects an [FhsaResult] onto presentation insights. [hasRequiredInput] is
 /// true when the user's total FHSA contributions are set.
 List<MoneyInsight> fhsaInsights(

@@ -82,8 +82,18 @@ final fhsaInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return fhsaInsights(result, hasRequiredInput: profile.fhsaContributed != null);
 });
 
+/// Mortgage renewal insight from the current profile.
+final mortgageInsightsProvider = Provider<List<MoneyInsight>>((ref) {
+  final profile = ref.watch(moneyProfileProvider);
+  final result = mortgageRule(profile: profile, asOf: DateTime.now());
+  return mortgageInsights(
+    result,
+    hasRequiredInput: profile.mortgageRenewalDate != null,
+  );
+});
+
 /// The single list of money insights the Home "Found money" surface renders —
-/// TFSA + RRSP + FHSA + CCB + OAS + GIC. The "best move" card ranks over this.
+/// TFSA + RRSP + FHSA + CCB + OAS + GIC + Mortgage. The "best move" card ranks over this.
 final moneyInsightsProvider = Provider<List<MoneyInsight>>((ref) {
   return [
     ...ref.watch(tfsaInsightsProvider),
@@ -92,5 +102,6 @@ final moneyInsightsProvider = Provider<List<MoneyInsight>>((ref) {
     ...ref.watch(ccbInsightsProvider),
     ...ref.watch(oasInsightsProvider),
     ...ref.watch(gicInsightsProvider),
+    ...ref.watch(mortgageInsightsProvider),
   ];
 });

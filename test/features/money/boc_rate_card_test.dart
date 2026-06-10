@@ -4,17 +4,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:maple_alerts/core/design/design_theme.dart';
 import 'package:maple_alerts/core/design/maple_theme.dart';
+import 'package:maple_alerts/engine/canadian_data_engine/canadian_data_engine.dart';
 import 'package:maple_alerts/engine/canadian_data_engine/data/data_pack.dart';
 import 'package:maple_alerts/features/money/presentation/widgets/boc_rate_card.dart';
 import 'package:maple_alerts/providers/boc_rate_provider.dart';
 import 'package:maple_alerts/providers/data_pack_provider.dart';
 import 'package:maple_alerts/services/boc_rate_service.dart';
 
-Widget _wrap(BocRate? rate) => ProviderScope(
+// DataPack stub with a single HISA entry so hasRates=true.
+class _PackWithRates extends EmbeddedDataPack {
+  @override
+  RatesData get rates => RatesData.fromJson({
+        'asOf': '2026-06-05',
+        'disclaimer': 'Verify.',
+        'hisa': [
+          {'id': 'eq', 'name': 'EQ Bank', 'rate': 4.75, 'insurance': 'CDIC', 'tier': 1, 'hasAffiliate': true},
+        ],
+        'gic_1yr': [],
+      });
+}
+
+Widget _wrap(BocRate? rate, {bool withRates = false}) => ProviderScope(
       overrides: [
         bocRateProvider.overrideWith((ref) => rate),
-        // EmbeddedDataPack.rates already returns RatesData.empty — the CTA just needs to not crash.
-        dataPackProvider.overrideWithValue(const EmbeddedDataPack()),
+        dataPackProvider.overrideWithValue(
+          withRates ? _PackWithRates() : const EmbeddedDataPack(),
+        ),
       ],
       child: MaterialApp(
         theme: mapleThemeData(DesignTheme.fog),
@@ -79,12 +94,21 @@ void main() {
     expect(find.textContaining('low'), findsOneWidget);
   });
 
-  testWidgets('CTA row is visible', (tester) async {
+  testWidgets('CTA row is visible when rates are available', (tester) async {
+    await tester.pumpWidget(_wrap(
+      BocRate(policyRate: 4.75, asOf: DateTime(2026, 4, 16)),
+      withRates: true,
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('See best HISA'), findsOneWidget);
+  });
+
+  testWidgets('CTA row is hidden when no rates are loaded', (tester) async {
     await tester.pumpWidget(_wrap(BocRate(
       policyRate: 4.75,
       asOf: DateTime(2026, 4, 16),
     )));
     await tester.pumpAndSettle();
-    expect(find.textContaining('See best HISA'), findsOneWidget);
+    expect(find.textContaining('See best HISA'), findsNothing);
   });
 }

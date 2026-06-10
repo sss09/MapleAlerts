@@ -66,6 +66,14 @@ class MoneyProfileNotifier extends StateNotifier<MoneyProfile> {
         clearSavingsBalance: amount == null,
       ));
 
+  /// Sets the mortgage renewal date (used by the mortgage setup sheet).
+  Future<void> setMortgageRenewalDate(DateTime date) =>
+      _update(state.copyWith(mortgageRenewalDate: date));
+
+  /// Clears the mortgage renewal date.
+  Future<void> clearMortgageRenewalDate() =>
+      _update(state.copyWith(clearMortgageRenewalDate: true));
+
   /// Sets the tracked GIC (used by the GIC setup sheet).
   Future<void> setGic({
     required double amount,

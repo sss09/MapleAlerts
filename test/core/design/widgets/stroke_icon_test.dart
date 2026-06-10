@@ -25,13 +25,13 @@ void main() {
       expect(find.byType(StrokeIcon), findsOne);
     });
 
-    testWidgets('kStrokeIconPaths contains all 24 expected icons',
+    testWidgets('kStrokeIconPaths contains all 25 expected icons',
         (tester) async {
       const expected = [
         'health', 'vehicle', 'gov', 'bill', 'finance', 'home',
         'passport', 'rx', 'seasonal', 'family', 'bell', 'calendar',
         'plus', 'sparkle', 'mic', 'scan', 'user', 'clock', 'check',
-        'chevron', 'timeline', 'snooze', 'leaf', 'wallet',
+        'chevron', 'timeline', 'snooze', 'leaf', 'wallet', 'lock',
       ];
       for (final name in expected) {
         expect(kStrokeIconPaths.containsKey(name), isTrue,

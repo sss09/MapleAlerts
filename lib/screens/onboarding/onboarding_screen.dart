@@ -38,11 +38,11 @@ const List<_PageData> _kPages = [
     icon: 'calendar',
     title: 'Your day, handled',
     description:
-        'RRSP, TFSA, tax, benefits, renewals — calm nudges that tell you '
+        'RRSP, TFSA, FHSA, mortgage, tax, benefits — calm nudges that tell you '
         'what to do, never panic.',
   ),
   _PageData(
-    icon: 'leaf',
+    icon: 'lock',
     title: 'Free, private, yours',
     description:
         'No account, no email, no sign-up. Your data stays on your phone.',

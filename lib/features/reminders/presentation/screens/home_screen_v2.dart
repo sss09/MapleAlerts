@@ -20,6 +20,8 @@ import 'package:maple_alerts/core/design/design_theme_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/hidden_reminders_provider.dart';
 import 'package:maple_alerts/features/reminders/presentation/reminder_collation.dart';
 import 'package:maple_alerts/features/reminders/domain/reminder_category.dart';
+import 'package:maple_alerts/features/money/presentation/money_topic.dart';
+import 'package:maple_alerts/providers/enabled_topics_provider.dart';
 
 /// The scrollable Home screen content.
 ///
@@ -40,6 +42,11 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
     final colors = Theme.of(context).extension<MapleColors>()!;
     final alertsAsync = ref.watch(alertsProvider);
     final tweaks = ref.watch(tweaksProvider);
+    final enabledTopics = ref.watch(enabledTopicsProvider);
+    // Money insight topics — everything except pure reminder topics.
+    const reminderOnlyTopics = {MoneyTopic.taxInstalments};
+    final hasMoneyTopics =
+        enabledTopics.any((t) => !reminderOnlyTopics.contains(t));
 
     final hidden = ref.watch(hiddenRemindersProvider);
     final now = DateTime.now();
@@ -144,12 +151,11 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Hero summary
+                        // ── 1. HERO ──────────────────────────────────────────
                         DayHandledHero(needs: needs, total: total),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
-                        // ── Upcoming alerts first (the proven, time-sensitive
-                        //    core) — chips + legend + Today/This Week/Upcoming ──
+                        // ── 2. UPCOMING ALERTS ───────────────────────────────
                         CategoryFilterChips(
                           active: _activeCategory,
                           onPick: (c) =>
@@ -163,8 +169,6 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                         ] else
                           const SizedBox(height: 8),
 
-                        // A silently-empty category reads as "the chips are
-                        // broken" — show a friendly empty state instead.
                         if (filtered.isEmpty)
                           _EmptyCategoryState(
                             activeCategory: _activeCategory,
@@ -179,30 +183,28 @@ class _HomeScreenV2State extends ConsumerState<HomeScreenV2> {
                             ),
                           ),
 
-                        // ── Money co-pilot layer, below the alerts ──────────
-                        // Finance content — shown only where it's relevant
-                        // ('All' and 'Finance'), so picking e.g. Vehicle gives
-                        // a clean, focused view instead of unrelated cards.
-                        if (_activeCategory == 'All' ||
-                            _activeCategory == 'finance') ...[
-                          const SizedBox(height: 12),
-
-                          // Best move right now — the single top recommendation
+                        // ── 3. MONEY CO-PILOT ────────────────────────────────
+                        // Only shown when the user has enabled at least one
+                        // money-insight topic (not just reminder-only topics).
+                        if (hasMoneyTopics &&
+                            (_activeCategory == 'All' ||
+                                _activeCategory == 'finance')) ...[
+                          const SizedBox(height: 24),
                           const BestMoveCard(),
-
-                          // Found money — TFSA / RRSP / CCB / OAS / GIC cards
                           const FoundMoneySection(),
-                          const SizedBox(height: 16),
-
-                          // Live BoC policy rate (hidden until available)
-                          const BocRateCard(),
-
-                          // Learn the rules — plain-language explainers
-                          const SizedBox(height: 20),
-                          const LearnSection(),
+                          const SizedBox(height: 8),
                         ],
 
-                        // Seasonal rail — relevant on 'All' and 'Seasonal'
+                        // ── 4. RATES + LEARN ─────────────────────────────────
+                        if (_activeCategory == 'All' ||
+                            _activeCategory == 'finance') ...[
+                          const LearnSection(),
+                          const SizedBox(height: 8),
+                          const BocRateCard(),
+                          const SizedBox(height: 16),
+                        ],
+
+                        // ── 5. SEASONAL ──────────────────────────────────────
                         if (_activeCategory == 'All' ||
                             _activeCategory == 'seasonal') ...[
                           const SizedBox(height: 24),

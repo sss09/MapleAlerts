@@ -64,7 +64,7 @@ void main() {
 
       for (final entry in expectedDates.entries) {
         final a = byId(entry.key);
-        expect(a.type, AlertType.tax, reason: '${entry.key} should be tax type');
+        expect(a.type, AlertType.gst, reason: '${entry.key} should be gst type');
         expect(a.deadline, entry.value, reason: '${entry.key} date mismatch');
         expect(a.isPremium, isFalse, reason: '${entry.key} should be free');
       }
